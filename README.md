@@ -5,6 +5,12 @@
 
 Solvers for the [hklpy2](https://github.com/prjemian/hklpy2) package.
 
+## Solvers
+
+| Solver | Library | Geometry | Description |
+| --- | --- | --- | --- |
+| `diffcalc` | [diffcalc-core](https://github.com/DiamondLightSource/diffcalc-core) | 4S+2D six-circle | You (1999) six-circle diffractometer (mu, delta, nu, eta, chi, phi) |
+
 ## Installation
 
 ```bash

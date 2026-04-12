@@ -1,0 +1,99 @@
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
+
+[project]
+name = "hklpy2-solvers"
+dynamic = ["version"]
+description = "Solvers for the hklpy2 package"
+readme = "README.md"
+license = "LicenseRef-UChicago-Argonne-LLC-License"
+license-files = ["LICEN[CS]E*"]
+authors = [
+  { name = "Pete Jemian", email = "prjemian+hklpy2@gmail.com" },
+]
+maintainers = [{ name = "Pete Jemian", email = "prjemian+hklpy2@gmail.com" }]
+requires-python = ">=3.10"
+keywords = ["bluesky", "diffraction", "diffractometer", "hklpy2", "solver"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Environment :: Console",
+  "Intended Audience :: Science/Research",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python",
+  "Topic :: Scientific/Engineering",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "build",
+  "coverage",
+  "isort",
+  "pre-commit",
+  "pytest",
+  "pytest-cov",
+  "ruff",
+]
+all = ["hklpy2-solvers[dev]"]
+
+[project.urls]
+homepage = "https://github.com/prjemian/hklpy2_solvers"
+issues = "https://github.com/prjemian/hklpy2_solvers/issues"
+source = "https://github.com/prjemian/hklpy2_solvers"
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.version.raw-options]
+version_scheme = "semver"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/hklpy2_solvers/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hklpy2_solvers"]
+
+[tool.copyright]
+copyright = "2025-2026, Argonne National Laboratory"
+
+[tool.isort]
+profile = "black"
+force_single_line = true
+line_length = 115
+src_paths = ["."]
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 115
+target-version = "py310"
+exclude = [
+  ".eggs",
+  ".git",
+  ".mypy_cache",
+  ".ruff_cache",
+  ".venv",
+  "build",
+  "dist",
+  "src/hklpy2_solvers/_version.py",
+]
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "F",   # pyflakes
+  "I",   # isort
+  "UP",  # pyupgrade
+  "W",   # pycodestyle warnings
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[tool.coverage.run]
+source = ["hklpy2_solvers"]

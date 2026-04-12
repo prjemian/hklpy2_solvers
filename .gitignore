@@ -1,0 +1,106 @@
+# custom for GitHub Actions workflow
+conda_env.yml
+pip_req.txt
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.coverage*
+.cache
+nosetests.xml
+coverage.xml
+
+# Translations
+*.mo
+*.pot
+
+# Django stuff:
+*.log
+
+# Sphinx documentation
+docs/_build/
+docs/source/_build/
+docs/source/autoapi
+
+# PyBuilder
+target/
+
+# Original file
+*.pyc
+*.swp
+*.bak
+
+# PyCharm
+.idea/
+.ropeproject
+
+# notebook checkpoints
+.ipynb_checkpoints
+
+# Microsoft VS Code editor
+.vscode/
+.history/
+
+# PyTest cache
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# Bluesky session logger
+.logs/
+
+# local developer files
+dev_*
+.dev/
+
+# RE.md saved by local bluesky session
+.re_md_dict.yml
+
+# EPICS softIoc
+.iocsh_history
+
+# Droppings by our IT group
+.loglogin
+
+# Claude
+.claude/
+
+# hatch-vcs generated version file
+src/hklpy2_solvers/_version.py
+
+# ruff cache
+.ruff_cache/

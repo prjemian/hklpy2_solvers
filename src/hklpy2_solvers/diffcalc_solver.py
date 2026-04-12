@@ -321,9 +321,7 @@ class DiffcalcSolver(SolverBase):
 
         indices = list(range(1, len(self._reflections) + 1))
         try:
-            _new_u, new_lattice = self._ubcalc.fit_ub(
-                indices, refine_lattice=True, refine_umatrix=True
-            )
+            _new_u, new_lattice = self._ubcalc.fit_ub(indices, refine_lattice=True, refine_umatrix=True)
         except (DiffcalcException, Exception) as exc:
             logger.warning("Lattice refinement failed: %s", exc)
             return None

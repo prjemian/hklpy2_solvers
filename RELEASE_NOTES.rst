@@ -35,3 +35,16 @@ describe future plans.
 
     * Add ``diffcalc`` solver adapter wrapping diffcalc-core (You 1999,
       4S+2D six-circle geometry).  :issue:`2`
+
+    Fixes
+    ~~~~~
+
+    * Fix CI workflow: pytest path and coverage source.  :issue:`11`
+    * Fix PyPI publish workflow trigger.  :issue:`13`
+
+    Maintenance
+    ~~~~~~~~~~~
+
+    * Add CI workflow (pytest on Python 3.10--3.13, ruff lint/format).
+    * Add PyPI trusted publishing workflow.
+    * Add dependabot for GitHub Actions and pip dependencies.

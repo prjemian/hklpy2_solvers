@@ -24,7 +24,11 @@ classifiers = [
   "Programming Language :: Python",
   "Topic :: Scientific/Engineering",
 ]
-dependencies = []
+dependencies = [
+  "diffcalc-core",
+  "hklpy2",
+  "numpy",
+]
 
 [project.optional-dependencies]
 dev = [
@@ -43,11 +47,14 @@ homepage = "https://github.com/prjemian/hklpy2_solvers"
 issues = "https://github.com/prjemian/hklpy2_solvers/issues"
 source = "https://github.com/prjemian/hklpy2_solvers"
 
+[project.entry-points."hklpy2.solver"]
+diffcalc = "hklpy2_solvers.diffcalc_solver:DiffcalcSolver"
+
 [tool.hatch.version]
 source = "vcs"
 
 [tool.hatch.version.raw-options]
-version_scheme = "semver"
+version_scheme = "python-simplified-semver"
 
 [tool.hatch.build.hooks.vcs]
 version-file = "src/hklpy2_solvers/_version.py"

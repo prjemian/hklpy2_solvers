@@ -29,3 +29,9 @@ describe future plans.
     #####
 
     Release expected TBD.
+
+    New Features
+    ~~~~~~~~~~~~
+
+    * Add ``diffcalc`` solver adapter wrapping diffcalc-core (You 1999,
+      4S+2D six-circle geometry).  :issue:`2`

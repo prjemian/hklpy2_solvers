@@ -33,6 +33,6 @@ jobs:
 
       - name: Run tests with coverage
         run: |
-          coverage run --concurrency=thread --parallel-mode -m pytest -q ./src
+          coverage run --source=hklpy2_solvers --concurrency=thread --parallel-mode -m pytest -q
           coverage combine
           coverage report --precision 3 -m

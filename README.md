@@ -1,5 +1,8 @@
 # hklpy2_solvers
 
+[![PyPI](https://img.shields.io/pypi/v/hklpy2-solvers.svg)](https://pypi.org/project/hklpy2-solvers)
+[![License](https://img.shields.io/pypi/l/hklpy2-solvers.svg)](https://github.com/prjemian/hklpy2_solvers/blob/main/LICENSE)
+
 Solvers for the [hklpy2](https://github.com/prjemian/hklpy2) package.
 
 ## Installation

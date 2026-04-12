@@ -274,8 +274,9 @@ docs #15 update AGENTS.md with branching workflow
 
 A Pull Request (PR) describes *how* an issue has been (or will be) addressed.
 
-- Every PR should reference at least one issue.
-- Use a bullet list at the top of the PR body to link related issues:
+- Every PR **must** reference at least one issue.
+- The PR body **must** include a `closes #N` directive for the issue it
+  resolves. Use a bullet list at the top of the PR body:
 
   ```md
   - closes #42

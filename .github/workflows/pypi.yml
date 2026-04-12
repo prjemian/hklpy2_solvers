@@ -1,8 +1,9 @@
 name: Publish to PyPI
 
 on:
-  release:
-    types: [published]
+  push:
+    branches: [main]
+    tags: ["v*"]
 
 permissions:
   id-token: write
@@ -33,6 +34,7 @@ jobs:
           path: dist/
 
   publish:
+    if: startsWith(github.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest
     environment: pypi

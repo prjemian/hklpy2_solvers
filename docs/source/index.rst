@@ -12,8 +12,9 @@ framework via its entry-point interface.
    :hidden:
 
    install
-   api
+   usage
    geometries
+   api
    release_notes
 
 .. grid:: 2
@@ -22,13 +23,18 @@ framework via its entry-point interface.
 
       Installation instructions.
 
-   .. grid-item-card:: API Reference
+   .. grid-item-card:: :ref:`usage`
 
-      `API Reference <api/hklpy2_solvers/index.html>`_
+      How to use with hklpy2: load solver, set lattice, add reflections,
+      calculate UB, forward and inverse calculations.
 
    .. grid-item-card:: :ref:`geometries`
 
-      Supported solver geometries.
+      Supported solver geometries and operating modes.
+
+   .. grid-item-card:: API Reference
+
+      `API Reference <api/hklpy2_solvers/index.html>`_
 
    .. grid-item-card:: :ref:`release_notes`
 

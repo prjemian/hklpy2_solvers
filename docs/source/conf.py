@@ -47,6 +47,15 @@ extensions = [
 
 myst_enable_extensions = ["colon_fence"]
 nb_execution_mode = "off"
+autosummary_generate = False  # autoapi handles API docs; autosummary not needed
+
+# Provide :issue: and :pr: as plain roles so included .rst files (e.g.
+# RELEASE_NOTES.rst via release_notes.rst) parse without docutils errors
+# before sphinx.ext.extlinks registers them.
+rst_prolog = """
+.. role:: issue
+.. role:: pr
+"""
 
 source_suffix = {
     ".rst": "restructuredtext",

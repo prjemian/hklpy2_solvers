@@ -23,17 +23,15 @@ Brief notes describing each release and what's new.
 Project `milestones <https://github.com/prjemian/hklpy2_solvers/milestones>`_
 describe future plans.
 
-.. comment
+0.1.5
+#####
 
-    0.1.5
-    #####
+Released 2026-04-13.
 
-    Release expected TBD.
+New Features
+~~~~~~~~~~~~
 
-    New Features
-    ~~~~~~~~~~~~
-
-    * Add Sphinx documentation framework with versioned GitHub Pages deployment.  :issue:`15`
+* Add Sphinx documentation framework with versioned GitHub Pages deployment.  :issue:`15`
 
 0.1.4
 #####

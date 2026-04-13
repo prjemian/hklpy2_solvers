@@ -414,28 +414,19 @@ def test_forward_inverse_roundtrip(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(
-                mode="4S+2D mu_chi_phi_fixed",
-                expected_extras=["mu", "chi", "phi"],
-            ),
+            dict(mode="4S+2D mu_chi_phi_fixed"),
             does_not_raise(),
-            id="3-sample mode extras",
+            id="extra_axis_names is always empty",
         ),
         pytest.param(
-            dict(
-                mode="4S+2D mu_fixed a_eq_b delta_fixed",
-                expected_extras=["delta", "mu"],
-            ),
+            dict(mode="4S+2D mu_fixed a_eq_b delta_fixed"),
             does_not_raise(),
-            id="det+ref+samp mode extras exclude a_eq_b",
+            id="extra_axis_names empty for det+ref+samp mode",
         ),
         pytest.param(
-            dict(
-                mode="4S+2D bisect_mu_fixed delta_fixed",
-                expected_extras=["delta", "mu"],
-            ),
+            dict(mode=""),
             does_not_raise(),
-            id="bisect mode extras exclude bisect",
+            id="extra_axis_names empty for empty mode",
         ),
     ],
 )
@@ -443,7 +434,52 @@ def test_extra_axis_names(parms, context):
     solver = DiffcalcSolver()
     with context:
         solver.mode = parms["mode"]
-        assert sorted(solver.extra_axis_names) == sorted(parms["expected_extras"])
+        assert solver.extra_axis_names == []
+        assert solver.extras == {}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                mode="4S+2D mu_chi_phi_fixed",
+                expected_axes_w=["delta", "nu", "eta"],
+            ),
+            does_not_raise(),
+            id="axes_w excludes mu, chi, phi",
+        ),
+        pytest.param(
+            dict(
+                mode="4S+2D mu_fixed a_eq_b delta_fixed",
+                expected_axes_w=["nu", "eta", "chi", "phi"],
+            ),
+            does_not_raise(),
+            id="axes_w excludes mu and delta",
+        ),
+        pytest.param(
+            dict(
+                mode="4S+2D chi_phi_fixed delta_fixed",
+                expected_axes_w=["mu", "nu", "eta"],
+            ),
+            does_not_raise(),
+            id="axes_w excludes chi, phi, delta",
+        ),
+        pytest.param(
+            dict(
+                mode="",
+                expected_axes_w=REAL_AXES,
+            ),
+            does_not_raise(),
+            id="axes_w returns all axes when mode is empty",
+        ),
+    ],
+)
+def test_axes_w(parms, context):
+    solver = DiffcalcSolver()
+    with context:
+        solver.mode = parms["mode"]
+        assert solver.axes_w == parms["expected_axes_w"]
 
 
 @pytest.mark.parametrize(
@@ -637,22 +673,6 @@ def test_refine_lattice_insufficient_reflections(parms, context):
         assert result is None
 
 
-@pytest.mark.parametrize(
-    "parms, context",
-    [
-        pytest.param(
-            dict(),
-            does_not_raise(),
-            id="empty mode gives empty extra_axis_names",
-        ),
-    ],
-)
-def test_extra_axis_names_empty_mode(parms, context):
-    solver = DiffcalcSolver()
-    solver._mode = ""
-    with context:
-        assert solver.extra_axis_names == []
-
 
 @pytest.mark.parametrize(
     "parms, context",
@@ -738,4 +758,4 @@ def test_mode_set_empty(parms, context):
     with context:
         solver.mode = parms["mode"]
         assert solver.mode == ""
-        assert solver._extras == {}
+        assert solver.extras == {}

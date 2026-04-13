@@ -98,8 +98,12 @@ class DiffcalcSolver(SolverBase):
     diffractometer with axes ``mu, delta, nu, eta, chi, phi``.
 
     Operating modes correspond to specific three-constraint combinations
-    understood by diffcalc.  The default constraint *values* (typically
-    zero) can be changed via :attr:`extras`.
+    understood by diffcalc.
+
+    This geometry has no extra parameters (``extras`` is always ``{}``).
+    The :attr:`axes_w` property reports which real axes are computed by
+    :meth:`forward` in the current mode; the remaining real axes are held
+    constant (``axes_c``, derived by hklpy2's ``Core`` class).
     """
 
     name = "diffcalc"
@@ -113,7 +117,6 @@ class DiffcalcSolver(SolverBase):
 
         # Initialize internal state *before* super().__init__ which
         # may set mode via the setter.
-        self._extras: dict[str, Any] = {}
         self._ubcalc = UBCalculation("default")
         self._constraints = Constraints()
         self._hklcalc: HklCalculation | None = None
@@ -136,15 +139,10 @@ class DiffcalcSolver(SolverBase):
         self._hklcalc = HklCalculation(self._ubcalc, self._constraints)
 
     def _apply_mode_constraints(self) -> None:
-        """Set diffcalc constraints from the current mode and extras."""
+        """Set diffcalc constraints from the current mode."""
         if not self.mode:
             return
-        template = _MODES[self.mode]
-        con_dict: dict[str, Any] = {}
-        for cname, default_value in template.items():
-            # Allow extras to override the default fixed values.
-            con_dict[cname] = self._extras.get(cname, default_value)
-        self._constraints = Constraints(con_dict)
+        self._constraints = Constraints(_MODES[self.mode])
         self._rebuild_hklcalc()
 
     def _position_from_reals(self, reals: NamedFloatDict) -> Position:
@@ -203,18 +201,34 @@ class DiffcalcSolver(SolverBase):
         return ub.tolist()
 
     @property
-    def extra_axis_names(self) -> list[str]:
-        """Extra parameter names for the current mode's adjustable constraints."""
+    def axes_w(self) -> list[str]:
+        """Real axis names computed by :meth:`forward` in the current mode.
+
+        These are the real axes *not* constrained to a fixed motor position
+        by the current mode.  hklpy2's ``Core`` class derives ``axes_c``
+        (constant axes) and ``axes_r`` (all real axes) from this list and
+        :attr:`real_axis_names`.
+        """
         if not self.mode:
-            return []
-        template = _MODES.get(self.mode, {})
-        # Only numeric (non-bool) constraints are user-adjustable extras.
-        return [k for k, v in template.items() if isinstance(v, (int, float)) and not isinstance(v, bool)]
+            return list(REAL_AXES)
+        constrained_motors = set(_MODES[self.mode].keys()) & set(REAL_AXES)
+        return [ax for ax in REAL_AXES if ax not in constrained_motors]
+
+    @property
+    def extra_axis_names(self) -> list[str]:
+        """Extra parameter names beyond the real motor axes.
+
+        This geometry has no extra parameters; always returns ``[]``.
+        """
+        return []
 
     @property
     def extras(self) -> dict[str, Any]:
-        """Current extra parameter values (adjustable constraint values)."""
-        return dict(self._extras)
+        """Extra parameters beyond the real motor axes.
+
+        This geometry has no extra parameters; always returns ``{}``.
+        """
+        return {}
 
     def forward(self, pseudos: NamedFloatDict) -> list[NamedFloatDict]:
         """Compute motor positions from pseudo-axis values (hkl -> angles)."""
@@ -292,14 +306,8 @@ class DiffcalcSolver(SolverBase):
 
         check_value_in_list("Mode", value, self.modes, blank_ok=True)
         self._mode = value
-        # Reset extras to mode defaults when mode changes.
         if value and value in _MODES:
-            self._extras = {
-                k: v for k, v in _MODES[value].items() if isinstance(v, (int, float)) and not isinstance(v, bool)
-            }
             self._apply_mode_constraints()
-        else:
-            self._extras = {}
 
     @property
     def modes(self) -> list[str]:

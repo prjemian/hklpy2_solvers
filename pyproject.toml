@@ -31,6 +31,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+all = ["hklpy2-solvers[dev,doc]"]
 dev = [
   "build",
   "coverage",
@@ -40,7 +41,15 @@ dev = [
   "pytest-cov",
   "ruff",
 ]
-all = ["hklpy2-solvers[dev]"]
+doc = [
+  "myst-nb",
+  "pydata-sphinx-theme",
+  "sphinx",
+  "sphinx-autoapi",
+  "sphinx-copybutton",
+  "sphinx-design",
+  "sphinx-tabs",
+]
 
 [project.urls]
 homepage = "https://github.com/prjemian/hklpy2_solvers"
@@ -49,6 +58,9 @@ source = "https://github.com/prjemian/hklpy2_solvers"
 
 [project.entry-points."hklpy2.solver"]
 diffcalc = "hklpy2_solvers.diffcalc_solver:DiffcalcSolver"
+
+[tool.coverage.run]
+source = ["hklpy2_solvers"]
 
 [tool.hatch.version]
 source = "vcs"
@@ -61,9 +73,6 @@ version-file = "src/hklpy2_solvers/_version.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/hklpy2_solvers"]
-
-[tool.copyright]
-copyright = "2025-2026, Argonne National Laboratory"
 
 [tool.isort]
 profile = "black"
@@ -89,6 +98,10 @@ exclude = [
   "src/hklpy2_solvers/_version.py",
 ]
 
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
 [tool.ruff.lint]
 select = [
   "E",   # pycodestyle errors
@@ -97,10 +110,3 @@ select = [
   "UP",  # pyupgrade
   "W",   # pycodestyle warnings
 ]
-
-[tool.ruff.format]
-quote-style = "double"
-indent-style = "space"
-
-[tool.coverage.run]
-source = ["hklpy2_solvers"]

@@ -1,0 +1,201 @@
+name: Publish Sphinx Docs to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - '*'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      deploy:
+        description: 'Deploy documentation'
+        type: boolean
+        required: true
+        default: false
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+
+  docs:
+    name: Build and publish documentation
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # full history so hatch-vcs can read git tags
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install package with doc dependencies
+        run: pip install -e .[doc]
+
+      - name: Determine DOC_VERSION
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            VERSION="${GITHUB_REF#refs/tags/}"
+          else
+            VERSION="latest"
+          fi
+          echo "DOC_VERSION=${VERSION}" >> "${GITHUB_ENV}"
+          echo "Publishing docs as: ${VERSION}"
+
+      - name: Build Sphinx documentation
+        run: python3 -m sphinx -b html docs/source docs/build/html
+
+      - name: Upload docs as workflow artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: docs-${{ env.DOC_VERSION }}
+          path: docs/build/html
+
+      - name: Deploy to gh-pages — latest/ (main push)
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: docs/build/html
+          destination_dir: latest
+          keep_files: true
+
+      - name: Deploy to gh-pages — <version>/ (tag push)
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: docs/build/html
+          destination_dir: ${{ env.DOC_VERSION }}
+          keep_files: true
+
+      - name: Update switcher.json on tag push
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        run: |
+          set -euo pipefail
+          VERSION="${DOC_VERSION}"
+
+          git clone --branch gh-pages --depth 1 \
+            "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" \
+            gh-pages-clone
+
+          SWITCHER="gh-pages-clone/latest/_static/switcher.json"
+
+          if [ ! -f "${SWITCHER}" ]; then
+            mkdir -p "$(dirname ${SWITCHER})"
+            cp docs/source/_static/switcher.json "${SWITCHER}"
+          fi
+
+          python3 - <<'PYEOF'
+          import json, os, re
+
+          version = os.environ["VERSION"]
+          switcher_path = os.environ["SWITCHER"]
+          base_url = "https://prjemian.github.io/hklpy2_solvers"
+
+          is_prerelease = bool(re.search(r'(a|b|rc)\d+$', version))
+
+          with open(switcher_path) as f:
+              entries = json.load(f)
+
+          latest_entries = [e for e in entries if e.get("version") == "latest"]
+          versioned = [e for e in entries if e.get("version") != "latest"]
+          versions = [e["version"] for e in versioned]
+
+          if not is_prerelease:
+              prerelease_pat = re.compile(r'^' + re.escape(version) + r'(a|b|rc)\d+$')
+              pruned = [e["version"] for e in versioned if prerelease_pat.match(e["version"])]
+              versioned = [e for e in versioned if not prerelease_pat.match(e["version"])]
+              for v in pruned:
+                  print(f"Removed pre-release {v} from switcher.json")
+              versions = [e["version"] for e in versioned]
+              for e in versioned:
+                  e.pop("preferred", None)
+              if version in versions:
+                  for e in versioned:
+                      if e["version"] == version:
+                          e["preferred"] = True
+                  print(f"{version} already present; marked preferred")
+              else:
+                  new_entry = {"version": version, "url": f"{base_url}/{version}/", "preferred": True}
+                  versioned.insert(0, new_entry)
+                  print(f"Added {version} to switcher.json and marked preferred")
+          else:
+              if version in versions:
+                  print(f"{version} already present (pre-release; preferred unchanged)")
+              else:
+                  new_entry = {"version": version, "url": f"{base_url}/{version}/"}
+                  versioned.insert(0, new_entry)
+                  print(f"Added pre-release {version} to switcher.json (preferred unchanged)")
+
+          def version_key(e):
+              try:
+                  return [int(x) for x in e["version"].lstrip("v").split(".")]
+              except ValueError:
+                  return []
+          versioned.sort(key=version_key, reverse=True)
+          entries = latest_entries + versioned
+          with open(switcher_path, "w") as f:
+              json.dump(entries, f, indent=4)
+          PYEOF
+        env:
+          SWITCHER: gh-pages-clone/latest/_static/switcher.json
+          VERSION: ${{ env.DOC_VERSION }}
+
+      - name: Remove pre-release doc directories from gh-pages on stable tag
+        if: >
+          github.event_name == 'push' &&
+          startsWith(github.ref, 'refs/tags/') &&
+          !contains(env.DOC_VERSION, 'a') &&
+          !contains(env.DOC_VERSION, 'b') &&
+          !contains(env.DOC_VERSION, 'rc')
+        run: |
+          set -euo pipefail
+          VERSION="${DOC_VERSION}"
+          PRUNED=()
+          for dir in gh-pages-clone/${VERSION}{a,b,rc}*/; do
+            [ -d "${dir}" ] || continue
+            rm -rf "${dir}"
+            PRUNED+=("${dir}")
+            echo "Removed directory: ${dir}"
+          done
+          if [[ ${#PRUNED[@]} -eq 0 ]]; then
+            echo "No pre-release directories found for ${VERSION}."
+          fi
+
+      - name: Commit switcher.json and pruned directories to gh-pages
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        run: |
+          cd gh-pages-clone
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git diff --cached --quiet || git commit -m "ci: release ${DOC_VERSION}: update switcher.json, prune pre-release docs"
+          git pull --rebase origin gh-pages
+          git push
+
+      - name: Deploy on manual trigger
+        uses: peaceiris/actions-gh-pages@v4
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.deploy == 'true'
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: docs/build/html
+          destination_dir: latest
+          keep_files: true

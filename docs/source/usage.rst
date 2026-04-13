@@ -5,127 +5,82 @@ Using hklpy2-solvers with hklpy2
 =================================
 
 The package registers itself automatically via the ``hklpy2.solver`` entry
-point, so no imports from ``hklpy2_solvers`` are needed in normal use.
+point once installed, so no imports from ``hklpy2_solvers`` are needed in
+normal use.
 
-1. Installation
----------------
+Installation
+------------
 
 .. code-block:: bash
 
    pip install hklpy2-solvers
 
-This makes the ``diffcalc`` solver available to ``hklpy2`` immediately.
+This makes all solvers provided by this package available to ``hklpy2``
+immediately.
 
-2. Load the solver
-------------------
+Available solvers
+-----------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 30 50
+
+   * - Solver name
+     - Geometry name
+     - Common name
+   * - ``diffcalc``
+     - ``diffcalc_4S_2D``
+     - *psic* (You 1999 six-circle)
+
+See :ref:`geometries` for the full description of each geometry and its
+operating modes.
+
+Creating a diffractometer
+--------------------------
+
+Use :func:`hklpy2.creator` to create a diffractometer object for any solver
+geometry provided by this package.  The ``solver`` and ``geometry`` arguments
+select the backend:
 
 .. code-block:: python
 
    import hklpy2
-   from hklpy2_solvers.diffcalc_solver import GEOMETRY_NAME  # "diffcalc_4S_2D"
 
-   solver = hklpy2.solver_factory("diffcalc", GEOMETRY_NAME)
+   psic = hklpy2.creator(
+       solver="diffcalc",
+       geometry="diffcalc_4S_2D",
+       name="psic",
+   )
 
-Or equivalently, get the class and instantiate it yourself:
+The object ``psic`` is a fully-functional ``hklpy2`` diffractometer with
+simulated motor positioners for all six real axes
+(``mu``, ``delta``, ``nu``, ``eta``, ``chi``, ``phi``) and the three
+reciprocal-space pseudo axes (``h``, ``k``, ``l``).
 
-.. code-block:: python
-
-   SolverClass = hklpy2.get_solver("diffcalc")  # returns DiffcalcSolver class
-   solver = SolverClass(GEOMETRY_NAME)
-
-3. Set the crystal lattice
---------------------------
-
-.. code-block:: python
-
-   solver.lattice = {
-       "a": 5.431, "b": 5.431, "c": 5.431,        # Angstroms (silicon)
-       "alpha": 90.0, "beta": 90.0, "gamma": 90.0,  # degrees
-   }
-
-4. Add two orientation reflections
------------------------------------
-
-Each reflection is a dict with ``pseudos`` (hkl), ``reals`` (motor angles),
-and ``wavelength`` (Å):
+To connect real axes to EPICS motor PVs instead of simulators, supply them
+via the ``reals`` argument:
 
 .. code-block:: python
 
-   import math
+   psic = hklpy2.creator(
+       solver="diffcalc",
+       geometry="diffcalc_4S_2D",
+       name="psic",
+       reals=dict(
+           mu="IOC:m1",
+           delta="IOC:m2",
+           nu="IOC:m3",
+           eta="IOC:m4",
+           chi="IOC:m5",
+           phi="IOC:m6",
+       ),
+   )
 
-   wl = 1.0  # Angstroms
-   theta = math.degrees(math.asin(wl / (2 * 5.431)))
-   tth = 2 * theta
+Further use
+-----------
 
-   r1 = {
-       "name": "r1",
-       "pseudos": {"h": 1.0, "k": 0.0, "l": 0.0},
-       "reals": {"mu": 0, "delta": tth, "nu": 0, "eta": theta, "chi": 0, "phi": 0},
-       "wavelength": wl,
-   }
-   r2 = {
-       "name": "r2",
-       "pseudos": {"h": 0.0, "k": 1.0, "l": 0.0},
-       "reals": {"mu": 0, "delta": tth, "nu": 0, "eta": theta, "chi": 0, "phi": 90},
-       "wavelength": wl,
-   }
-   solver.addReflection(r1)
-   solver.addReflection(r2)
-
-5. Calculate the UB matrix
----------------------------
-
-.. code-block:: python
-
-   ub = solver.calculate_UB(r1, r2)
-
-6. Choose an operating mode
-----------------------------
-
-.. code-block:: python
-
-   print(solver.modes)  # list all 23 available modes
-   solver.mode = "4S+2D mu_chi_phi_fixed"  # fix mu=chi=phi=0
-
-Adjustable constraint values are exposed via ``extras``:
-
-.. code-block:: python
-
-   print(solver.extra_axis_names)  # e.g. ['mu', 'chi', 'phi']
-   print(solver.extras)            # e.g. {'mu': 0.0, 'chi': 0.0, 'phi': 0.0}
-
-See :ref:`geometries` for the full list of modes and their constraints.
-
-7. Forward calculation (hkl → motor angles)
----------------------------------------------
-
-Returns a list of solutions (multiple geometrical solutions are possible):
-
-.. code-block:: python
-
-   solutions = solver.forward({"h": 1.0, "k": 0.0, "l": 0.0})
-   print(solutions[0])
-   # {'mu': 0.0, 'delta': 10.5647, 'nu': 0.0, 'eta': 5.2824, 'chi': 0.0, 'phi': 0.0}
-
-8. Inverse calculation (motor angles → hkl)
----------------------------------------------
-
-.. code-block:: python
-
-   hkl = solver.inverse(solutions[0])
-   print(hkl)
-   # {'h': 1.0, 'k': 0.0, 'l': 0.0}
-
-Axes summary
-------------
-
-.. list-table::
-   :header-rows: 1
-   :widths: 20 80
-
-   * - Type
-     - Names
-   * - Real (motors)
-     - ``mu``, ``delta``, ``nu``, ``eta``, ``chi``, ``phi``
-   * - Pseudo (reciprocal)
-     - ``h``, ``k``, ``l``
+Once the diffractometer object is created, all standard ``hklpy2`` operations
+apply — setting the lattice, adding orientation reflections, calculating the
+UB matrix, choosing an operating mode, and moving in reciprocal space.
+Refer to the `hklpy2 documentation <https://blueskyproject.io/hklpy2/>`_ for
+the full user guide.

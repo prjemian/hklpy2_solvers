@@ -28,10 +28,16 @@ describe future plans.
 
 Released 2026-04-13.
 
-New Features
-~~~~~~~~~~~~
+    Fixes
+    ~~~~~
 
-* Add Sphinx documentation framework with versioned GitHub Pages deployment.  :issue:`15`
+    * Fix usage documentation: use ``hklpy2.creator()`` as the standard entry
+      point; describe all solvers generically.  :issue:`18`
+
+    New Features
+    ~~~~~~~~~~~~
+
+    * Add Sphinx documentation framework with versioned GitHub Pages deployment.  :issue:`15`
 
 0.1.4
 #####

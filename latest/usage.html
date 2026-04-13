@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=f00f90a8"></script>
+    <script src="_static/documentation_options.js?v=efc02bb0"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -450,122 +450,67 @@
   <section id="using-hklpy2-solvers-with-hklpy2">
 <span id="usage"></span><h1>Using hklpy2-solvers with hklpy2<a class="headerlink" href="#using-hklpy2-solvers-with-hklpy2" title="Link to this heading">#</a></h1>
 <p>The package registers itself automatically via the <code class="docutils literal notranslate"><span class="pre">hklpy2.solver</span></code> entry
-point, so no imports from <code class="docutils literal notranslate"><span class="pre">hklpy2_solvers</span></code> are needed in normal use.</p>
+point once installed, so no imports from <code class="docutils literal notranslate"><span class="pre">hklpy2_solvers</span></code> are needed in
+normal use.</p>
 <section id="installation">
-<h2>1. Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>hklpy2-solvers
 </pre></div>
 </div>
-<p>This makes the <code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver available to <code class="docutils literal notranslate"><span class="pre">hklpy2</span></code> immediately.</p>
+<p>This makes all solvers provided by this package available to <code class="docutils literal notranslate"><span class="pre">hklpy2</span></code>
+immediately.</p>
 </section>
-<section id="load-the-solver">
-<h2>2. Load the solver<a class="headerlink" href="#load-the-solver" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2_solvers.diffcalc_solver</span><span class="w"> </span><span class="kn">import</span> <span class="n">GEOMETRY_NAME</span>  <span class="c1"># &quot;diffcalc_4S_2D&quot;</span>
-
-<span class="n">solver</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">solver_factory</span><span class="p">(</span><span class="s2">&quot;diffcalc&quot;</span><span class="p">,</span> <span class="n">GEOMETRY_NAME</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>Or equivalently, get the class and instantiate it yourself:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">SolverClass</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">get_solver</span><span class="p">(</span><span class="s2">&quot;diffcalc&quot;</span><span class="p">)</span>  <span class="c1"># returns DiffcalcSolver class</span>
-<span class="n">solver</span> <span class="o">=</span> <span class="n">SolverClass</span><span class="p">(</span><span class="n">GEOMETRY_NAME</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="set-the-crystal-lattice">
-<h2>3. Set the crystal lattice<a class="headerlink" href="#set-the-crystal-lattice" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;a&quot;</span><span class="p">:</span> <span class="mf">5.431</span><span class="p">,</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span> <span class="mf">5.431</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="mf">5.431</span><span class="p">,</span>        <span class="c1"># Angstroms (silicon)</span>
-    <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span> <span class="s2">&quot;beta&quot;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span> <span class="mf">90.0</span><span class="p">,</span>  <span class="c1"># degrees</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-<section id="add-two-orientation-reflections">
-<h2>4. Add two orientation reflections<a class="headerlink" href="#add-two-orientation-reflections" title="Link to this heading">#</a></h2>
-<p>Each reflection is a dict with <code class="docutils literal notranslate"><span class="pre">pseudos</span></code> (hkl), <code class="docutils literal notranslate"><span class="pre">reals</span></code> (motor angles),
-and <code class="docutils literal notranslate"><span class="pre">wavelength</span></code> (Å):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
-
-<span class="n">wl</span> <span class="o">=</span> <span class="mf">1.0</span>  <span class="c1"># Angstroms</span>
-<span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="n">wl</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="mf">5.431</span><span class="p">)))</span>
-<span class="n">tth</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">theta</span>
-
-<span class="n">r1</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;r1&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pseudos&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;reals&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="n">tth</span><span class="p">,</span> <span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="n">theta</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
-    <span class="s2">&quot;wavelength&quot;</span><span class="p">:</span> <span class="n">wl</span><span class="p">,</span>
-<span class="p">}</span>
-<span class="n">r2</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;r2&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pseudos&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;reals&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="n">tth</span><span class="p">,</span> <span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="n">theta</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mi">90</span><span class="p">},</span>
-    <span class="s2">&quot;wavelength&quot;</span><span class="p">:</span> <span class="n">wl</span><span class="p">,</span>
-<span class="p">}</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">addReflection</span><span class="p">(</span><span class="n">r1</span><span class="p">)</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">addReflection</span><span class="p">(</span><span class="n">r2</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="calculate-the-ub-matrix">
-<h2>5. Calculate the UB matrix<a class="headerlink" href="#calculate-the-ub-matrix" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ub</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">calculate_UB</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="choose-an-operating-mode">
-<h2>6. Choose an operating mode<a class="headerlink" href="#choose-an-operating-mode" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">modes</span><span class="p">)</span>  <span class="c1"># list all 23 available modes</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;4S+2D mu_chi_phi_fixed&quot;</span>  <span class="c1"># fix mu=chi=phi=0</span>
-</pre></div>
-</div>
-<p>Adjustable constraint values are exposed via <code class="docutils literal notranslate"><span class="pre">extras</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">extra_axis_names</span><span class="p">)</span>  <span class="c1"># e.g. [&#39;mu&#39;, &#39;chi&#39;, &#39;phi&#39;]</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">solver</span><span class="o">.</span><span class="n">extras</span><span class="p">)</span>            <span class="c1"># e.g. {&#39;mu&#39;: 0.0, &#39;chi&#39;: 0.0, &#39;phi&#39;: 0.0}</span>
-</pre></div>
-</div>
-<p>See <a class="reference internal" href="geometries.html#geometries"><span class="std std-ref">Geometries</span></a> for the full list of modes and their constraints.</p>
-</section>
-<section id="forward-calculation-hkl-motor-angles">
-<h2>7. Forward calculation (hkl → motor angles)<a class="headerlink" href="#forward-calculation-hkl-motor-angles" title="Link to this heading">#</a></h2>
-<p>Returns a list of solutions (multiple geometrical solutions are possible):</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solutions</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">forward</span><span class="p">({</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">})</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="c1"># {&#39;mu&#39;: 0.0, &#39;delta&#39;: 10.5647, &#39;nu&#39;: 0.0, &#39;eta&#39;: 5.2824, &#39;chi&#39;: 0.0, &#39;phi&#39;: 0.0}</span>
-</pre></div>
-</div>
-</section>
-<section id="inverse-calculation-motor-angles-hkl">
-<h2>8. Inverse calculation (motor angles → hkl)<a class="headerlink" href="#inverse-calculation-motor-angles-hkl" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hkl</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">solutions</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">hkl</span><span class="p">)</span>
-<span class="c1"># {&#39;h&#39;: 1.0, &#39;k&#39;: 0.0, &#39;l&#39;: 0.0}</span>
-</pre></div>
-</div>
-</section>
-<section id="axes-summary">
-<h2>Axes summary<a class="headerlink" href="#axes-summary" title="Link to this heading">#</a></h2>
+<section id="available-solvers">
+<h2>Available solvers<a class="headerlink" href="#available-solvers" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="table">
 <colgroup>
 <col style="width: 20.0%" />
-<col style="width: 80.0%" />
+<col style="width: 30.0%" />
+<col style="width: 50.0%" />
 </colgroup>
 <thead>
-<tr class="row-odd"><th class="head"><p>Type</p></th>
-<th class="head"><p>Names</p></th>
+<tr class="row-odd"><th class="head"><p>Solver name</p></th>
+<th class="head"><p>Geometry name</p></th>
+<th class="head"><p>Common name</p></th>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p>Real (motors)</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">delta</span></code>, <code class="docutils literal notranslate"><span class="pre">nu</span></code>, <code class="docutils literal notranslate"><span class="pre">eta</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code></p></td>
-</tr>
-<tr class="row-odd"><td><p>Pseudo (reciprocal)</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">diffcalc</span></code></p></td>
+<td><p><a class="reference internal" href="geometries.html#geometry-diffcalc-4s-2d"><span class="std std-ref">diffcalc_4S_2D</span></a></p></td>
+<td><p><em>psic</em> (You 1999 six-circle)</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+<p>See <a class="reference internal" href="geometries.html#geometries"><span class="std std-ref">Geometries</span></a> for the full description of each geometry and its
+operating modes.</p>
+</section>
+<section id="creating-a-diffractometer">
+<h2>Creating a diffractometer<a class="headerlink" href="#creating-a-diffractometer" title="Link to this heading">#</a></h2>
+<p>Use <code class="xref py py-func docutils literal notranslate"><span class="pre">hklpy2.creator()</span></code> to create a diffractometer object for any solver
+geometry provided by this package.  The <code class="docutils literal notranslate"><span class="pre">solver</span></code> and <code class="docutils literal notranslate"><span class="pre">geometry</span></code> arguments
+select the backend:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+
+<span class="n">psic</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;diffcalc&quot;</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;diffcalc_4S_2D&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;psic&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The object <code class="docutils literal notranslate"><span class="pre">psic</span></code> is a fully-functional <code class="docutils literal notranslate"><span class="pre">hklpy2</span></code> diffractometer with
+simulated motor positioners for all six real axes
+(<code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">delta</span></code>, <code class="docutils literal notranslate"><span class="pre">nu</span></code>, <code class="docutils literal notranslate"><span class="pre">eta</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code>) and the three
+reciprocal-space pseudo axes (<code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code>).</p>
+</section>
+<section id="further-use">
+<h2>Further use<a class="headerlink" href="#further-use" title="Link to this heading">#</a></h2>
+<p>Once the diffractometer object is created, all standard <code class="docutils literal notranslate"><span class="pre">hklpy2</span></code> operations
+apply — setting the lattice, adding orientation reflections, calculating the
+UB matrix, choosing an operating mode, and moving in reciprocal space.
+Refer to the <a class="reference external" href="https://blueskyproject.io/hklpy2/">hklpy2 documentation</a> for
+the full user guide.</p>
 </section>
 </section>
 
@@ -616,15 +561,10 @@ and <code class="docutils literal notranslate"><span class="pre">wavelength</spa
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">1. Installation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-the-solver">2. Load the solver</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-the-crystal-lattice">3. Set the crystal lattice</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-two-orientation-reflections">4. Add two orientation reflections</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calculate-the-ub-matrix">5. Calculate the UB matrix</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-an-operating-mode">6. Choose an operating mode</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#forward-calculation-hkl-motor-angles">7. Forward calculation (hkl → motor angles)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inverse-calculation-motor-angles-hkl">8. Inverse calculation (motor angles → hkl)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#axes-summary">Axes summary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-solvers">Available solvers</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#creating-a-diffractometer">Creating a diffractometer</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#further-use">Further use</a></li>
 </ul>
   </nav></div>
 

@@ -23,22 +23,26 @@ Brief notes describing each release and what's new.
 Project `milestones <https://github.com/prjemian/hklpy2_solvers/milestones>`_
 describe future plans.
 
-.. comment
+0.1.6
+#####
 
-    0.1.6
-    #####
+Released 2026-04-13.
 
-    Release expected TBD.
+Fixes
+~~~~~
 
-    Fixes
-    ~~~~~
+* Fix ``extra_axis_names`` and ``extras``: always ``[]``/``{}`` (no
+  non-motor extra parameters in this geometry).  Add ``axes_w`` property
+  so hklpy2 can identify axes computed by ``forward()`` and enable the
+  presets feature for constant axes.  :issue:`17`
+* Fix usage documentation: use ``hklpy2.creator()`` as the standard entry
+  point; describe all solvers generically.  :issue:`18`
 
-    * Fix ``extra_axis_names`` and ``extras``: always ``[]``/``{}`` (no
-      non-motor extra parameters in this geometry).  Add ``axes_w`` property
-      so hklpy2 can identify axes computed by ``forward()`` and enable the
-      presets feature for constant axes.  :issue:`17`
-    * Fix usage documentation: use ``hklpy2.creator()`` as the standard entry
-      point; describe all solvers generically.  :issue:`18`
+Maintenance
+~~~~~~~~~~~
+
+* Add root redirect page to GitHub Pages.
+* Add usage guide for hklpy2-solvers with hklpy2.
 
 0.1.5
 #####

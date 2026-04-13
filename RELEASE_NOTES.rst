@@ -48,3 +48,4 @@ describe future plans.
     * Add CI workflow (pytest on Python 3.10--3.13, ruff lint/format).
     * Add PyPI trusted publishing workflow.
     * Add dependabot for GitHub Actions and pip dependencies.
+    * Add Sphinx documentation framework with versioned GitHub Pages deployment.  :issue:`15`

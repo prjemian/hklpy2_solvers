@@ -1,3 +1,5 @@
+# Copyright (c) 2026 Pete Jemian <prjemian+hklpy2@gmail.com>
+# SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """Tests for the diffcalc solver adapter."""
 
 import math

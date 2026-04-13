@@ -8,6 +8,8 @@ Each solver registered under the ``hklpy2.solver`` entry-point group
 exposes one or more named geometries.  The geometry name is passed to
 the solver when it is instantiated by hklpy2.
 
+.. _geometry.diffcalc_4S_2D:
+
 diffcalc solver
 ---------------
 

@@ -114,7 +114,7 @@ html_theme_options = {
     "github_url": github_url,
     "navbar_end": ["version-switcher", "theme-switcher", "navbar-icon-links"],
     "switcher": {
-        "json_url": f"https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json",
+        "json_url": "https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json",
         "version_match": switcher_version_match,
     },
     "check_switcher": False,

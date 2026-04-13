@@ -95,6 +95,7 @@ exclude = [
   ".venv",
   "build",
   "dist",
+  "docs/source/conf.py",
   "src/hklpy2_solvers/_version.py",
 ]
 

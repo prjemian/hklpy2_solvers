@@ -2,5 +2,10 @@
     {
         "version": "latest",
         "url": "https://prjemian.github.io/hklpy2_solvers/latest/"
+    },
+    {
+        "version": "v0.1.6",
+        "url": "https://prjemian.github.io/hklpy2_solvers/v0.1.6/",
+        "preferred": true
     }
 ]

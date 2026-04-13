@@ -29,7 +29,7 @@ Available solvers
      - Geometry name
      - Common name
    * - ``diffcalc``
-     - ``diffcalc_4S_2D``
+     - :ref:`diffcalc_4S_2D <geometry.diffcalc_4S_2D>`
      - *psic* (You 1999 six-circle)
 
 See :ref:`geometries` for the full description of each geometry and its
@@ -56,25 +56,6 @@ The object ``psic`` is a fully-functional ``hklpy2`` diffractometer with
 simulated motor positioners for all six real axes
 (``mu``, ``delta``, ``nu``, ``eta``, ``chi``, ``phi``) and the three
 reciprocal-space pseudo axes (``h``, ``k``, ``l``).
-
-To connect real axes to EPICS motor PVs instead of simulators, supply them
-via the ``reals`` argument:
-
-.. code-block:: python
-
-   psic = hklpy2.creator(
-       solver="diffcalc",
-       geometry="diffcalc_4S_2D",
-       name="psic",
-       reals=dict(
-           mu="IOC:m1",
-           delta="IOC:m2",
-           nu="IOC:m3",
-           eta="IOC:m4",
-           chi="IOC:m5",
-           phi="IOC:m6",
-       ),
-   )
 
 Further use
 -----------

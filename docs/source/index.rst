@@ -24,7 +24,7 @@ framework via its entry-point interface.
 
    .. grid-item-card:: API Reference
 
-      `API Reference <api/index.html>`_
+      `API Reference <api/hklpy2_solvers/index.html>`_
 
    .. grid-item-card:: :ref:`geometries`
 

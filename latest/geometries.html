@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=efc02bb0"></script>
+    <script src="_static/documentation_options.js?v=fd130c66"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -490,8 +490,10 @@ the solver when it is instantiated by hklpy2.</p>
 <section id="operating-modes">
 <h3>Operating modes<a class="headerlink" href="#operating-modes" title="Link to this heading">#</a></h3>
 <p>The diffcalc solver selects three diffractometer constraints to fix for
-each operating mode.  The default constraint values (typically zero) can
-be overridden via the solver’s <code class="docutils literal notranslate"><span class="pre">extras</span></code> dictionary.</p>
+each operating mode.  This geometry has no extra parameters
+(<code class="docutils literal notranslate"><span class="pre">extras</span></code> is always <code class="docutils literal notranslate"><span class="pre">{}</span></code>).  The axes computed by <code class="docutils literal notranslate"><span class="pre">forward()</span></code>
+(<code class="docutils literal notranslate"><span class="pre">axes_w</span></code>) are all real axes not listed as fixed constraints; the
+remaining axes are held constant (<code class="docutils literal notranslate"><span class="pre">axes_c</span></code>, derived by hklpy2).</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <colgroup>
 <col style="width: 50.0%" />

@@ -37,8 +37,10 @@ Operating modes
 ~~~~~~~~~~~~~~~
 
 The diffcalc solver selects three diffractometer constraints to fix for
-each operating mode.  The default constraint values (typically zero) can
-be overridden via the solver's ``extras`` dictionary.
+each operating mode.  This geometry has no extra parameters
+(``extras`` is always ``{}``).  The axes computed by ``forward()``
+(``axes_w``) are all real axes not listed as fixed constraints; the
+remaining axes are held constant (``axes_c``, derived by hklpy2).
 
 .. list-table::
    :header-rows: 1

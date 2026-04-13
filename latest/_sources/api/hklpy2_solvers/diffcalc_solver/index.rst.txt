@@ -55,8 +55,12 @@ Module Contents
    diffractometer with axes ``mu, delta, nu, eta, chi, phi``.
 
    Operating modes correspond to specific three-constraint combinations
-   understood by diffcalc.  The default constraint *values* (typically
-   zero) can be changed via :attr:`extras`.
+   understood by diffcalc.
+
+   This geometry has no extra parameters (``extras`` is always ``{}``).
+   The :attr:`axes_w` property reports which real axes are computed by
+   :meth:`forward` in the current mode; the remaining real axes are held
+   constant (``axes_c``, derived by hklpy2's ``Core`` class).
 
 
    .. py:property:: UB
@@ -72,6 +76,18 @@ Module Contents
 
 
 
+   .. py:property:: axes_w
+      :type: list[str]
+
+
+      Real axis names computed by :meth:`forward` in the current mode.
+
+      These are the real axes *not* constrained to a fixed motor position
+      by the current mode.  hklpy2's ``Core`` class derives ``axes_c``
+      (constant axes) and ``axes_r`` (all real axes) from this list and
+      :attr:`real_axis_names`.
+
+
    .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.typing.Matrix3x3
 
       Calculate the UB matrix using two reflections (Busing & Levy).
@@ -82,14 +98,18 @@ Module Contents
       :type: list[str]
 
 
-      Extra parameter names for the current mode's adjustable constraints.
+      Extra parameter names beyond the real motor axes.
+
+      This geometry has no extra parameters; always returns ``[]``.
 
 
    .. py:property:: extras
       :type: dict[str, Any]
 
 
-      Current extra parameter values (adjustable constraint values).
+      Extra parameters beyond the real motor axes.
+
+      This geometry has no extra parameters; always returns ``{}``.
 
 
    .. py:method:: forward(pseudos: hklpy2.typing.NamedFloatDict) -> list[hklpy2.typing.NamedFloatDict]

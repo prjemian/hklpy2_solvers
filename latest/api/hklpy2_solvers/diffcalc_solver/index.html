@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=efc02bb0"></script>
+    <script src="../../../_static/documentation_options.js?v=fd130c66"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -518,8 +518,11 @@ can use diffcalc-core for forward / inverse calculations.</p>
 <p>The only geometry supported is the You (1999) 4S+2D six-circle
 diffractometer with axes <code class="docutils literal notranslate"><span class="pre">mu,</span> <span class="pre">delta,</span> <span class="pre">nu,</span> <span class="pre">eta,</span> <span class="pre">chi,</span> <span class="pre">phi</span></code>.</p>
 <p>Operating modes correspond to specific three-constraint combinations
-understood by diffcalc.  The default constraint <em>values</em> (typically
-zero) can be changed via <a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.extras" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.extras"><code class="xref py py-attr docutils literal notranslate"><span class="pre">extras</span></code></a>.</p>
+understood by diffcalc.</p>
+<p>This geometry has no extra parameters (<code class="docutils literal notranslate"><span class="pre">extras</span></code> is always <code class="docutils literal notranslate"><span class="pre">{}</span></code>).
+The <a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.axes_w" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.axes_w"><code class="xref py py-attr docutils literal notranslate"><span class="pre">axes_w</span></code></a> property reports which real axes are computed by
+<a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.forward" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> in the current mode; the remaining real axes are held
+constant (<code class="docutils literal notranslate"><span class="pre">axes_c</span></code>, derived by hklpy2’s <code class="docutils literal notranslate"><span class="pre">Core</span></code> class).</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.UB">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">UB</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">hklpy2.typing.Matrix3x3</span></span><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.UB" title="Link to this definition">#</a></dt>
@@ -532,6 +535,16 @@ zero) can be changed via <a class="reference internal" href="#hklpy2_solvers.dif
 <dd><p>Add coordinates of a diffraction condition (a reflection).</p>
 </dd></dl>
 
+<dl class="py property">
+<dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.axes_w">
+<span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">axes_w</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.axes_w" title="Link to this definition">#</a></dt>
+<dd><p>Real axis names computed by <a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.forward" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> in the current mode.</p>
+<p>These are the real axes <em>not</em> constrained to a fixed motor position
+by the current mode.  hklpy2’s <code class="docutils literal notranslate"><span class="pre">Core</span></code> class derives <code class="docutils literal notranslate"><span class="pre">axes_c</span></code>
+(constant axes) and <code class="docutils literal notranslate"><span class="pre">axes_r</span></code> (all real axes) from this list and
+<a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.real_axis_names" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.real_axis_names"><code class="xref py py-attr docutils literal notranslate"><span class="pre">real_axis_names</span></code></a>.</p>
+</dd></dl>
+
 <dl class="py method">
 <dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.calculate_UB">
 <span class="sig-name descname"><span class="pre">calculate_UB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.backends.typing.ReflectionDict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.backends.typing.ReflectionDict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">hklpy2.typing.Matrix3x3</span></span></span><a class="reference internal" href="../../../_modules/hklpy2_solvers/diffcalc_solver.html#DiffcalcSolver.calculate_UB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.calculate_UB" title="Link to this definition">#</a></dt>
@@ -541,13 +554,15 @@ zero) can be changed via <a class="reference internal" href="#hklpy2_solvers.dif
 <dl class="py property">
 <dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.extra_axis_names">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">extra_axis_names</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.extra_axis_names" title="Link to this definition">#</a></dt>
-<dd><p>Extra parameter names for the current mode’s adjustable constraints.</p>
+<dd><p>Extra parameter names beyond the real motor axes.</p>
+<p>This geometry has no extra parameters; always returns <code class="docutils literal notranslate"><span class="pre">[]</span></code>.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.extras">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">extras</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.extras" title="Link to this definition">#</a></dt>
-<dd><p>Current extra parameter values (adjustable constraint values).</p>
+<dd><p>Extra parameters beyond the real motor axes.</p>
+<p>This geometry has no extra parameters; always returns <code class="docutils literal notranslate"><span class="pre">{}</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -710,6 +725,7 @@ zero) can be changed via <a class="reference internal" href="#hklpy2_solvers.dif
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.UB"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver.UB</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.addReflection"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver.addReflection()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.axes_w"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver.axes_w</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.calculate_UB"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver.calculate_UB()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.extra_axis_names"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver.extra_axis_names</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.extras"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver.extras</span></code></a></li>

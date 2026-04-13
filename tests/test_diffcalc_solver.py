@@ -673,7 +673,6 @@ def test_refine_lattice_insufficient_reflections(parms, context):
         assert result is None
 
 
-
 @pytest.mark.parametrize(
     "parms, context",
     [

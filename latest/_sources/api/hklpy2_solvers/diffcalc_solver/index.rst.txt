@@ -1,0 +1,206 @@
+hklpy2_solvers.diffcalc_solver
+==============================
+
+.. py:module:: hklpy2_solvers.diffcalc_solver
+
+.. autoapi-nested-parse::
+
+   Solver adapter wrapping *diffcalc-core* for hklpy2.
+
+   Provides the :class:`DiffcalcSolver` class, which implements the
+   :class:`hklpy2.backends.base.SolverBase` interface on top of the
+   `diffcalc-core <https://github.com/DiamondLightSource/diffcalc-core>`_
+   library (You 1999, 4S+2D six-circle geometry).
+
+   .. autosummary::
+
+       ~DiffcalcSolver
+
+
+
+Attributes
+----------
+
+.. autoapisummary::
+
+   hklpy2_solvers.diffcalc_solver.ENERGY_REST_KEV
+   hklpy2_solvers.diffcalc_solver.GEOMETRY_NAME
+   hklpy2_solvers.diffcalc_solver.PSEUDO_AXES
+   hklpy2_solvers.diffcalc_solver.REAL_AXES
+
+
+Classes
+-------
+
+.. autoapisummary::
+
+   hklpy2_solvers.diffcalc_solver.DiffcalcSolver
+
+
+Module Contents
+---------------
+
+.. py:class:: DiffcalcSolver(geometry: str = GEOMETRY_NAME, **kwargs: Any)
+
+   Bases: :py:obj:`hklpy2.backends.base.SolverBase`
+
+
+   Solver adapter for diffcalc-core (You 1999, 4S+2D six-circle geometry).
+
+   Wraps :class:`diffcalc.hkl.calc.HklCalculation` behind the
+   :class:`~hklpy2.backends.base.SolverBase` interface so that hklpy2
+   can use diffcalc-core for forward / inverse calculations.
+
+   The only geometry supported is the You (1999) 4S+2D six-circle
+   diffractometer with axes ``mu, delta, nu, eta, chi, phi``.
+
+   Operating modes correspond to specific three-constraint combinations
+   understood by diffcalc.  The default constraint *values* (typically
+   zero) can be changed via :attr:`extras`.
+
+
+   .. py:property:: UB
+      :type: hklpy2.typing.Matrix3x3
+
+
+      Orientation matrix (3x3).
+
+
+   .. py:method:: addReflection(reflection: hklpy2.backends.typing.ReflectionDict) -> None
+
+      Add coordinates of a diffraction condition (a reflection).
+
+
+
+   .. py:method:: calculate_UB(r1: hklpy2.backends.typing.ReflectionDict, r2: hklpy2.backends.typing.ReflectionDict) -> hklpy2.typing.Matrix3x3
+
+      Calculate the UB matrix using two reflections (Busing & Levy).
+
+
+
+   .. py:property:: extra_axis_names
+      :type: list[str]
+
+
+      Extra parameter names for the current mode's adjustable constraints.
+
+
+   .. py:property:: extras
+      :type: dict[str, Any]
+
+
+      Current extra parameter values (adjustable constraint values).
+
+
+   .. py:method:: forward(pseudos: hklpy2.typing.NamedFloatDict) -> list[hklpy2.typing.NamedFloatDict]
+
+      Compute motor positions from pseudo-axis values (hkl -> angles).
+
+
+
+   .. py:method:: geometries() -> list[str]
+      :classmethod:
+
+
+      Ordered list of geometry names supported by this solver.
+
+
+
+   .. py:method:: inverse(reals: hklpy2.typing.NamedFloatDict) -> hklpy2.typing.NamedFloatDict
+
+      Compute pseudo-axis values from motor positions (angles -> hkl).
+
+
+
+   .. py:property:: lattice
+      :type: hklpy2.typing.NamedFloatDict
+
+
+      Crystal lattice parameters.
+
+
+   .. py:property:: mode
+      :type: str
+
+
+      Current operating mode.
+
+
+   .. py:property:: modes
+      :type: list[str]
+
+
+      List of operating modes for this geometry.
+
+
+   .. py:attribute:: name
+      :value: 'diffcalc'
+
+
+      Name of this Solver.
+
+
+   .. py:property:: pseudo_axis_names
+      :type: list[str]
+
+
+      Ordered list of pseudo axis names.
+
+
+   .. py:property:: real_axis_names
+      :type: list[str]
+
+
+      Ordered list of real axis names.
+
+
+   .. py:method:: refineLattice(reflections: list[hklpy2.backends.typing.ReflectionDict]) -> hklpy2.typing.NamedFloatDict | None
+
+      Refine lattice parameters from stored reflections.
+
+
+
+   .. py:method:: removeAllReflections() -> None
+
+      Remove all reflections.
+
+
+
+   .. py:attribute:: version
+      :value: '0.1.0'
+
+
+      Version of this Solver.
+
+
+   .. py:property:: wavelength
+      :type: float | None
+
+
+      Wavelength in Angstroms, for forward() and inverse().
+
+
+.. py:data:: ENERGY_REST_KEV
+   :value: 12.39842
+
+
+   Product of photon energy (keV) and wavelength (Angstrom).
+
+.. py:data:: GEOMETRY_NAME
+   :value: 'diffcalc_4S_2D'
+
+
+   Geometry name exposed to hklpy2.
+
+.. py:data:: PSEUDO_AXES
+   :value: ['h', 'k', 'l']
+
+
+   Ordered pseudo axis names.
+
+.. py:data:: REAL_AXES
+   :value: ['mu', 'delta', 'nu', 'eta', 'chi', 'phi']
+
+
+   Ordered real axis names (matching diffcalc Position.fields).
+

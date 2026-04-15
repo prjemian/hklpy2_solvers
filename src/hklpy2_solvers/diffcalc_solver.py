@@ -127,8 +127,11 @@ class DiffcalcSolver(SolverBase):
         super().__init__(geometry, **kwargs)
 
         # Apply default mode if none was set via kwargs.
+        # Use mu_chi_phi_fixed: a 3-sample mode with no reference-vector
+        # constraints, robust for most reflections.  See geometries.rst for
+        # why bisector modes are not suitable as a default.
         if not self.mode and self.modes:
-            self.mode = self.modes[0]
+            self.mode = "4S+2D mu_chi_phi_fixed"
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -404,6 +407,27 @@ class DiffcalcSolver(SolverBase):
         """Ordered list of real axis names."""
         return list(REAL_AXES)
 
+    def set_reals(self, reals: NamedFloatDict) -> None:
+        """Set current real-axis values (used by the presets feature).
+
+        Called by ``hklpy2.Core.forward()`` before :meth:`forward` to push
+        constant-axis values into the solver.  For diffcalc, constant axes are
+        encoded in the :class:`~diffcalc.hkl.constraints.Constraints` object
+        rather than in a geometry state, so this method only validates the
+        input and is otherwise a no-op.
+
+        .. note::
+            ``set_reals`` is not yet part of
+            :class:`~hklpy2.backends.base.SolverBase`; it was introduced via
+            the hklpy2 presets feature and is currently only defined on
+            ``HklSolver``.  Tracked upstream as
+            `bluesky/hklpy2#347 <https://github.com/bluesky/hklpy2/issues/347>`_.
+        """
+        if not isinstance(reals, dict):
+            raise TypeError(f"Must supply dict, received {reals!r}")
+        if not all(isinstance(v, (int, float)) for v in reals.values()):
+            raise TypeError(f"All values must be numbers.  Received: {reals!r}")
+
     def refineLattice(self, reflections: list[ReflectionDict]) -> NamedFloatDict | None:
         """Refine lattice parameters from stored reflections."""
         if len(self._reflections) < 3:
@@ -439,6 +463,23 @@ class DiffcalcSolver(SolverBase):
         if self._ubcalc.UB is not None:
             return self._ubcalc.UB.tolist()
         return [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+
+    @UB.setter
+    def UB(self, value: Matrix3x3) -> None:
+        """Restore the orientation matrix into diffcalc's UBCalculation.
+
+        Called by ``hklpy2.Core.update_solver()`` after ``sample`` is set, to
+        restore the previously computed UB so that :meth:`forward` and
+        :meth:`inverse` use the correct orientation.
+        """
+        if self._ubcalc.crystal is None:
+            # Need a lattice before set_ub will work; use the stored one.
+            if self._lattice:
+                self.lattice = self._lattice
+            else:
+                self._ubcalc.set_lattice("default", 1.0, 1.0, 1.0, 90.0, 90.0, 90.0)
+        self._ubcalc.set_ub(value)
+        self._rebuild_hklcalc()
 
     @property
     def wavelength(self) -> float | None:

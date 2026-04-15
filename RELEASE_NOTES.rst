@@ -31,8 +31,14 @@ describe future plans.
 Fixes
 ~~~~~
 
+* Fix ``forward()`` raising ``AttributeError: no attribute 'set_reals'``; add ``set_reals()`` and ``UB`` setter, change default mode to ``4S+2D mu_chi_phi_fixed``.  :issue:`29`
 * Fix ``calc_UB()`` raising ``SolverError: Lattice must be set``; override ``sample`` setter to push lattice into diffcalc.  :issue:`25`
 * Fix ``wh()`` raising ``SolverError: UB matrix has not been set`` before reflections are added.  :issue:`24`
+
+Maintenance
+~~~~~~~~~~~
+
+* Document mode naming convention, bisector mode analysis, and extensibility limits in ``geometries.rst``.  :issue:`29`
 
 0.1.6
 #####

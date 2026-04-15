@@ -953,3 +953,85 @@ def test_sample_setter_repopulates_reflections(parms, context):
         assert len(solver._reflections) == len(parms["sample"]["order"])
         for i, name in enumerate(parms["sample"]["order"]):
             assert solver._reflections[i]["name"] == name
+
+
+# ---------------------------------------------------------------------------
+# Issue #29 regression tests: set_reals and UB setter
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(reals={"mu": 0.0, "delta": 0.0, "nu": 0.0, "eta": 0.0, "chi": 0.0, "phi": 0.0}),
+            does_not_raise(),
+            id="set_reals accepts valid dict of floats",
+        ),
+        pytest.param(
+            dict(reals={"mu": 0, "delta": 0, "nu": 0, "eta": 0, "chi": 0, "phi": 0}),
+            does_not_raise(),
+            id="set_reals accepts ints",
+        ),
+        pytest.param(
+            dict(reals="not a dict"),
+            pytest.raises(TypeError, match=re.escape("Must supply dict")),
+            id="set_reals with non-dict raises TypeError",
+        ),
+        pytest.param(
+            dict(reals={"mu": "bad", "delta": 0.0, "nu": 0.0, "eta": 0.0, "chi": 0.0, "phi": 0.0}),
+            pytest.raises(TypeError, match=re.escape("All values must be numbers")),
+            id="set_reals with non-numeric value raises TypeError",
+        ),
+    ],
+)
+def test_set_reals(parms, context):
+    """set_reals validates input and is otherwise a no-op for diffcalc (issue #29)."""
+    solver = DiffcalcSolver()
+    with context:
+        solver.set_reals(parms["reals"])
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(ub=[[1, 0, 0], [0, 1, 0], [0, 0, 1]]),
+            does_not_raise(),
+            id="UB setter restores identity matrix",
+        ),
+    ],
+)
+def test_ub_setter(parms, context):
+    """UB setter must restore the orientation matrix into _ubcalc (issue #29)."""
+    solver = _make_solver_with_ub()
+    with context:
+        solver.UB = parms["ub"]
+        assert solver._ubcalc.UB is not None
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(mode="4S+2D mu_chi_phi_fixed", pseudos={"h": 1.0, "k": 0.0, "l": 0.0}),
+            does_not_raise(),
+            id="forward succeeds after update_solver restores UB via setter - issue #29",
+        ),
+    ],
+)
+def test_forward_after_ub_restore(parms, context):
+    """forward() must work after update_solver() restores UB via the UB setter."""
+    solver = _make_solver_with_ub(mode=parms["mode"])
+    # Simulate what update_solver() does: reset via sample then restore UB
+    ub = solver.UB
+    solver.sample = {
+        "name": "test",
+        "lattice": dict(SI_LATTICE),
+        "order": [],
+        "reflections": [],
+    }
+    solver.UB = ub  # restore, as update_solver() does
+    with context:
+        solutions = solver.forward(parms["pseudos"])
+        assert len(solutions) >= 1

@@ -31,12 +31,8 @@ describe future plans.
 Fixes
 ~~~~~
 
-* Fix ``calc_UB()`` raising ``SolverError: Lattice must be set`` even when
-  the sample has a lattice; override ``sample`` setter to push lattice and
-  reflections into diffcalc immediately.  :issue:`25`
-* Fix ``wh()`` raising ``SolverError: UB matrix has not been set`` before
-  any reflections are added; auto-init a default UB for ``inverse()``.
-  :issue:`24`
+* Fix ``calc_UB()`` raising ``SolverError: Lattice must be set``; override ``sample`` setter to push lattice into diffcalc.  :issue:`25`
+* Fix ``wh()`` raising ``SolverError: UB matrix has not been set`` before reflections are added.  :issue:`24`
 
 0.1.6
 #####

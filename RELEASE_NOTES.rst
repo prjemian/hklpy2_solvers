@@ -31,10 +31,8 @@ describe future plans.
 Fixes
 ~~~~~
 
-* Fix ``wh()`` (and ``inverse()``) failing with ``SolverError: UB matrix has
-  not been set`` immediately after diffractometer creation.  A default identity
-  UB is now initialised automatically for the ``inverse`` path; ``forward``
-  still requires an explicit orientation.  :issue:`24`
+* Fix ``calc_UB()`` raising ``SolverError: Lattice must be set``; override ``sample`` setter to push lattice into diffcalc.  :issue:`25`
+* Fix ``wh()`` raising ``SolverError: UB matrix has not been set`` before reflections are added.  :issue:`24`
 
 0.1.6
 #####

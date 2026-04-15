@@ -334,6 +334,43 @@ class DiffcalcSolver(SolverBase):
 
         self._ubcalc.set_lattice("sample", a, b, c, alpha, beta, gamma)
 
+    @SolverBase.sample.setter
+    def sample(self, value: dict) -> None:
+        """Set the crystalline sample, pushing lattice and reflections into diffcalc.
+
+        Overrides :class:`~hklpy2.backends.base.SolverBase` to mirror the
+        pattern used by ``HklSolver``: after storing the dict, the lattice is
+        immediately pushed into :attr:`_ubcalc` and all reflections are
+        re-added in ``order`` sequence.  This ensures that
+        :meth:`calculate_UB` can find a crystal when called by
+        ``hklpy2.Core.calc_UB()`` (fixes :issue:`25`).
+        """
+        if not isinstance(value, dict):
+            raise TypeError(f"Must supply dictionary, received {value!r}")
+        self._sample = value
+
+        # Push lattice into diffcalc immediately (mirrors HklSolver behaviour).
+        if "lattice" in value:
+            self.lattice = value["lattice"]
+
+        # Re-populate diffcalc's reflection list in the declared order so that
+        # calc_ub() uses the correct pair.
+        # reflections may be a list or a dict keyed by name.
+        raw = value.get("reflections", [])
+        if isinstance(raw, dict):
+            refl_by_name: dict = raw
+        else:
+            refl_by_name = {r["name"]: r for r in raw}
+
+        self._reflections.clear()
+        self._ubcalc = UBCalculation("default")
+        if self._lattice:
+            # Re-apply lattice after UBCalculation reset.
+            self.lattice = self._lattice
+        for name in value.get("order", []):
+            if name in refl_by_name:
+                self.addReflection(refl_by_name[name])
+
     @property
     def mode(self) -> str:
         """Current operating mode."""

@@ -130,6 +130,10 @@ Module Contents
 
       Compute pseudo-axis values from motor positions (angles -> hkl).
 
+      Works immediately after diffractometer creation even before any
+      reflections have been added: a default identity UB is used in that
+      case, and the all-zeros motor position maps to ``(h=0, k=0, l=0)``.
+
 
 
    .. py:property:: lattice

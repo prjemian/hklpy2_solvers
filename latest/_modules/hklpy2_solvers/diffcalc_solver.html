@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=6e0256f3"></script>
+    <script src="../../_static/documentation_options.js?v=04b61f30"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -587,8 +587,41 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build a reals dict from a diffcalc ``Position``.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">pos</span><span class="o">.</span><span class="n">asdict</span>
 
+    <span class="k">def</span><span class="w"> </span><span class="nf">_init_default_ub</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialise a default identity UB with a unit cubic lattice.</span>
+
+<span class="sd">        Called automatically by :meth:`_ensure_ready_inverse` so that</span>
+<span class="sd">        :meth:`inverse` (and therefore ``wh()``) works immediately after</span>
+<span class="sd">        creating the diffractometer, before any reflections or explicit</span>
+<span class="sd">        orientation have been supplied.  The resulting UB is a scaled</span>
+<span class="sd">        identity matrix (B-matrix of a 1 Å cubic lattice with U=I).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">crystal</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">set_lattice</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">set_u</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_hklcalc</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_ready_inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ensure the solver is ready for :meth:`inverse` (angles -&gt; hkl).</span>
+
+<span class="sd">        If no UB matrix has been set yet, a default identity UB is</span>
+<span class="sd">        initialised automatically so that ``wh()`` works immediately after</span>
+<span class="sd">        diffractometer creation without requiring the user to add</span>
+<span class="sd">        reflections first.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">UB</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_init_default_ub</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hklcalc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_hklcalc</span><span class="p">()</span>
+
     <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise if the solver is not ready for forward/inverse.&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise if the solver is not ready for forward (hkl -&gt; angles).</span>
+
+<span class="sd">        Unlike :meth:`_ensure_ready_inverse`, this method requires an</span>
+<span class="sd">        explicit UB matrix (i.e. the user must have added reflections and</span>
+<span class="sd">        called ``calculate_UB()``), because computing motor positions from</span>
+<span class="sd">        hkl without a proper crystal orientation is meaningless.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">UB</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="s2">&quot;UB matrix has not been set. Add reflections and call calculate_UB().&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -705,14 +738,24 @@
 <div class="viewcode-block" id="DiffcalcSolver.inverse">
 <a class="viewcode-back" href="../../api/hklpy2_solvers/diffcalc_solver/index.html#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.inverse">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">inverse</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reals</span><span class="p">:</span> <span class="n">NamedFloatDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">NamedFloatDict</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute pseudo-axis values from motor positions (angles -&gt; hkl).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compute pseudo-axis values from motor positions (angles -&gt; hkl).</span>
+
+<span class="sd">        Works immediately after diffractometer creation even before any</span>
+<span class="sd">        reflections have been added: a default identity UB is used in that</span>
+<span class="sd">        case, and the all-zeros motor position maps to ``(h=0, k=0, l=0)``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reals</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply dict, received </span><span class="si">{</span><span class="n">reals</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_ready</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ensure_ready_inverse</span><span class="p">()</span>
+
+        <span class="c1"># hklpy2 calls update_solver(wavelength=...) before inverse(), so</span>
+        <span class="c1"># self._wavelength should already be set.  Fall back to 1.0 Å only</span>
+        <span class="c1"># if it is still None (e.g. in unit-test scenarios).</span>
+        <span class="n">wavelength</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mf">1.0</span>
 
         <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_from_reals</span><span class="p">(</span><span class="n">reals</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hklcalc</span><span class="o">.</span><span class="n">get_hkl</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span><span class="p">)</span>  <span class="c1"># noqa: E741</span>
+            <span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hklcalc</span><span class="o">.</span><span class="n">get_hkl</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">)</span>  <span class="c1"># noqa: E741</span>
         <span class="k">except</span> <span class="n">DiffcalcException</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 

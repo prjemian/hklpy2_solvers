@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=6e0256f3"></script>
+    <script src="../../../_static/documentation_options.js?v=04b61f30"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -581,6 +581,9 @@ by the current mode.  hklpy2’s <code class="docutils literal notranslate"><spa
 <dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.inverse">
 <span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.typing.NamedFloatDict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">hklpy2.typing.NamedFloatDict</span></span></span><a class="reference internal" href="../../../_modules/hklpy2_solvers/diffcalc_solver.html#DiffcalcSolver.inverse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.inverse" title="Link to this definition">#</a></dt>
 <dd><p>Compute pseudo-axis values from motor positions (angles -&gt; hkl).</p>
+<p>Works immediately after diffractometer creation even before any
+reflections have been added: a default identity UB is used in that
+case, and the all-zeros motor position maps to <code class="docutils literal notranslate"><span class="pre">(h=0,</span> <span class="pre">k=0,</span> <span class="pre">l=0)</span></code>.</p>
 </dd></dl>
 
 <dl class="py property">

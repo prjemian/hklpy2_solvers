@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=04b61f30"></script>
+    <script src="_static/documentation_options.js?v=e9752841"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -456,10 +456,8 @@ describe future plans.</p>
 <section id="fixes">
 <h3>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">#</a></h3>
 <ul class="simple">
-<li><p>Fix <code class="docutils literal notranslate"><span class="pre">wh()</span></code> (and <code class="docutils literal notranslate"><span class="pre">inverse()</span></code>) failing with <code class="docutils literal notranslate"><span class="pre">SolverError:</span> <span class="pre">UB</span> <span class="pre">matrix</span> <span class="pre">has</span>
-<span class="pre">not</span> <span class="pre">been</span> <span class="pre">set</span></code> immediately after diffractometer creation.  A default identity
-UB is now initialised automatically for the <code class="docutils literal notranslate"><span class="pre">inverse</span></code> path; <code class="docutils literal notranslate"><span class="pre">forward</span></code>
-still requires an explicit orientation.  <span class="issue">24</span></p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">calc_UB()</span></code> raising <code class="docutils literal notranslate"><span class="pre">SolverError:</span> <span class="pre">Lattice</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">set</span></code>; override <code class="docutils literal notranslate"><span class="pre">sample</span></code> setter to push lattice into diffcalc.  <span class="issue">25</span></p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">wh()</span></code> raising <code class="docutils literal notranslate"><span class="pre">SolverError:</span> <span class="pre">UB</span> <span class="pre">matrix</span> <span class="pre">has</span> <span class="pre">not</span> <span class="pre">been</span> <span class="pre">set</span></code> before reflections are added.  <span class="issue">24</span></p></li>
 </ul>
 </section>
 </section>

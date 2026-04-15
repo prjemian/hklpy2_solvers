@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=04b61f30"></script>
+    <script src="../../_static/documentation_options.js?v=e9752841"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -782,6 +782,43 @@
         <span class="n">gamma</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;gamma&quot;</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">set_lattice</span><span class="p">(</span><span class="s2">&quot;sample&quot;</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span><span class="p">)</span>
+
+    <span class="nd">@SolverBase</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the crystalline sample, pushing lattice and reflections into diffcalc.</span>
+
+<span class="sd">        Overrides :class:`~hklpy2.backends.base.SolverBase` to mirror the</span>
+<span class="sd">        pattern used by ``HklSolver``: after storing the dict, the lattice is</span>
+<span class="sd">        immediately pushed into :attr:`_ubcalc` and all reflections are</span>
+<span class="sd">        re-added in ``order`` sequence.  This ensures that</span>
+<span class="sd">        :meth:`calculate_UB` can find a crystal when called by</span>
+<span class="sd">        ``hklpy2.Core.calc_UB()`` (fixes :issue:`25`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply dictionary, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="c1"># Push lattice into diffcalc immediately (mirrors HklSolver behaviour).</span>
+        <span class="k">if</span> <span class="s2">&quot;lattice&quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;lattice&quot;</span><span class="p">]</span>
+
+        <span class="c1"># Re-populate diffcalc&#39;s reflection list in the declared order so that</span>
+        <span class="c1"># calc_ub() uses the correct pair.</span>
+        <span class="c1"># reflections may be a list or a dict keyed by name.</span>
+        <span class="n">raw</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;reflections&quot;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">refl_by_name</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">raw</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">refl_by_name</span> <span class="o">=</span> <span class="p">{</span><span class="n">r</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]:</span> <span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">raw</span><span class="p">}</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span> <span class="o">=</span> <span class="n">UBCalculation</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">:</span>
+            <span class="c1"># Re-apply lattice after UBCalculation reset.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">refl_by_name</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">addReflection</span><span class="p">(</span><span class="n">refl_by_name</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">mode</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

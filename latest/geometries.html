@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=e9752841"></script>
+    <script src="_static/documentation_options.js?v=04e3ef2f"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -494,89 +494,54 @@ each operating mode.  This geometry has no extra parameters
 (<code class="docutils literal notranslate"><span class="pre">extras</span></code> is always <code class="docutils literal notranslate"><span class="pre">{}</span></code>).  The axes computed by <code class="docutils literal notranslate"><span class="pre">forward()</span></code>
 (<code class="docutils literal notranslate"><span class="pre">axes_w</span></code>) are all real axes not listed as fixed constraints; the
 remaining axes are held constant (<code class="docutils literal notranslate"><span class="pre">axes_c</span></code>, derived by hklpy2).</p>
-<div class="pst-scrollable-table-container"><table class="table">
-<colgroup>
-<col style="width: 50.0%" />
-<col style="width: 50.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Mode name</p></th>
-<th class="head"><p>Fixed constraints</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_fixed</span> <span class="pre">a_eq_b</span> <span class="pre">delta_fixed</span></code></p></td>
-<td><p>delta=0, a_eq_b, mu=0</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_fixed</span> <span class="pre">a_eq_b</span> <span class="pre">nu_fixed</span></code></p></td>
-<td><p>nu=0, a_eq_b, mu=0</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_fixed</span> <span class="pre">a_eq_b</span> <span class="pre">delta_fixed</span></code></p></td>
-<td><p>delta=0, a_eq_b, eta=0</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">phi_fixed</span> <span class="pre">psi_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
-<td><p>nu=0, psi=0, phi=0</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">chi_phi_fixed</span> <span class="pre">delta_fixed</span></code></p></td>
-<td><p>delta=0, chi=0, phi=0</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_eta_fixed</span> <span class="pre">delta_fixed</span></code></p></td>
-<td><p>delta=0, mu=0, eta=0</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_phi_fixed</span> <span class="pre">delta_fixed</span></code></p></td>
-<td><p>delta=0, mu=0, phi=0</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_chi_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
-<td><p>nu=0, mu=0, chi=0</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_phi_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
-<td><p>nu=0, eta=0, phi=0</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_chi_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
-<td><p>nu=0, eta=0, chi=0</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_mu_fixed</span> <span class="pre">delta_fixed</span></code></p></td>
-<td><p>delta=0, bisect, mu=0</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_eta_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
-<td><p>nu=0, bisect, eta=0</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_omega_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
-<td><p>nu=0, bisect, omega=0</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">chi_phi_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
-<td><p>a_eq_b, chi=0, phi=0</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">chi_eta_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
-<td><p>a_eq_b, chi=0, eta=0</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">chi_mu_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
-<td><p>a_eq_b, chi=0, mu=0</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_eta_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
-<td><p>a_eq_b, mu=0, eta=0</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_phi_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
-<td><p>a_eq_b, mu=0, phi=0</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_phi_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
-<td><p>a_eq_b, eta=0, phi=0</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_chi_phi_fixed</span></code></p></td>
-<td><p>eta=0, chi=0, phi=0</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_chi_phi_fixed</span></code></p></td>
-<td><p>mu=0, chi=0, phi=0</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_eta_phi_fixed</span></code></p></td>
-<td><p>mu=0, eta=0, phi=0</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_eta_chi_fixed</span></code></p></td>
-<td><p>mu=0, eta=0, chi=0</p></td>
-</tr>
-</tbody>
-</table>
+</section>
+<section id="default-mode">
+<h3>Default mode<a class="headerlink" href="#default-mode" title="Link to this heading">#</a></h3>
+<p>The default mode is <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_chi_phi_fixed</span></code> (mu=0, chi=0, phi=0).  This is
+a 3-sample mode with no reference-vector constraints, making it robust for the
+widest range of reflections.  It is equivalent to a basic 4-circle geometry
+operating in the vertical scattering plane.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Why not a bisector mode?</strong></p>
+<p>Following You (1999) Figure 1 (see also
+<a class="reference external" href="https://diffcalc-core.readthedocs.io">diffcalc-core docs</a>),
+<code class="docutils literal notranslate"><span class="pre">nu</span></code> rotates about the vertical axis and swings the detector
+<strong>horizontally</strong>; <code class="docutils literal notranslate"><span class="pre">delta</span></code> rotates about the horizontal axis and swings
+the detector <strong>vertically</strong>.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">bissector_vertical</span></code> equivalent (E6C terminology) would require
+<code class="docutils literal notranslate"><span class="pre">bisect=True</span></code> + <code class="docutils literal notranslate"><span class="pre">mu=0</span></code> + <code class="docutils literal notranslate"><span class="pre">nu=0</span></code>, but that combination is not among
+diffcalc’s available modes.  A <code class="docutils literal notranslate"><span class="pre">bissector_horizontal</span></code> equivalent would
+require a <code class="docutils literal notranslate"><span class="pre">mu</span> <span class="pre">=</span> <span class="pre">nu/2</span></code> bisector condition; diffcalc’s <code class="docutils literal notranslate"><span class="pre">bisect</span></code> constraint
+implements only <code class="docutils literal notranslate"><span class="pre">eta</span> <span class="pre">=</span> <span class="pre">delta/2</span></code> (vertical bisector), so that is also
+unavailable.</p>
 </div>
+</section>
+<section id="mode-naming-convention">
+<h3>Mode naming convention<a class="headerlink" href="#mode-naming-convention" title="Link to this heading">#</a></h3>
+<p>All mode names follow the pattern <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">&lt;constraints&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">4S+2D</span></code>
+identifies the You (1999) geometry and the suffix encodes the three fixed
+constraints:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">&lt;axis&gt;_fixed</span></code> or <code class="docutils literal notranslate"><span class="pre">&lt;ax1&gt;_&lt;ax2&gt;_fixed</span></code> — motor axis (or axes) fixed at
+zero.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">a_eq_b</span></code> — reference-vector constraint: azimuthal reference equals
+scattering vector direction.  <strong>Caution:</strong> singular when the scattering
+vector is parallel to the reference vector; avoid as a default.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bisect</span></code> — bisector condition: <code class="docutils literal notranslate"><span class="pre">eta</span> <span class="pre">=</span> <span class="pre">delta/2</span></code>.  Implements the vertical
+bisector only; no horizontal bisector equivalent exists in diffcalc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">psi_fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">omega_fixed</span></code> — azimuthal or omega angle fixed at zero.</p></li>
+</ul>
+</section>
+<section id="extensibility">
+<h3>Extensibility<a class="headerlink" href="#extensibility" title="Link to this heading">#</a></h3>
+<p>The available constraint names are fixed by diffcalc-core and cannot be
+changed without modifying that library.  Each constraint name has specific
+mathematical implementation inside diffcalc-core’s solver — the name is merely
+a handle for the underlying algebra that reduces the degrees of freedom during
+position calculation.  A new constraint (e.g. <code class="docutils literal notranslate"><span class="pre">mu</span> <span class="pre">=</span> <span class="pre">nu/2</span></code>) would require
+new code in diffcalc-core, not just a new entry in <code class="docutils literal notranslate"><span class="pre">_MODES</span></code>.  From the
+user’s perspective the mode list is not extensible.</p>
 </section>
 </section>
 </section>
@@ -630,6 +595,9 @@ remaining axes are held constant (<code class="docutils literal notranslate"><sp
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diffcalc-solver">diffcalc solver</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#operating-modes">Operating modes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#default-mode">Default mode</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mode-naming-convention">Mode naming convention</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extensibility">Extensibility</a></li>
 </ul>
 </li>
 </ul>

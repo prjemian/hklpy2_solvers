@@ -190,6 +190,25 @@ Module Contents
 
 
 
+   .. py:method:: set_reals(reals: hklpy2.typing.NamedFloatDict) -> None
+
+      Set current real-axis values (used by the presets feature).
+
+      Called by ``hklpy2.Core.forward()`` before :meth:`forward` to push
+      constant-axis values into the solver.  For diffcalc, constant axes are
+      encoded in the :class:`~diffcalc.hkl.constraints.Constraints` object
+      rather than in a geometry state, so this method only validates the
+      input and is otherwise a no-op.
+
+      .. note::
+          ``set_reals`` is not yet part of
+          :class:`~hklpy2.backends.base.SolverBase`; it was introduced via
+          the hklpy2 presets feature and is currently only defined on
+          ``HklSolver``.  Tracked upstream as
+          `bluesky/hklpy2#347 <https://github.com/bluesky/hklpy2/issues/347>`_.
+
+
+
    .. py:attribute:: version
       :value: '0.1.0'
 

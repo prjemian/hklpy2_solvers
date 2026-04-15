@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=e9752841"></script>
+    <script src="../../../_static/documentation_options.js?v=04e3ef2f"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -634,6 +634,25 @@ case, and the all-zeros motor position maps to <code class="docutils literal not
 <dd><p>Remove all reflections.</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.set_reals">
+<span class="sig-name descname"><span class="pre">set_reals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.typing.NamedFloatDict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2_solvers/diffcalc_solver.html#DiffcalcSolver.set_reals"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.set_reals" title="Link to this definition">#</a></dt>
+<dd><p>Set current real-axis values (used by the presets feature).</p>
+<p>Called by <code class="docutils literal notranslate"><span class="pre">hklpy2.Core.forward()</span></code> before <a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.forward" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> to push
+constant-axis values into the solver.  For diffcalc, constant axes are
+encoded in the <code class="xref py py-class docutils literal notranslate"><span class="pre">Constraints</span></code> object
+rather than in a geometry state, so this method only validates the
+input and is otherwise a no-op.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">set_reals</span></code> is not yet part of
+<code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code>; it was introduced via
+the hklpy2 presets feature and is currently only defined on
+<code class="docutils literal notranslate"><span class="pre">HklSolver</span></code>.  Tracked upstream as
+<a class="reference external" href="https://github.com/bluesky/hklpy2/issues/347">bluesky/hklpy2#347</a>.</p>
+</div>
+</dd></dl>
+
 <dl class="py attribute">
 <dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.version">
 <span class="sig-name descname"><span class="pre">version</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0.1.0'</span></span><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.version" title="Link to this definition">#</a></dt>
@@ -743,6 +762,7 @@ case, and the all-zeros motor position maps to <code class="docutils literal not
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.real_axis_names"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver.real_axis_names</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.refineLattice"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver.refineLattice()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.removeAllReflections"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver.removeAllReflections()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.set_reals"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver.set_reals()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.version"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver.version</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.wavelength"><code class="docutils literal notranslate"><span class="pre">DiffcalcSolver.wavelength</span></code></a></li>
 </ul>

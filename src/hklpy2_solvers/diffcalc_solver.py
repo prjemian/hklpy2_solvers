@@ -153,8 +153,41 @@ class DiffcalcSolver(SolverBase):
         """Build a reals dict from a diffcalc ``Position``."""
         return pos.asdict
 
+    def _init_default_ub(self) -> None:
+        """Initialise a default identity UB with a unit cubic lattice.
+
+        Called automatically by :meth:`_ensure_ready_inverse` so that
+        :meth:`inverse` (and therefore ``wh()``) works immediately after
+        creating the diffractometer, before any reflections or explicit
+        orientation have been supplied.  The resulting UB is a scaled
+        identity matrix (B-matrix of a 1 Å cubic lattice with U=I).
+        """
+        if self._ubcalc.crystal is None:
+            self._ubcalc.set_lattice("default", 1.0, 1.0, 1.0, 90.0, 90.0, 90.0)
+        self._ubcalc.set_u([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+        self._rebuild_hklcalc()
+
+    def _ensure_ready_inverse(self) -> None:
+        """Ensure the solver is ready for :meth:`inverse` (angles -> hkl).
+
+        If no UB matrix has been set yet, a default identity UB is
+        initialised automatically so that ``wh()`` works immediately after
+        diffractometer creation without requiring the user to add
+        reflections first.
+        """
+        if self._ubcalc.UB is None:
+            self._init_default_ub()
+        if self._hklcalc is None:
+            self._rebuild_hklcalc()
+
     def _ensure_ready(self) -> None:
-        """Raise if the solver is not ready for forward/inverse."""
+        """Raise if the solver is not ready for forward (hkl -> angles).
+
+        Unlike :meth:`_ensure_ready_inverse`, this method requires an
+        explicit UB matrix (i.e. the user must have added reflections and
+        called ``calculate_UB()``), because computing motor positions from
+        hkl without a proper crystal orientation is meaningless.
+        """
         if self._ubcalc.UB is None:
             raise SolverError("UB matrix has not been set. Add reflections and call calculate_UB().")
         if self._wavelength is None:
@@ -257,14 +290,24 @@ class DiffcalcSolver(SolverBase):
         return [GEOMETRY_NAME]
 
     def inverse(self, reals: NamedFloatDict) -> NamedFloatDict:
-        """Compute pseudo-axis values from motor positions (angles -> hkl)."""
+        """Compute pseudo-axis values from motor positions (angles -> hkl).
+
+        Works immediately after diffractometer creation even before any
+        reflections have been added: a default identity UB is used in that
+        case, and the all-zeros motor position maps to ``(h=0, k=0, l=0)``.
+        """
         if not isinstance(reals, dict):
             raise TypeError(f"Must supply dict, received {reals!r}")
-        self._ensure_ready()
+        self._ensure_ready_inverse()
+
+        # hklpy2 calls update_solver(wavelength=...) before inverse(), so
+        # self._wavelength should already be set.  Fall back to 1.0 Å only
+        # if it is still None (e.g. in unit-test scenarios).
+        wavelength = self._wavelength if self._wavelength is not None else 1.0
 
         pos = self._position_from_reals(reals)
         try:
-            h, k, l = self._hklcalc.get_hkl(pos, self._wavelength)  # noqa: E741
+            h, k, l = self._hklcalc.get_hkl(pos, wavelength)  # noqa: E741
         except DiffcalcException as exc:
             raise SolverError(str(exc)) from exc
 

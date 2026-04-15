@@ -23,6 +23,19 @@ Brief notes describing each release and what's new.
 Project `milestones <https://github.com/prjemian/hklpy2_solvers/milestones>`_
 describe future plans.
 
+0.1.7
+#####
+
+.. comment -- development version, not yet released
+
+Fixes
+~~~~~
+
+* Fix ``wh()`` (and ``inverse()``) failing with ``SolverError: UB matrix has
+  not been set`` immediately after diffractometer creation.  A default identity
+  UB is now initialised automatically for the ``inverse`` path; ``forward``
+  still requires an explicit orientation.  :issue:`24`
+
 0.1.6
 #####
 

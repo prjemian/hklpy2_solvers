@@ -758,3 +758,62 @@ def test_mode_set_empty(parms, context):
         solver.mode = parms["mode"]
         assert solver.mode == ""
         assert solver.extras == {}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                reals={"mu": 0, "delta": 0, "nu": 0, "eta": 0, "chi": 0, "phi": 0},
+                wavelength=1.0,
+                expected={"h": 0.0, "k": 0.0, "l": 0.0},
+            ),
+            does_not_raise(),
+            id="inverse at all-zeros without any UB returns (0,0,0) - issue #24",
+        ),
+        pytest.param(
+            dict(
+                reals={"mu": 0, "delta": 0, "nu": 0, "eta": 0, "chi": 0, "phi": 0},
+                wavelength=None,
+                expected={"h": 0.0, "k": 0.0, "l": 0.0},
+            ),
+            does_not_raise(),
+            id="inverse at all-zeros without UB or wavelength returns (0,0,0)",
+        ),
+    ],
+)
+def test_inverse_without_ub(parms, context):
+    """inverse() must work before any UB is set (issue #24 regression test)."""
+    solver = DiffcalcSolver()
+    if parms["wavelength"] is not None:
+        solver.wavelength = parms["wavelength"]
+    with context:
+        result = solver.inverse(parms["reals"])
+        for axis in ("h", "k", "l"):
+            assert abs(result[axis] - parms["expected"][axis]) < 1e-9, (
+                f"axis {axis}: expected {parms['expected'][axis]}, got {result[axis]}"
+            )
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                reals={"mu": 0, "delta": 0, "nu": 0, "eta": 0, "chi": 0, "phi": 0},
+            ),
+            does_not_raise(),
+            id="second inverse call reuses default UB without re-init",
+        ),
+    ],
+)
+def test_inverse_default_ub_idempotent(parms, context):
+    """Calling inverse() repeatedly without a UB must not raise or re-init UB."""
+    solver = DiffcalcSolver()
+    solver.wavelength = 1.0
+    with context:
+        r1 = solver.inverse(parms["reals"])
+        r2 = solver.inverse(parms["reals"])
+        for axis in ("h", "k", "l"):
+            assert r1[axis] == r2[axis]

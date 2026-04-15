@@ -817,3 +817,139 @@ def test_inverse_default_ub_idempotent(parms, context):
         r2 = solver.inverse(parms["reals"])
         for axis in ("h", "k", "l"):
             assert r1[axis] == r2[axis]
+
+
+# ---------------------------------------------------------------------------
+# Issue #25 regression tests: sample setter pushes lattice into diffcalc
+# ---------------------------------------------------------------------------
+
+# A minimal SampleDict as produced by hklpy2 Core.to_solver_units()
+_SAMPLE_DICT_LIST_REFLECTIONS = {
+    "name": "vibranium",
+    "lattice": {
+        "a": SI_A,
+        "b": SI_A,
+        "c": SI_A,
+        "alpha": 90.0,
+        "beta": 90.0,
+        "gamma": 90.0,
+        "angle_units": "degrees",
+        "length_units": "angstrom",
+    },
+    "order": ["r1", "r2"],
+    "reflections": [
+        {
+            "name": "r1",
+            "pseudos": {"h": 1.0, "k": 0.0, "l": 0.0},
+            "reals": {"mu": 0, "delta": TTH_100, "nu": 0, "eta": THETA_100, "chi": 0, "phi": 0},
+            "wavelength": WAVELENGTH,
+        },
+        {
+            "name": "r2",
+            "pseudos": {"h": 0.0, "k": 1.0, "l": 0.0},
+            "reals": {"mu": 0, "delta": TTH_100, "nu": 0, "eta": THETA_100, "chi": 0, "phi": 90},
+            "wavelength": WAVELENGTH,
+        },
+    ],
+}
+
+_SAMPLE_DICT_DICT_REFLECTIONS = {
+    "name": "vibranium",
+    "lattice": {
+        "a": SI_A,
+        "b": SI_A,
+        "c": SI_A,
+        "alpha": 90.0,
+        "beta": 90.0,
+        "gamma": 90.0,
+    },
+    "order": ["r1", "r2"],
+    "reflections": {
+        "r1": {
+            "name": "r1",
+            "pseudos": {"h": 1.0, "k": 0.0, "l": 0.0},
+            "reals": {"mu": 0, "delta": TTH_100, "nu": 0, "eta": THETA_100, "chi": 0, "phi": 0},
+            "wavelength": WAVELENGTH,
+        },
+        "r2": {
+            "name": "r2",
+            "pseudos": {"h": 0.0, "k": 1.0, "l": 0.0},
+            "reals": {"mu": 0, "delta": TTH_100, "nu": 0, "eta": THETA_100, "chi": 0, "phi": 90},
+            "wavelength": WAVELENGTH,
+        },
+    },
+}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(sample=_SAMPLE_DICT_LIST_REFLECTIONS),
+            does_not_raise(),
+            id="sample setter with list reflections pushes lattice - issue #25",
+        ),
+        pytest.param(
+            dict(sample=_SAMPLE_DICT_DICT_REFLECTIONS),
+            does_not_raise(),
+            id="sample setter with dict reflections pushes lattice",
+        ),
+        pytest.param(
+            dict(sample="not a dict"),
+            pytest.raises(TypeError, match=re.escape("Must supply dictionary")),
+            id="sample setter with non-dict raises TypeError",
+        ),
+    ],
+)
+def test_sample_setter_pushes_lattice(parms, context):
+    """sample setter must push the lattice into _ubcalc (issue #25 regression)."""
+    solver = DiffcalcSolver()
+    with context:
+        solver.sample = parms["sample"]
+        # Lattice must now be in _ubcalc (crystal is not None)
+        assert solver._ubcalc.crystal is not None
+        # The solver's lattice dict must match
+        assert abs(solver.lattice["a"] - SI_A) < 1e-9
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(sample=_SAMPLE_DICT_LIST_REFLECTIONS),
+            does_not_raise(),
+            id="calculate_UB succeeds after sample setter - issue #25",
+        ),
+    ],
+)
+def test_calculate_ub_after_sample_setter(parms, context):
+    """calculate_UB must succeed when lattice arrives via sample setter (issue #25)."""
+    solver = DiffcalcSolver()
+    solver.wavelength = WAVELENGTH
+    with context:
+        solver.sample = parms["sample"]
+        r1 = parms["sample"]["reflections"][0]
+        r2 = parms["sample"]["reflections"][1]
+        ub = solver.calculate_UB(r1, r2)
+        assert len(ub) == 3
+        assert all(len(row) == 3 for row in ub)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(sample=_SAMPLE_DICT_LIST_REFLECTIONS),
+            does_not_raise(),
+            id="sample setter re-adds reflections in order",
+        ),
+    ],
+)
+def test_sample_setter_repopulates_reflections(parms, context):
+    """sample setter must re-add reflections so _reflections is populated."""
+    solver = DiffcalcSolver()
+    with context:
+        solver.sample = parms["sample"]
+        assert len(solver._reflections) == len(parms["sample"]["order"])
+        for i, name in enumerate(parms["sample"]["order"]):
+            assert solver._reflections[i]["name"] == name

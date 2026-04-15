@@ -31,15 +31,12 @@ describe future plans.
 Fixes
 ~~~~~
 
-* Fix ``calc_UB()`` failing with ``SolverError: Lattice must be set`` even
-  when the sample has a lattice.  Override ``sample`` setter to push the
-  lattice (and reflections) from the hklpy2 sample dict into diffcalc's
-  ``UBCalculation`` immediately, mirroring ``HklSolver`` behaviour.
-  :issue:`25`
-* Fix ``wh()`` (and ``inverse()``) failing with ``SolverError: UB matrix has
-  not been set`` immediately after diffractometer creation.  A default identity
-  UB is now initialised automatically for the ``inverse`` path; ``forward``
-  still requires an explicit orientation.  :issue:`24`
+* Fix ``calc_UB()`` raising ``SolverError: Lattice must be set`` even when
+  the sample has a lattice; override ``sample`` setter to push lattice and
+  reflections into diffcalc immediately.  :issue:`25`
+* Fix ``wh()`` raising ``SolverError: UB matrix has not been set`` before
+  any reflections are added; auto-init a default UB for ``inverse()``.
+  :issue:`24`
 
 0.1.6
 #####

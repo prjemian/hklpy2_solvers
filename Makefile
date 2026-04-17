@@ -33,11 +33,15 @@ realclean :: clean
 	/bin/rm -rf ./docs/build
 
 release:
-	@# Usage: make release [ARGS="--dry-run"] [ARGS="--version 0.2.0"]
 	@# VERSION is determined from the topmost RST comment block in RELEASE_NOTES.rst.
 	@# If the title is SEMVER, a patch-level bump is computed automatically.
 	@# DATE is always today.  The next block always uses SEMVER as its title.
+	@# To override VERSION: make release ARGS="--version 0.2.0"
 	python scripts/stamp_release.py $(ARGS)
+
+release-preview:
+	@# Preview the release without writing any files or pushing any tags.
+	python scripts/stamp_release.py --dry-run $(ARGS)
 
 test:
 	pytest -q --lf ./tests

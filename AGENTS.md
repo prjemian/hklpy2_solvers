@@ -376,7 +376,7 @@ After the PR is merged and `main` is up to date locally:
 
 1. **Preview with dry run**:
    ```bash
-   make release ARGS=--dry-run
+   make release-preview
    ```
    The script reads VERSION from the comment block title (or ``--version``),
    prints what it would do, and exits without writing anything.  If

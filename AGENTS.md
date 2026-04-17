@@ -344,37 +344,42 @@ A Pull Request (PR) describes *how* an issue has been (or will be) addressed.
 
 ## Tagging a Release
 
+The version to release is read automatically from the RST comment block at
+the top of `RELEASE_NOTES.rst`.  The script validates it against existing
+git tags and stops with an error if the version already exists or regresses.
+
 After the PR is merged and `main` is up to date locally:
 
-1. **Uncomment the pending block** in `RELEASE_NOTES.rst`: remove the
-   surrounding `<!--` and `-->` lines from the top block (the next unreleased
-   version).
-2. **Stamp the release date**: replace the `Expected release: tba` line in
-   that block with `Released yyyy-mm-dd.` (today's date).
-3. **Create the next comment block**: immediately above the newly released
-   section, add a new RST comment block for the version after this one
-   (bump patch, or minor if appropriate), with `Expected release: tba` and
-   no content entries yet:
-   ```rst
-   ..
-       0.1.X
-       #####
-
-       Expected release: tba
-
+1. **Run the release script** to uncomment the pending block, stamp the
+   date, and create the next empty comment block:
+   ```bash
+   make release DATE=yyyy-mm-dd          # NEXT defaults to patch bump
+   make release DATE=yyyy-mm-dd NEXT=0.2.0  # override for minor/major bump
    ```
-4. **Commit** directly on `main`:
+   The script reads VERSION from the comment block, validates it, then:
+   - Removes the ``..`` / indent wrapper, exposing the section.
+   - Replaces ``Expected release: tba`` with ``Released yyyy-mm-dd.``
+   - Inserts a new RST comment block for NEXT above the released section.
+   The script exits with an error if VERSION already exists as a git tag or
+   does not advance beyond the latest tag.
+
+2. **Review** the diff (`git diff RELEASE_NOTES.rst`) to confirm it looks right.
+
+3. **Commit** directly on `main`:
    ```
    maint vX.Y.Z stamp release date in RELEASE_NOTES
    ```
-5. **Push** `main`.
-6. **Tag** the release at the patch, minor, or major level as appropriate.
-   Since this project is pre-1.0, no bump to the major version:
+
+4. **Push** `main`.
+
+5. **Tag** the release:
    ```
    git tag -a vX.Y.Z -m "release X.Y.Z"
    git push origin vX.Y.Z
    ```
-7. The tag push triggers CI to build and publish the package.
+   Since this project is pre-1.0, no bump to the major version.
+
+6. The tag push triggers CI to build and publish the package.
 
 ## Notes
 

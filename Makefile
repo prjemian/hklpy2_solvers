@@ -33,12 +33,12 @@ realclean :: clean
 	/bin/rm -rf ./docs/build
 
 release:
-	@# Usage: make release VERSION=0.1.8 DATE=2026-04-17 NEXT=0.1.9
-	@test -n "$(VERSION)" || (echo "ERROR: VERSION is required.  Usage: make release VERSION=0.1.8 DATE=2026-04-17 NEXT=0.1.9"; exit 1)
-	@test -n "$(DATE)"    || (echo "ERROR: DATE is required.    Usage: make release VERSION=0.1.8 DATE=2026-04-17 NEXT=0.1.9"; exit 1)
-	@test -n "$(NEXT)"    || (echo "ERROR: NEXT is required.    Usage: make release VERSION=0.1.8 DATE=2026-04-17 NEXT=0.1.9"; exit 1)
-	@python scripts/stamp_release.py $(VERSION) $(DATE) $(NEXT)
-	@echo "RELEASE_NOTES.rst updated for v$(VERSION).  Review, then commit and tag."
+	@# Usage: make release DATE=2026-04-17 [NEXT=0.2.0]
+	@# VERSION is read automatically from the RST comment block in RELEASE_NOTES.rst.
+	@# NEXT defaults to a patch-level bump; supply NEXT to override (e.g. minor bump).
+	@test -n "$(DATE)" || (echo "ERROR: DATE is required.  Usage: make release DATE=2026-04-17 [NEXT=0.2.0]"; exit 1)
+	@python scripts/stamp_release.py $(DATE) $(NEXT)
+	@echo "RELEASE_NOTES.rst updated.  Review, then: git add RELEASE_NOTES.rst && git commit && git tag vVERSION && git push origin main vVERSION"
 
 test:
 	pytest -q --lf ./tests

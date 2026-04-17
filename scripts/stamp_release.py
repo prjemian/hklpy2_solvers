@@ -49,7 +49,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-from packaging.version import Version, InvalidVersion
+from packaging.version import InvalidVersion, Version
 
 RELEASE_NOTES = Path(__file__).parent.parent / "RELEASE_NOTES.rst"
 
@@ -217,13 +217,13 @@ def main(dry_run: bool = False, version_override: str | None = None) -> None:
     content_preview = "".join(content_lines).strip()
 
     print(f"  DATE: {date}")
-    print(f"  NEXT block title: SEMVER")
+    print("  NEXT block title: SEMVER")
     if content_preview:
-        print(f"  Pending changes in block:")
+        print("  Pending changes in block:")
         for ln in content_preview.splitlines():
             print(f"    {ln}")
     else:
-        print(f"  Pending changes in block: (none)")
+        print("  Pending changes in block: (none)")
     print(f"  Would write: {RELEASE_NOTES}")
     print(f"  Would tag:   v{version}")
 
@@ -252,10 +252,10 @@ def main(dry_run: bool = False, version_override: str | None = None) -> None:
 
     RELEASE_NOTES.write_text(text)
     print(f"  Written: {RELEASE_NOTES}")
-    print(f"  Next steps:")
-    print(f"    git add RELEASE_NOTES.rst")
+    print("  Next steps:")
+    print("    git add RELEASE_NOTES.rst")
     print(f"    git commit -m 'maint v{version} stamp release date in RELEASE_NOTES'")
-    print(f"    git push origin main")
+    print("    git push origin main")
     print(f"    git tag -a v{version} -m 'release {version}'")
     print(f"    git push origin v{version}")
 

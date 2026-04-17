@@ -142,11 +142,19 @@ class DiffcalcSolver(SolverBase):
         self._hklcalc = HklCalculation(self._ubcalc, self._constraints)
 
     def _apply_mode_constraints(self) -> None:
-        """Set diffcalc constraints from the current mode."""
+        """Set diffcalc constraints from the current mode.
+
+        Rebuilds :attr:`_constraints` and :attr:`_hklcalc` only when the
+        mode has changed since the last call, avoiding redundant object
+        construction on every :meth:`forward` call.
+        """
         if not self.mode:
+            return
+        if getattr(self, "_applied_mode", None) == self.mode:
             return
         self._constraints = Constraints(_MODES[self.mode])
         self._rebuild_hklcalc()
+        self._applied_mode = self.mode
 
     def _position_from_reals(self, reals: NamedFloatDict) -> Position:
         """Build a diffcalc ``Position`` from a reals dict."""
@@ -389,6 +397,7 @@ class DiffcalcSolver(SolverBase):
 
         check_value_in_list("Mode", value, self.modes, blank_ok=True)
         self._mode = value
+        self._applied_mode = None  # invalidate so next forward() rebuilds
         if value and value in _MODES:
             self._apply_mode_constraints()
 

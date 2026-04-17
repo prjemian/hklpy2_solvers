@@ -29,6 +29,11 @@ describe future plans.
 
     Expected release: tba
 
+    Enhancements
+    ~~~~~~~~~~~~
+
+    * Guard ``_apply_mode_constraints()`` to skip rebuilding diffcalc objects when the mode is unchanged, reducing ``forward()`` overhead by ~9%.  :issue:`33`
+
     Maintenance
     ~~~~~~~~~~~
 

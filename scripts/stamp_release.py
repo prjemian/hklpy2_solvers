@@ -24,13 +24,14 @@ comment block in RELEASE_NOTES.rst:
 
 DATE is always today's date (yyyy-mm-dd).
 
-Steps performed (atomically, in one file write):
+Steps performed:
 
 1. Determine VERSION from the comment block title (or ``--version``).
 2. Validate VERSION against existing git tags.
 3. Uncomment the block: remove the ``..`` line and de-indent the content.
 4. Replace ``Expected release: tba`` with ``Released DATE.``.
 5. Insert a new ``SEMVER`` RST comment block above the released section.
+6. Commit RELEASE_NOTES.rst, push main, create and push the tag.
 
 RST comment block format used by this project::
 
@@ -252,12 +253,26 @@ def main(dry_run: bool = False, version_override: str | None = None) -> None:
 
     RELEASE_NOTES.write_text(text)
     print(f"  Written: {RELEASE_NOTES}")
-    print("  Next steps:")
-    print("    git add RELEASE_NOTES.rst")
-    print(f"    git commit -m 'maint v{version} stamp release date in RELEASE_NOTES'")
-    print("    git push origin main")
-    print(f"    git tag -a v{version} -m 'release {version}'")
-    print(f"    git push origin v{version}")
+
+    repo = RELEASE_NOTES.parent
+    commit_msg = f"maint v{version} stamp release date in RELEASE_NOTES"
+    steps = [
+        (["git", "add", "RELEASE_NOTES.rst"], "Staging RELEASE_NOTES.rst"),
+        (["git", "commit", "-m", commit_msg], f"Committing: {commit_msg}"),
+        (["git", "push", "origin", "main"], "Pushing main"),
+        (["git", "tag", "-a", f"v{version}", "-m", f"release {version}"], f"Tagging v{version}"),
+        (["git", "push", "origin", f"v{version}"], f"Pushing tag v{version}"),
+    ]
+    for cmd, description in steps:
+        print(f"  {description}...")
+        result = subprocess.run(cmd, cwd=repo, capture_output=True, text=True)
+        if result.returncode != 0:
+            print(f"  ERROR: {' '.join(cmd)} failed:")
+            print(result.stderr.strip())
+            sys.exit(result.returncode)
+        if result.stdout.strip():
+            print(result.stdout.strip())
+    print(f"  Released v{version}.")
 
 
 if __name__ == "__main__":

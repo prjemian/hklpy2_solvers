@@ -374,40 +374,30 @@ git tags and stops with an error if the version already exists or regresses.
 
 After the PR is merged and `main` is up to date locally:
 
-1. **Run the release script** to uncomment the pending block, stamp the
-   date, and create the next empty comment block:
+1. **Preview with dry run**:
    ```bash
-   make release                        # normal run
-   make release ARGS=--dry-run         # preview without writing
-   make release ARGS="--version 0.2.0" # override VERSION
+   make release ARGS=--dry-run
    ```
    The script reads VERSION from the comment block title (or ``--version``),
-   uses today's date, then:
-   - If title is ``SEMVER``: computes a patch-level bump from the latest tag
-     and prints the computed version before making any changes.
+   prints what it would do, and exits without writing anything.  If
+   the title is ``SEMVER``, it prints the computed patch-level bump.
+
+2. **Run the release**:
+   ```bash
+   make release                        # normal run
+   make release ARGS="--version 0.2.0" # override VERSION
+   ```
+   The script:
    - Removes the ``..`` / indent wrapper, exposing the section.
    - Replaces ``Expected release: tba`` with ``Released yyyy-mm-dd.``
    - Inserts a new ``SEMVER`` RST comment block above the released section.
+   - Commits ``RELEASE_NOTES.rst`` directly on ``main``.
+   - Pushes ``main``.
+   - Creates and pushes the annotated tag ``vX.Y.Z``.
    The script exits with an error if VERSION already exists as a git tag,
    does not advance beyond the latest tag, or the title is unrecognised.
 
-2. **Review** the diff (`git diff RELEASE_NOTES.rst`) to confirm it looks right.
-
-3. **Commit** directly on `main`:
-   ```
-   maint vX.Y.Z stamp release date in RELEASE_NOTES
-   ```
-
-4. **Push** `main`.
-
-5. **Tag** the release:
-   ```
-   git tag -a vX.Y.Z -m "release X.Y.Z"
-   git push origin vX.Y.Z
-   ```
-   Since this project is pre-1.0, no bump to the major version.
-
-6. The tag push triggers CI to build and publish the package.
+3. The tag push triggers CI to build and publish the package.
 
 ## Notes
 

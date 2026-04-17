@@ -14,6 +14,7 @@ framework via its entry-point interface.
    install
    usage
    geometries
+   howto_benchmark
    api
    release_notes
 
@@ -31,6 +32,10 @@ framework via its entry-point interface.
    .. grid-item-card:: :ref:`geometries`
 
       Supported solver geometries and operating modes.
+
+   .. grid-item-card:: :ref:`howto_benchmark`
+
+      How to benchmark a solver geometry's forward/inverse throughput.
 
    .. grid-item-card:: API Reference
 

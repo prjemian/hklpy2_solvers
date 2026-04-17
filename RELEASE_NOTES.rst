@@ -32,6 +32,7 @@ describe future plans.
     Enhancements
     ~~~~~~~~~~~~
 
+    * Add HOWTO: benchmark a solver geometry; include downloadable configuration files for each supported geometry.  :issue:`35`
     * Guard ``_apply_mode_constraints()`` to skip rebuilding diffcalc objects when the mode is unchanged, reducing ``forward()`` overhead by ~9%.  :issue:`33`
 
     Maintenance

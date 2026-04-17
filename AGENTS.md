@@ -147,8 +147,19 @@ PRs opened or modified by automated agents must follow the "Agent pytest style" 
 
 - Setup: create virtualenv, `pip install -e .[all]`
 - Common commands:
-  - Format & Lint: `make style` or `pre-commit run --all-files`
-  - Test: `pytest ./src`
+  - Format & Lint: `pre-commit run --all-files` (preferred; see note below)
+  - Test: `pytest ./tests`
+
+### `make style` vs `pre-commit run --all-files`
+
+`make style` runs `isort --sl` before `pre-commit`.  `isort --sl` (single-line
+mode) and ruff's built-in isort (`I` rule) disagree on whether to split
+multi-symbol imports from the same module onto separate lines.  This causes
+`make style` to report a ruff failure even when the file is already correct.
+
+**Use `pre-commit run --all-files` directly** as the authoritative lint/format
+check.  Ruff's isort is the style enforced by CI; `isort --sl` in the
+`Makefile` is a legacy convenience that conflicts with it.
 
 ### pre-commit on NFS home directories
 

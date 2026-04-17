@@ -29,6 +29,11 @@ describe future plans.
 
     Expected release: tba
 
+    Maintenance
+    ~~~~~~~~~~~
+
+    * Pin ``hklpy2>=0.6.0`` in dependencies; ``hklpy2.misc`` was removed in that release.  :issue:`31`
+
 0.1.7
 #####
 

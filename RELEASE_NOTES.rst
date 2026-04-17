@@ -29,17 +29,22 @@ describe future plans.
 
     Expected release: tba
 
-    Enhancements
-    ~~~~~~~~~~~~
+0.1.9
+######
 
-    * Add HOWTO: benchmark a solver geometry; include downloadable configuration files for each supported geometry.  :issue:`35`
-    * Guard ``_apply_mode_constraints()`` to skip rebuilding diffcalc objects when the mode is unchanged, reducing ``forward()`` overhead by ~9%.  :issue:`33`
+Released 2026-04-17.
 
-    Maintenance
-    ~~~~~~~~~~~
+Enhancements
+~~~~~~~~~~~~
 
-    * Refactor ``scripts/stamp_release.py``: read VERSION from RST comment block title (``SEMVER`` auto-bumps patch; PEP 440 explicit versions accepted); add ``--dry-run`` and ``--version`` options; always insert ``SEMVER`` as next block title.  Use ``packaging.version.Version`` for version comparison.
-    * Add ``packaging`` to dev dependencies in ``pyproject.toml``.
+* Add HOWTO: benchmark a solver geometry; include downloadable configuration files for each supported geometry.  :issue:`35`
+* Guard ``_apply_mode_constraints()`` to skip rebuilding diffcalc objects when the mode is unchanged, reducing ``forward()`` overhead by ~9%.  :issue:`33`
+
+Maintenance
+~~~~~~~~~~~
+
+* Refactor ``scripts/stamp_release.py``: read VERSION from RST comment block title (``SEMVER`` auto-bumps patch; PEP 440 explicit versions accepted); add ``--dry-run`` and ``--version`` options; always insert ``SEMVER`` as next block title.  Use ``packaging.version.Version`` for version comparison.
+* Add ``packaging`` to dev dependencies in ``pyproject.toml``.
 
 0.1.8
 #####

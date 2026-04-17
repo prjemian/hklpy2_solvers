@@ -353,10 +353,10 @@ After the PR is merged and `main` is up to date locally:
 1. **Run the release script** to uncomment the pending block, stamp the
    date, and create the next empty comment block:
    ```bash
-   make release DATE=yyyy-mm-dd          # NEXT defaults to patch bump
-   make release DATE=yyyy-mm-dd NEXT=0.2.0  # override for minor/major bump
+   make release                # NEXT defaults to patch bump
+   make release NEXT=0.2.0    # override for minor/major bump
    ```
-   The script reads VERSION from the comment block, validates it, then:
+   The script reads VERSION from the comment block, uses today's date, then:
    - Removes the ``..`` / indent wrapper, exposing the section.
    - Replaces ``Expected release: tba`` with ``Released yyyy-mm-dd.``
    - Inserts a new RST comment block for NEXT above the released section.

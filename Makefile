@@ -33,11 +33,10 @@ realclean :: clean
 	/bin/rm -rf ./docs/build
 
 release:
-	@# Usage: make release DATE=2026-04-17 [NEXT=0.2.0]
+	@# Usage: make release [NEXT=0.2.0]
 	@# VERSION is read automatically from the RST comment block in RELEASE_NOTES.rst.
-	@# NEXT defaults to a patch-level bump; supply NEXT to override (e.g. minor bump).
-	@test -n "$(DATE)" || (echo "ERROR: DATE is required.  Usage: make release DATE=2026-04-17 [NEXT=0.2.0]"; exit 1)
-	@python scripts/stamp_release.py $(DATE) $(NEXT)
+	@# DATE defaults to today.  NEXT defaults to a patch-level bump.
+	@python scripts/stamp_release.py $(NEXT)
 	@echo "RELEASE_NOTES.rst updated.  Review, then: git add RELEASE_NOTES.rst && git commit && git tag vVERSION && git push origin main vVERSION"
 
 test:

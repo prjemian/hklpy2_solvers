@@ -6,13 +6,14 @@ Prepare RELEASE_NOTES.rst for a new tagged release.
 
 Usage::
 
-    python scripts/stamp_release.py DATE [NEXT]
+    python scripts/stamp_release.py [NEXT]
 
-    python scripts/stamp_release.py 2026-04-17
-    python scripts/stamp_release.py 2026-04-17 0.2.0
+    python scripts/stamp_release.py
+    python scripts/stamp_release.py 0.2.0
 
 The VERSION to release is read from the RST comment block at the top of
-RELEASE_NOTES.rst.  NEXT defaults to a patch-level bump of VERSION.
+RELEASE_NOTES.rst.  DATE defaults to today (yyyy-mm-dd).  NEXT defaults
+to a patch-level bump of VERSION.
 
 Steps performed:
 
@@ -36,6 +37,7 @@ RST comment block format used by this project::
 
 """
 
+import datetime
 import re
 import subprocess
 import sys
@@ -120,7 +122,8 @@ def _deindent(body: str) -> str:
     return "".join(lines)
 
 
-def main(date: str, next_version: str | None = None) -> None:
+def main(next_version: str | None = None) -> None:
+    date = datetime.date.today().isoformat()
     text = RELEASE_NOTES.read_text()
 
     # ------------------------------------------------------------------ #
@@ -177,10 +180,6 @@ def main(date: str, next_version: str | None = None) -> None:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) not in (2, 3):
-        sys.exit(
-            f"Usage: {sys.argv[0]} DATE [NEXT]\n"
-            f"  e.g. {sys.argv[0]} 2026-04-17\n"
-            f"       {sys.argv[0]} 2026-04-17 0.2.0"
-        )
-    main(sys.argv[1], sys.argv[2] if len(sys.argv) == 3 else None)
+    if len(sys.argv) not in (1, 2):
+        sys.exit(f"Usage: {sys.argv[0]} [NEXT]\n  e.g. {sys.argv[0]}\n       {sys.argv[0]} 0.2.0")
+    main(sys.argv[1] if len(sys.argv) == 2 else None)

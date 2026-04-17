@@ -195,7 +195,7 @@ The `Makefile` `pre` target also exports this variable automatically.
 
 - Runs formatting and linting locally
 - Adds/updates tests for changes
-  - Adds entry to `RELEASE_NOTES.rst` inside the `<!-- ... -->` comment block for the next unreleased version
+  - Adds entry to `RELEASE_NOTES.rst` inside the RST comment block for the next unreleased version
 - Marks PR as draft if large refactor
 
 ## Release Notes
@@ -207,8 +207,8 @@ most recent released version) that holds the **next** unreleased version:
 
 ```rst
 ..
-    0.1.9
-    #####
+    SEMVER
+    ######
 
     Expected release: tba
 
@@ -228,12 +228,19 @@ The RST comment (``..`` directive with 4-space-indented content) hides the
 block from Sphinx so unreleased notes never appear in published docs.  Only
 released versions are visible.
 
+The title of the comment block controls what version is used at release time:
+
+- ``SEMVER`` : the release script computes a patch-level bump automatically.
+- ``X.Y.Z``  : used directly as the release version (must advance the sequence).
+- Any valid PEP 440 version (e.g. ``1.0.0rc1``) : used directly as the release version (must advance the sequence).
+- Anything else : the script aborts with an error.
+
 ### Adding entries during development
 
 - Update `RELEASE_NOTES.rst` as part of every PR that introduces a new
   feature, fix, enhancement, or maintenance change.
-- Add the entry **inside the `<!-- ... -->` comment block** for the next
-  unreleased version at the top of the file.
+- Add the entry **inside the RST comment block** (``..`` + 4-space indent)
+  for the next unreleased version at the top of the file.
 - Entries should be terse — one or two lines — and reference the issue or PR
   number with ``:issue:`N``` or ``:pr:`N```.
 - Use the appropriate subsection and keep subsections in the logical order
@@ -353,15 +360,19 @@ After the PR is merged and `main` is up to date locally:
 1. **Run the release script** to uncomment the pending block, stamp the
    date, and create the next empty comment block:
    ```bash
-   make release                # NEXT defaults to patch bump
-   make release NEXT=0.2.0    # override for minor/major bump
+   make release                        # normal run
+   make release ARGS=--dry-run         # preview without writing
+   make release ARGS="--version 0.2.0" # override VERSION
    ```
-   The script reads VERSION from the comment block, uses today's date, then:
+   The script reads VERSION from the comment block title (or ``--version``),
+   uses today's date, then:
+   - If title is ``SEMVER``: computes a patch-level bump from the latest tag
+     and prints the computed version before making any changes.
    - Removes the ``..`` / indent wrapper, exposing the section.
    - Replaces ``Expected release: tba`` with ``Released yyyy-mm-dd.``
-   - Inserts a new RST comment block for NEXT above the released section.
-   The script exits with an error if VERSION already exists as a git tag or
-   does not advance beyond the latest tag.
+   - Inserts a new ``SEMVER`` RST comment block above the released section.
+   The script exits with an error if VERSION already exists as a git tag,
+   does not advance beyond the latest tag, or the title is unrecognised.
 
 2. **Review** the diff (`git diff RELEASE_NOTES.rst`) to confirm it looks right.
 

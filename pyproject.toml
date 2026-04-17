@@ -36,6 +36,7 @@ dev = [
   "build",
   "coverage",
   "isort",
+  "packaging",
   "pre-commit",
   "pytest",
   "pytest-cov",

@@ -6,107 +6,137 @@ Prepare RELEASE_NOTES.rst for a new tagged release.
 
 Usage::
 
-    python scripts/stamp_release.py [NEXT]
+    python scripts/stamp_release.py [--dry-run] [--version X.Y.Z]
 
     python scripts/stamp_release.py
-    python scripts/stamp_release.py 0.2.0
+    python scripts/stamp_release.py --dry-run
+    python scripts/stamp_release.py --version 0.2.0
 
-The VERSION to release is read from the RST comment block at the top of
-RELEASE_NOTES.rst.  DATE defaults to today (yyyy-mm-dd).  NEXT defaults
-to a patch-level bump of VERSION.
+The VERSION to release is determined from the title of the topmost RST
+comment block in RELEASE_NOTES.rst:
 
-Steps performed:
+- ``SEMVER`` : VERSION is computed as a patch-level bump of the latest git
+  tag.  The computed version is printed before any changes are made.
+- PEP 440 version (e.g. ``X.Y.Z``, ``1.0.0rc1``) : Used directly as
+  VERSION, provided it advances the tag sequence and does not already
+  exist as a git tag.
+- Anything else : Error, abort.
 
-1. Extract VERSION from the topmost RST comment block.
-2. Validate VERSION:
-   - Must parse as a valid X.Y.Z semantic version.
-   - Must not already exist as a git tag.
-   - Must not regress behind the most recent git tag.
+DATE is always today's date (yyyy-mm-dd).
+
+Steps performed (atomically, in one file write):
+
+1. Determine VERSION from the comment block title (or ``--version``).
+2. Validate VERSION against existing git tags.
 3. Uncomment the block: remove the ``..`` line and de-indent the content.
 4. Replace ``Expected release: tba`` with ``Released DATE.``.
-5. Insert a new empty RST comment block for NEXT immediately above the
-   newly released VERSION section.
+5. Insert a new ``SEMVER`` RST comment block above the released section.
 
 RST comment block format used by this project::
 
     ..
-        X.Y.Z
-        #####
+        SEMVER
+        ######
 
         Expected release: tba
 
 """
 
+import argparse
 import datetime
 import re
 import subprocess
 import sys
 from pathlib import Path
 
+from packaging.version import Version, InvalidVersion
+
 RELEASE_NOTES = Path(__file__).parent.parent / "RELEASE_NOTES.rst"
 
-# RST comment block: a bare ".." line followed by indented lines.
+# RST comment block: a bare ".." line followed by 4-space-indented lines.
 # The block ends at the first non-indented, non-blank line.
 _COMMENT_BLOCK_RE = re.compile(
     r"^\.\.\n"  # opening ".." line
-    r"((?:    [^\n]*\n|\n)*)",  # indented or blank lines (4-space indent)
+    r"((?:    [^\n]*\n|\n)*)",  # indented or blank lines
     re.MULTILINE,
 )
 
-_SEMVER_RE = re.compile(r"^(\d+)\.(\d+)\.(\d+)$")
+# Matches any PEP 440 version-like token that could appear as a block title.
+# We use packaging.version.Version for real validation; this is just used to
+# distinguish a version-like string from free text in the comment block.
+_VERSION_TITLE_RE = re.compile(r"^\d+\.\d+.*$")
+
+_SEMVER_PLACEHOLDER = "SEMVER"
+
+_NEXT_BLOCK = "..\n    SEMVER\n    ######\n\n    Expected release: tba\n\n"
 
 
-def _parse_version(v: str) -> tuple[int, int, int]:
-    """Parse 'X.Y.Z' into a tuple of ints, or exit with an error."""
-    m = _SEMVER_RE.match(v)
-    if not m:
-        sys.exit(f"ERROR: {v!r} is not a valid semantic version (expected X.Y.Z).")
-    return int(m.group(1)), int(m.group(2)), int(m.group(3))
+# ------------------------------------------------------------------ #
+# Helpers                                                              #
+# ------------------------------------------------------------------ #
+
+
+def _parse_version(v: str) -> Version:
+    """Parse a PEP 440 version string, or exit with an error."""
+    try:
+        return Version(v)
+    except InvalidVersion:
+        sys.exit(f"ERROR: {v!r} is not a valid PEP 440 version. Aborting.")
 
 
 def _bump_patch(version: str) -> str:
-    major, minor, patch = _parse_version(version)
-    return f"{major}.{minor}.{patch + 1}"
+    v = _parse_version(version)
+    # Only bump the base X.Y.Z regardless of any pre/post/dev suffix.
+    return f"{v.major}.{v.minor}.{v.micro + 1}"
+
+
+def _git(*args: str) -> str:
+    result = subprocess.run(
+        ["git", *args],
+        capture_output=True,
+        text=True,
+        cwd=RELEASE_NOTES.parent,
+    )
+    return result.stdout
 
 
 def _existing_tags() -> set[str]:
-    """Return the set of existing git tag names, stripping a leading 'v'."""
-    result = subprocess.run(
-        ["git", "tag"],
-        capture_output=True,
-        text=True,
-        cwd=RELEASE_NOTES.parent,
-    )
-    return {t.lstrip("v") for t in result.stdout.splitlines() if t.strip()}
+    """Return existing git tag names stripped of a leading 'v'."""
+    return {t.lstrip("v") for t in _git("tag").splitlines() if t.strip()}
 
 
-def _latest_tag() -> str | None:
-    """Return the most recent git tag (by version sort), stripped of 'v'."""
-    result = subprocess.run(
-        ["git", "tag", "--sort=version:refname"],
-        capture_output=True,
-        text=True,
-        cwd=RELEASE_NOTES.parent,
-    )
-    tags = [t.lstrip("v") for t in result.stdout.splitlines() if t.strip()]
-    # Keep only valid semver tags.
-    tags = [t for t in tags if _SEMVER_RE.match(t)]
+def _latest_semver_tag() -> str | None:
+    """Return the most recent PEP 440 git tag (by version sort), stripped of 'v'."""
+    tags = []
+    for t in _git("tag", "--sort=version:refname").splitlines():
+        t = t.strip().lstrip("v")
+        try:
+            Version(t)
+            tags.append(t)
+        except InvalidVersion:
+            pass
     return tags[-1] if tags else None
 
 
-def _find_topmost_comment_block(text: str) -> re.Match:
-    """Return the first RST comment block in the file that contains a version title."""
+def _find_topmost_comment_block(text: str) -> tuple[re.Match, str]:
+    """Return the first RST comment block whose title is SEMVER or a PEP 440 version."""
     for m in _COMMENT_BLOCK_RE.finditer(text):
         body = m.group(1)
         first_line = next((ln.strip() for ln in body.splitlines() if ln.strip()), "")
-        if _SEMVER_RE.match(first_line):
-            return m
+        if first_line == _SEMVER_PLACEHOLDER:
+            return m, first_line
+        try:
+            Version(first_line)
+            return m, first_line
+        except InvalidVersion:
+            pass
     sys.exit(
-        f"ERROR: No RST comment block with a semver title found in {RELEASE_NOTES}.\n"
+        f"ERROR: No RST comment block with title 'SEMVER' or a PEP 440 version "
+        f"found in {RELEASE_NOTES}.\n"
         "Expected format:\n"
         "..\n"
-        "    X.Y.Z\n"
-        "    #####\n\n"
+        "    SEMVER\n"
+        "    ######\n\n"
         "    Expected release: tba\n"
     )
 
@@ -115,71 +145,132 @@ def _deindent(body: str) -> str:
     """Remove the 4-space indent from every line of a comment body."""
     lines = []
     for ln in body.splitlines(keepends=True):
-        if ln.startswith("    "):
-            lines.append(ln[4:])
-        else:
-            lines.append(ln)
+        lines.append(ln[4:] if ln.startswith("    ") else ln)
     return "".join(lines)
 
 
-def main(next_version: str | None = None) -> None:
+def _block_content_lines(body: str) -> list[str]:
+    """Return non-header content lines from a comment block body.
+
+    Skips the version title, underline, and 'Expected release: tba' line.
+    """
+    lines = body.splitlines()
+    # Skip version title and underline (first two non-blank lines)
+    skip = 2
+    result = []
+    for ln in lines:
+        if skip > 0 and ln.strip():
+            skip -= 1
+            continue
+        if ln.strip().startswith("Expected release:"):
+            continue
+        result.append(ln)
+    return result
+
+
+# ------------------------------------------------------------------ #
+# Main                                                                 #
+# ------------------------------------------------------------------ #
+
+
+def main(dry_run: bool = False, version_override: str | None = None) -> None:
     date = datetime.date.today().isoformat()
     text = RELEASE_NOTES.read_text()
 
     # ------------------------------------------------------------------ #
-    # Step 1: extract VERSION from the topmost comment block.             #
+    # Step 1: read topmost comment block title.                           #
     # ------------------------------------------------------------------ #
-    m = _find_topmost_comment_block(text)
+    m, title = _find_topmost_comment_block(text)
     body = m.group(1)
-    version = next(ln.strip() for ln in body.splitlines() if ln.strip())
 
-    print(f"  VERSION from comment block: {version}")
+    latest = _latest_semver_tag()
+
+    if version_override:
+        version = version_override
+        print(f"  VERSION override supplied: {version}")
+    elif title == _SEMVER_PLACEHOLDER:
+        if latest is None:
+            sys.exit("ERROR: Cannot auto-bump — no existing PEP 440 git tags found.")
+        version = _bump_patch(latest)
+        print(f"  Title is SEMVER — computed VERSION: {version} (patch bump from {latest})")
+    else:
+        # title is a PEP 440 version (guaranteed by _find_topmost_comment_block)
+        version = title
+        print(f"  VERSION from comment block: {version}")
 
     # ------------------------------------------------------------------ #
     # Step 2: validate VERSION.                                            #
     # ------------------------------------------------------------------ #
-    _parse_version(version)  # exits if not valid semver
+    _parse_version(version)  # exits if not a valid PEP 440 version
 
     existing = _existing_tags()
     if version in existing:
         sys.exit(f"ERROR: Tag {version!r} already exists. Aborting.")
 
-    latest = _latest_tag()
-    if latest is not None:
-        if _parse_version(version) <= _parse_version(latest):
-            sys.exit(f"ERROR: VERSION {version!r} does not advance beyond the latest tag {latest!r}. Aborting.")
+    if latest is not None and _parse_version(version) <= _parse_version(latest):
+        sys.exit(f"ERROR: VERSION {version!r} does not advance beyond the latest tag {latest!r}. Aborting.")
 
     # ------------------------------------------------------------------ #
-    # Steps 3 + 4: uncomment the block and stamp the date.               #
+    # Report what will happen.                                            #
     # ------------------------------------------------------------------ #
+    content_lines = _block_content_lines(body)
+    content_preview = "".join(content_lines).strip()
+
+    print(f"  DATE: {date}")
+    print(f"  NEXT block title: SEMVER")
+    if content_preview:
+        print(f"  Pending changes in block:")
+        for ln in content_preview.splitlines():
+            print(f"    {ln}")
+    else:
+        print(f"  Pending changes in block: (none)")
+    print(f"  Would write: {RELEASE_NOTES}")
+    print(f"  Would tag:   v{version}")
+
+    if dry_run:
+        print("  DRY RUN — no files written.")
+        return
+
+    # ------------------------------------------------------------------ #
+    # Steps 3 + 4: uncomment the block and stamp the date (atomic).      #
+    # ------------------------------------------------------------------ #
+    # If title was SEMVER, replace it with the computed version first.
+    if title == _SEMVER_PLACEHOLDER:
+        body = body.replace(f"    {_SEMVER_PLACEHOLDER}\n", f"    {version}\n", 1)
+
     released_body = _deindent(body).replace("Expected release: tba", f"Released {date}.", 1)
     text = text[: m.start()] + released_body + text[m.end() :]
 
     # ------------------------------------------------------------------ #
-    # Step 5: insert the next-version RST comment block above VERSION.   #
+    # Step 5: insert new SEMVER comment block above VERSION heading.      #
     # ------------------------------------------------------------------ #
-    if next_version is None:
-        next_version = _bump_patch(version)
-    else:
-        _parse_version(next_version)  # validate it is semver
-        if _parse_version(next_version) <= _parse_version(version):
-            sys.exit(f"ERROR: NEXT {next_version!r} does not advance beyond VERSION {version!r}. Aborting.")
-
-    next_block = f"..\n    {next_version}\n    #####\n\n    Expected release: tba\n\n"
-    version_heading_re = re.compile(r"(?m)^" + re.escape(version) + r"\n#{5}\n")
+    version_heading_re = re.compile(r"(?m)^" + re.escape(version) + r"\n#{5,6}\n")
     m2 = version_heading_re.search(text)
     if not m2:
         sys.exit(f"ERROR: Could not locate '{version}' heading after editing.")
-    text = text[: m2.start()] + next_block + text[m2.start() :]
+    text = text[: m2.start()] + _NEXT_BLOCK + text[m2.start() :]
 
     RELEASE_NOTES.write_text(text)
-    print(f"  Uncommented {version} block and stamped date {date}.")
-    print(f"  Added new pending RST comment block for {next_version}.")
     print(f"  Written: {RELEASE_NOTES}")
-    print(f"  Next step: git add RELEASE_NOTES.rst && git commit && git tag v{version}")
+    print(f"  Next steps:")
+    print(f"    git add RELEASE_NOTES.rst")
+    print(f"    git commit -m 'maint v{version} stamp release date in RELEASE_NOTES'")
+    print(f"    git push origin main")
+    print(f"    git tag -a v{version} -m 'release {version}'")
+    print(f"    git push origin v{version}")
 
 
 if __name__ == "__main__":
-    if len(sys.argv) not in (1, 2):
-        sys.exit(f"Usage: {sys.argv[0]} [NEXT]\n  e.g. {sys.argv[0]}\n       {sys.argv[0]} 0.2.0")
-    main(sys.argv[1] if len(sys.argv) == 2 else None)
+    parser = argparse.ArgumentParser(description="Stamp RELEASE_NOTES.rst for a new tagged release.")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Print what would happen without writing any files.",
+    )
+    parser.add_argument(
+        "--version",
+        metavar="X.Y.Z",
+        help="Override the VERSION (ignores comment block title).",
+    )
+    args = parser.parse_args()
+    main(dry_run=args.dry_run, version_override=args.version)

@@ -24,10 +24,16 @@ Project `milestones <https://github.com/prjemian/hklpy2_solvers/milestones>`_
 describe future plans.
 
 ..
-    0.1.9
-    #####
+    SEMVER
+    ######
 
     Expected release: tba
+
+    Maintenance
+    ~~~~~~~~~~~
+
+    * Refactor ``scripts/stamp_release.py``: read VERSION from RST comment block title (``SEMVER`` auto-bumps patch; PEP 440 explicit versions accepted); add ``--dry-run`` and ``--version`` options; always insert ``SEMVER`` as next block title.  Use ``packaging.version.Version`` for version comparison.
+    * Add ``packaging`` to dev dependencies in ``pyproject.toml``.
 
 0.1.8
 #####

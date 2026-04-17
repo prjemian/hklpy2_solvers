@@ -33,11 +33,11 @@ realclean :: clean
 	/bin/rm -rf ./docs/build
 
 release:
-	@# Usage: make release [NEXT=0.2.0]
-	@# VERSION is read automatically from the RST comment block in RELEASE_NOTES.rst.
-	@# DATE defaults to today.  NEXT defaults to a patch-level bump.
-	@python scripts/stamp_release.py $(NEXT)
-	@echo "RELEASE_NOTES.rst updated.  Review, then: git add RELEASE_NOTES.rst && git commit && git tag vVERSION && git push origin main vVERSION"
+	@# Usage: make release [ARGS="--dry-run"] [ARGS="--version 0.2.0"]
+	@# VERSION is determined from the topmost RST comment block in RELEASE_NOTES.rst.
+	@# If the title is SEMVER, a patch-level bump is computed automatically.
+	@# DATE is always today.  The next block always uses SEMVER as its title.
+	python scripts/stamp_release.py $(ARGS)
 
 test:
 	pytest -q --lf ./tests

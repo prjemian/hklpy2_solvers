@@ -121,6 +121,10 @@ PRs opened or modified by automated agents must follow the "Agent pytest style" 
 - Include clear commit messages and PR descriptions.
 - If uncertain about design, open an issue instead of making large changes.
 - Respect branch protection: push to feature branches and create PRs.
+- **Never commit unless the user explicitly says to commit.**  Completing
+  a code change does not imply permission to commit it.  Wait for an
+  explicit instruction such as "commit", "commit and push", or
+  "finish the workflow".
 
 ## Test style
 
@@ -263,6 +267,19 @@ question in code maintenance: *Why is this change being made?*
   task that motivates the work.
 - Do not begin coding without a corresponding issue (the only exception is a
   truly trivial fix that needs no explanation).
+
+### Direct commits to `main`
+
+Direct commits to `main` (without a PR) are reserved for low-level
+housekeeping that does not warrant its own issue and branch.  Examples:
+
+- Stamping a release date in ``RELEASE_NOTES.rst`` (``maint vX.Y.Z stamp...``)
+- Fixing a single-word typo in documentation
+- Updating a badge or URL that has changed
+
+Everything else — new features, bug fixes, enhancements, non-trivial
+documentation additions, refactors — must follow the full
+Issue → Branch → Commits → PR workflow.
 
 ### Branches
 

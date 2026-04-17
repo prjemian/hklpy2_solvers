@@ -1,7 +1,7 @@
 # Copyright (c) 2026 Pete Jemian <prjemian+hklpy2@gmail.com>
 # SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """
-Solver adapter wrapping *diffcalc-core* for hklpy2.
+Solver wrapping *diffcalc-core* for hklpy2.
 
 Provides the :class:`DiffcalcSolver` class, which implements the
 :class:`hklpy2.backends.base.SolverBase` interface on top of the
@@ -88,7 +88,7 @@ _MODES: dict[str, dict[str, Any]] = {
 
 class DiffcalcSolver(SolverBase):
     """
-    Solver adapter for diffcalc-core (You 1999, 4S+2D six-circle geometry).
+    Solver for diffcalc-core (You 1999, 4S+2D six-circle geometry).
 
     Wraps :class:`diffcalc.hkl.calc.HklCalculation` behind the
     :class:`~hklpy2.backends.base.SolverBase` interface so that hklpy2

@@ -96,8 +96,9 @@ def setup(app):
 # -- Intersphinx -------------------------------------------------------------
 
 intersphinx_mapping = {
-    "python": ("https://docs.python.org/3", None),
+    "hklpy2": ("https://blueskyproject.io/hklpy2/", None),
     "numpy": ("https://numpy.org/doc/stable", None),
+    "python": ("https://docs.python.org/3", None),
 }
 
 # -- extlinks ----------------------------------------------------------------

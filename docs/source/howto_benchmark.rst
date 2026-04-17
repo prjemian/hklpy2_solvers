@@ -5,8 +5,12 @@ How to benchmark a solver geometry
 =====================================
 
 This guide shows how to measure the computational throughput of a solver
-geometry — how many ``forward()`` and ``inverse()`` operations it can perform
-per second — using the ``hklpy2.utils.benchmark`` function.
+geometry — how many
+:meth:`~hklpy2.diffract.DiffractometerBase.forward` and
+:meth:`~hklpy2.diffract.DiffractometerBase.inverse` operations it can
+perform per second — using
+`hklpy2.utils.benchmark
+<https://blueskyproject.io/hklpy2/autoapi/hklpy2/utils/index.html#hklpy2.utils.benchmark>`__.
 
 Benchmarking is useful when:
 
@@ -31,9 +35,10 @@ You will need ``hklpy2`` ≥ 0.6.0 and ``hklpy2-solvers`` installed:
 Starting from a saved configuration
 -------------------------------------
 
-The easiest way to benchmark is to restore a diffractometer from a saved
-configuration file.  Ready-to-use configurations are provided for each
-supported geometry:
+The easiest way to benchmark is to restore a simulator from a saved
+configuration file using
+:func:`~hklpy2.run_utils.simulator_from_config`.
+Ready-to-use configurations are provided for each supported geometry:
 
 .. list-table::
    :header-rows: 1
@@ -47,14 +52,14 @@ supported geometry:
      - :download:`diffcalc_4s_2d.yml <_static/diffcalc_4s_2d.yml>`
 
 Download the file for your geometry, save it alongside your script, then
-restore the diffractometer and run the benchmark:
+run:
 
 .. code-block:: python
 
    import hklpy2
 
-   diffractometer = hklpy2.simulator_from_config("diffcalc_4s_2d.yml")
-   hklpy2.utils.benchmark(diffractometer)
+   sim = hklpy2.simulator_from_config("diffcalc_4s_2d.yml")
+   hklpy2.utils.benchmark(sim)
 
 Example output::
 
@@ -79,39 +84,73 @@ target for this operation.
 .. note::
 
    Some solvers perform iterative constraint solving and return multiple
-   candidate solutions per ``forward()`` call.  This can result in a
-   ``FAIL`` for ``forward()`` that reflects an upstream library limitation
-   rather than a problem with the solver adapter itself.  See the
+   candidate solutions per
+   :meth:`~hklpy2.diffract.DiffractometerBase.forward` call.  This can
+   result in a ``FAIL`` that reflects an upstream library limitation rather
+   than a problem with the solver itself.  See the
    :ref:`geometries` page for solver-specific notes.
+
+Benchmarking a live diffractometer
+------------------------------------
+
+.. caution::
+
+   `hklpy2.utils.benchmark
+   <https://blueskyproject.io/hklpy2/autoapi/hklpy2/utils/index.html#hklpy2.utils.benchmark>`__
+   runs timing loops directly on the diffractometer object passed to it.
+   Until `bluesky/hklpy2#369 <https://github.com/bluesky/hklpy2/issues/369>`_
+   is resolved, pass a **simulator** restored from a snapshot of your live
+   diffractometer's configuration, rather than the live instrument itself.
+   This guarantees no side effects on motor positions or solver state:
+
+   .. code-block:: python
+
+      import hklpy2
+
+      # Snapshot the live diffractometer, then benchmark the copy.
+      sim = hklpy2.simulator_from_config(my_diffractometer.configuration)
+      hklpy2.utils.benchmark(sim)
+
+   This page will be updated once the fix is released in hklpy2.
 
 Saving your own configuration
 ------------------------------
 
-You can benchmark any diffractometer you have set up by exporting its
-current state to a file with :meth:`export`:
+You can benchmark a diffractometer you have already set up in two ways.
+
+**From a file** — export the current state using
+:meth:`~hklpy2.diffract.DiffractometerBase.export`, then create a new
+simulator and benchmark:
 
 .. code-block:: python
 
-   diffractometer.export("my_config.yml", "benchmark configuration")
+   my_diffractometer.export("my_config.yml", "benchmark configuration")
 
-Then restore and benchmark it later:
+   sim = hklpy2.simulator_from_config("my_config.yml")
+   hklpy2.utils.benchmark(sim)
+
+**Without a file** — pass the
+:attr:`~hklpy2.diffract.DiffractometerBase.configuration` property
+directly, bypassing the file entirely:
 
 .. code-block:: python
 
    import hklpy2
 
-   diffractometer = hklpy2.simulator_from_config("my_config.yml")
-   hklpy2.utils.benchmark(diffractometer)
+   sim = hklpy2.simulator_from_config(my_diffractometer.configuration)
+   hklpy2.utils.benchmark(sim)
 
 Adjusting the number of calls
 -------------------------------
 
-By default ``benchmark`` uses 500 calls per operation.  Pass ``n`` to
-change this — more calls give a more stable measurement:
+By default, `hklpy2.utils.benchmark
+<https://blueskyproject.io/hklpy2/autoapi/hklpy2/utils/index.html#hklpy2.utils.benchmark>`__
+uses 500 calls per operation.  Pass ``n`` to change this — more calls
+give a more stable measurement:
 
 .. code-block:: python
 
-   hklpy2.utils.benchmark(diffractometer, n=2000)
+   hklpy2.utils.benchmark(sim, n=2000)
 
 Capturing results programmatically
 ------------------------------------
@@ -121,7 +160,7 @@ as a dict instead:
 
 .. code-block:: python
 
-   results = hklpy2.utils.benchmark(diffractometer, print=False)
+   results = hklpy2.utils.benchmark(sim, print=False)
    print(results["forward_ops_per_sec"])
    print(results["inverse_ops_per_sec"])
 
@@ -144,12 +183,12 @@ The dict contains:
    * - ``n``
      - Number of calls measured
    * - ``forward_ops_per_sec``
-     - ``forward()`` throughput (ops/sec)
+     - :meth:`~hklpy2.diffract.DiffractometerBase.forward` throughput (ops/sec)
    * - ``forward_ms_per_call``
-     - ``forward()`` latency (ms/call)
+     - :meth:`~hklpy2.diffract.DiffractometerBase.forward` latency (ms/call)
    * - ``inverse_ops_per_sec``
-     - ``inverse()`` throughput (ops/sec)
+     - :meth:`~hklpy2.diffract.DiffractometerBase.inverse` throughput (ops/sec)
    * - ``inverse_ms_per_call``
-     - ``inverse()`` latency (ms/call)
+     - :meth:`~hklpy2.diffract.DiffractometerBase.inverse` latency (ms/call)
    * - ``target_ops_per_sec``
      - Minimum target (2,000 ops/sec)

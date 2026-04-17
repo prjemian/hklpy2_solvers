@@ -202,21 +202,20 @@ The `Makefile` `pre` target also exports this variable automatically.
 
 ### Structure
 
-`RELEASE_NOTES.rst` always has an HTML comment block at the top (above the
+`RELEASE_NOTES.rst` always has an RST comment block at the top (above the
 most recent released version) that holds the **next** unreleased version:
 
 ```rst
-<!--
-0.1.9
-#####
+..
+    0.1.9
+    #####
 
-Expected release: tba
+    Expected release: tba
 
-Fixes
-~~~~~
+    Fixes
+    ~~~~~
 
-* Some change.  :issue:`N`
--->
+    * Some change.  :issue:`N`
 
 0.1.8
 #####
@@ -225,8 +224,9 @@ Released 2026-04-17.
 ...
 ```
 
-The HTML comment (`<!-- ... -->`) hides the block from Sphinx so unreleased
-notes never appear in published docs.  Only released versions are visible.
+The RST comment (``..`` directive with 4-space-indented content) hides the
+block from Sphinx so unreleased notes never appear in published docs.  Only
+released versions are visible.
 
 ### Adding entries during development
 
@@ -352,16 +352,16 @@ After the PR is merged and `main` is up to date locally:
 2. **Stamp the release date**: replace the `Expected release: tba` line in
    that block with `Released yyyy-mm-dd.` (today's date).
 3. **Create the next comment block**: immediately above the newly released
-   section, add a new `<!-- ... -->` block for the version after this one
+   section, add a new RST comment block for the version after this one
    (bump patch, or minor if appropriate), with `Expected release: tba` and
    no content entries yet:
    ```rst
-   <!--
-   0.1.X
-   #####
+   ..
+       0.1.X
+       #####
 
-   Expected release: tba
-   -->
+       Expected release: tba
+
    ```
 4. **Commit** directly on `main`:
    ```

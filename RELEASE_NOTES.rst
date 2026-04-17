@@ -23,6 +23,12 @@ Brief notes describing each release and what's new.
 Project `milestones <https://github.com/prjemian/hklpy2_solvers/milestones>`_
 describe future plans.
 
+..
+    0.1.8
+    #####
+
+    Expected release: tba
+
 0.1.7
 #####
 

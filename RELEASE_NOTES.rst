@@ -26,7 +26,7 @@ describe future plans.
 0.1.7
 #####
 
-.. comment -- development version, not yet released
+Released 2026-04-17.
 
 Fixes
 ~~~~~

@@ -195,15 +195,45 @@ The `Makefile` `pre` target also exports this variable automatically.
 
 - Runs formatting and linting locally
 - Adds/updates tests for changes
-- Updates `RELEASE_NOTES.rst` under the current development heading
+  - Adds entry to `RELEASE_NOTES.rst` inside the `<!-- ... -->` comment block for the next unreleased version
 - Marks PR as draft if large refactor
 
 ## Release Notes
 
+### Structure
+
+`RELEASE_NOTES.rst` always has an HTML comment block at the top (above the
+most recent released version) that holds the **next** unreleased version:
+
+```rst
+<!--
+0.1.9
+#####
+
+Expected release: tba
+
+Fixes
+~~~~~
+
+* Some change.  :issue:`N`
+-->
+
+0.1.8
+#####
+
+Released 2026-04-17.
+...
+```
+
+The HTML comment (`<!-- ... -->`) hides the block from Sphinx so unreleased
+notes never appear in published docs.  Only released versions are visible.
+
+### Adding entries during development
+
 - Update `RELEASE_NOTES.rst` as part of every PR that introduces a new
   feature, fix, enhancement, or maintenance change.
-- Add the entry under the current development version heading (the topmost
-  unreleased section inside the ``.. comment`` block).
+- Add the entry **inside the `<!-- ... -->` comment block** for the next
+  unreleased version at the top of the file.
 - Entries should be terse — one or two lines — and reference the issue or PR
   number with ``:issue:`N``` or ``:pr:`N```.
 - Use the appropriate subsection and keep subsections in the logical order
@@ -316,21 +346,35 @@ A Pull Request (PR) describes *how* an issue has been (or will be) addressed.
 
 After the PR is merged and `main` is up to date locally:
 
-1. **Stamp the release date** in `RELEASE_NOTES.rst`: replace the
-   ``.. comment -- development version, not yet released`` line under the
-   version heading with ``Released yyyy-mm-dd.`` (today's date).
-2. **Commit** directly on `main`:
+1. **Uncomment the pending block** in `RELEASE_NOTES.rst`: remove the
+   surrounding `<!--` and `-->` lines from the top block (the next unreleased
+   version).
+2. **Stamp the release date**: replace the `Expected release: tba` line in
+   that block with `Released yyyy-mm-dd.` (today's date).
+3. **Create the next comment block**: immediately above the newly released
+   section, add a new `<!-- ... -->` block for the version after this one
+   (bump patch, or minor if appropriate), with `Expected release: tba` and
+   no content entries yet:
+   ```rst
+   <!--
+   0.1.X
+   #####
+
+   Expected release: tba
+   -->
+   ```
+4. **Commit** directly on `main`:
    ```
    maint vX.Y.Z stamp release date in RELEASE_NOTES
    ```
-3. **Push** `main`.
-4. **Tag** the release at the patch, minor, or major level as appropriate.
+5. **Push** `main`.
+6. **Tag** the release at the patch, minor, or major level as appropriate.
    Since this project is pre-1.0, no bump to the major version:
    ```
    git tag -a vX.Y.Z -m "release X.Y.Z"
    git push origin vX.Y.Z
    ```
-5. The tag push triggers CI to build and publish the package.
+7. The tag push triggers CI to build and publish the package.
 
 ## Notes
 

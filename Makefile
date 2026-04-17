@@ -32,5 +32,13 @@ style :: isort pre
 realclean :: clean
 	/bin/rm -rf ./docs/build
 
+release:
+	@# Usage: make release VERSION=0.1.8 DATE=2026-04-17 NEXT=0.1.9
+	@test -n "$(VERSION)" || (echo "ERROR: VERSION is required.  Usage: make release VERSION=0.1.8 DATE=2026-04-17 NEXT=0.1.9"; exit 1)
+	@test -n "$(DATE)"    || (echo "ERROR: DATE is required.    Usage: make release VERSION=0.1.8 DATE=2026-04-17 NEXT=0.1.9"; exit 1)
+	@test -n "$(NEXT)"    || (echo "ERROR: NEXT is required.    Usage: make release VERSION=0.1.8 DATE=2026-04-17 NEXT=0.1.9"; exit 1)
+	@python scripts/stamp_release.py $(VERSION) $(DATE) $(NEXT)
+	@echo "RELEASE_NOTES.rst updated for v$(VERSION).  Review, then commit and tag."
+
 test:
-	pytest -q --lf ./src
+	pytest -q --lf ./tests

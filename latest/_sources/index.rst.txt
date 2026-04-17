@@ -4,16 +4,14 @@
 hklpy2-solvers
 ==============
 
-**hklpy2-solvers** provides solver adapters that plug into the
+**hklpy2-solvers** provides solvers that plug into the
 `hklpy2 <https://blueskyproject.io/hklpy2/>`_ diffractometer control
 framework via its entry-point interface.
 
 .. toctree::
    :hidden:
 
-   install
-   usage
-   geometries
+   guides
    api
    release_notes
 
@@ -31,6 +29,10 @@ framework via its entry-point interface.
    .. grid-item-card:: :ref:`geometries`
 
       Supported solver geometries and operating modes.
+
+   .. grid-item-card:: :ref:`howto_benchmark`
+
+      How to benchmark a solver geometry's forward/inverse throughput.
 
    .. grid-item-card:: API Reference
 

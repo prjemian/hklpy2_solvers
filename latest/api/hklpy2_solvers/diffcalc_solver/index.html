@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../../_static/documentation_options.js?v=bdf8c4a0"></script>
+    <script src="../../../_static/documentation_options.js?v=05dfcacf"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -145,22 +145,8 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../install.html">
-    Installation
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../usage.html">
-    Using hklpy2-solvers with hklpy2
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../geometries.html">
-    Geometries
+  <a class="nav-link nav-internal" href="../../../guides.html">
+    Guides
   </a>
 </li>
 
@@ -288,22 +274,8 @@
   <ul class="bd-navbar-elements navbar-nav">
     
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../install.html">
-    Installation
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../usage.html">
-    Using hklpy2-solvers with hklpy2
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../geometries.html">
-    Geometries
+  <a class="nav-link nav-internal" href="../../../guides.html">
+    Guides
   </a>
 </li>
 
@@ -461,15 +433,15 @@
                   
   <section id="module-hklpy2_solvers.diffcalc_solver">
 <span id="hklpy2-solvers-diffcalc-solver"></span><h1>hklpy2_solvers.diffcalc_solver<a class="headerlink" href="#module-hklpy2_solvers.diffcalc_solver" title="Link to this heading">#</a></h1>
-<p>Solver adapter wrapping <em>diffcalc-core</em> for hklpy2.</p>
+<p>Solver wrapping <em>diffcalc-core</em> for hklpy2.</p>
 <p>Provides the <a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffcalcSolver</span></code></a> class, which implements the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.backends.base.SolverBase</span></code> interface on top of the
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="(in hklpy2 v0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.backends.base.SolverBase</span></code></a> interface on top of the
 <a class="reference external" href="https://github.com/DiamondLightSource/diffcalc-core">diffcalc-core</a>
 library (You 1999, 4S+2D six-circle geometry).</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffcalcSolver</span></code></a>([geometry])</p></td>
-<td><p>Solver adapter for diffcalc-core (You 1999, 4S+2D six-circle geometry).</p></td>
+<td><p>Solver for diffcalc-core (You 1999, 4S+2D six-circle geometry).</p></td>
 </tr>
 </tbody>
 </table>
@@ -499,7 +471,7 @@ library (You 1999, 4S+2D six-circle geometry).</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffcalcSolver</span></code></a></p></td>
-<td><p>Solver adapter for diffcalc-core (You 1999, 4S+2D six-circle geometry).</p></td>
+<td><p>Solver for diffcalc-core (You 1999, 4S+2D six-circle geometry).</p></td>
 </tr>
 </tbody>
 </table>
@@ -510,10 +482,10 @@ library (You 1999, 4S+2D six-circle geometry).</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2_solvers.diffcalc_solver.</span></span><span class="sig-name descname"><span class="pre">DiffcalcSolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">GEOMETRY_NAME</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2_solvers/diffcalc_solver.html#DiffcalcSolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">hklpy2.backends.base.SolverBase</span></code></p>
-<p>Solver adapter for diffcalc-core (You 1999, 4S+2D six-circle geometry).</p>
+<dd><p>Bases: <a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="(in hklpy2 v0.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hklpy2.backends.base.SolverBase</span></code></a></p>
+<p>Solver for diffcalc-core (You 1999, 4S+2D six-circle geometry).</p>
 <p>Wraps <code class="xref py py-class docutils literal notranslate"><span class="pre">diffcalc.hkl.calc.HklCalculation</span></code> behind the
-<code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code> interface so that hklpy2
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="(in hklpy2 v0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a> interface so that hklpy2
 can use diffcalc-core for forward / inverse calculations.</p>
 <p>The only geometry supported is the You (1999) 4S+2D six-circle
 diffractometer with axes <code class="docutils literal notranslate"><span class="pre">mu,</span> <span class="pre">delta,</span> <span class="pre">nu,</span> <span class="pre">eta,</span> <span class="pre">chi,</span> <span class="pre">phi</span></code>.</p>
@@ -531,7 +503,7 @@ constant (<code class="docutils literal notranslate"><span class="pre">axes_c</s
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.addReflection">
-<span class="sig-name descname"><span class="pre">addReflection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reflection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.backends.typing.ReflectionDict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2_solvers/diffcalc_solver.html#DiffcalcSolver.addReflection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.addReflection" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">addReflection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reflection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.ReflectionDict" title="(in hklpy2 v0.6)"><span class="pre">hklpy2.backends.typing.ReflectionDict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2_solvers/diffcalc_solver.html#DiffcalcSolver.addReflection"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.addReflection" title="Link to this definition">#</a></dt>
 <dd><p>Add coordinates of a diffraction condition (a reflection).</p>
 </dd></dl>
 
@@ -547,7 +519,7 @@ by the current mode.  hklpy2’s <code class="docutils literal notranslate"><spa
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.calculate_UB">
-<span class="sig-name descname"><span class="pre">calculate_UB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.backends.typing.ReflectionDict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">hklpy2.backends.typing.ReflectionDict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">hklpy2.typing.Matrix3x3</span></span></span><a class="reference internal" href="../../../_modules/hklpy2_solvers/diffcalc_solver.html#DiffcalcSolver.calculate_UB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.calculate_UB" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">calculate_UB</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.ReflectionDict" title="(in hklpy2 v0.6)"><span class="pre">hklpy2.backends.typing.ReflectionDict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">r2</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.ReflectionDict" title="(in hklpy2 v0.6)"><span class="pre">hklpy2.backends.typing.ReflectionDict</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">hklpy2.typing.Matrix3x3</span></span></span><a class="reference internal" href="../../../_modules/hklpy2_solvers/diffcalc_solver.html#DiffcalcSolver.calculate_UB"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.calculate_UB" title="Link to this definition">#</a></dt>
 <dd><p>Calculate the UB matrix using two reflections (Busing &amp; Levy).</p>
 </dd></dl>
 
@@ -624,7 +596,7 @@ case, and the all-zeros motor position maps to <code class="docutils literal not
 
 <dl class="py method">
 <dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.refineLattice">
-<span class="sig-name descname"><span class="pre">refineLattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reflections</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><span class="pre">hklpy2.backends.typing.ReflectionDict</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">hklpy2.typing.NamedFloatDict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2_solvers/diffcalc_solver.html#DiffcalcSolver.refineLattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.refineLattice" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">refineLattice</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reflections</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/typing/index.html#hklpy2.backends.typing.ReflectionDict" title="(in hklpy2 v0.6)"><span class="pre">hklpy2.backends.typing.ReflectionDict</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">hklpy2.typing.NamedFloatDict</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.14)"><span class="pre">None</span></a></span></span><a class="reference internal" href="../../../_modules/hklpy2_solvers/diffcalc_solver.html#DiffcalcSolver.refineLattice"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.refineLattice" title="Link to this definition">#</a></dt>
 <dd><p>Refine lattice parameters from stored reflections.</p>
 </dd></dl>
 
@@ -646,7 +618,7 @@ input and is otherwise a no-op.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">set_reals</span></code> is not yet part of
-<code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code>; it was introduced via
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="(in hklpy2 v0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a>; it was introduced via
 the hklpy2 presets feature and is currently only defined on
 <code class="docutils literal notranslate"><span class="pre">HklSolver</span></code>.  Tracked upstream as
 <a class="reference external" href="https://github.com/bluesky/hklpy2/issues/347">bluesky/hklpy2#347</a>.</p>

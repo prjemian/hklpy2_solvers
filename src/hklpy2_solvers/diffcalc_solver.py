@@ -23,7 +23,7 @@ from diffcalc.ub.calc import UBCalculation
 from diffcalc.util import DiffcalcException
 from hklpy2.backends.base import SolverBase
 from hklpy2.backends.typing import ReflectionDict
-from hklpy2.misc import SolverError
+from hklpy2.exceptions import SolverError
 from hklpy2.typing import Matrix3x3, NamedFloatDict
 
 logger = logging.getLogger(__name__)
@@ -385,7 +385,7 @@ class DiffcalcSolver(SolverBase):
 
     @mode.setter
     def mode(self, value: str) -> None:
-        from hklpy2.misc import check_value_in_list
+        from hklpy2.utils import check_value_in_list
 
         check_value_in_list("Mode", value, self.modes, blank_ok=True)
         self._mode = value

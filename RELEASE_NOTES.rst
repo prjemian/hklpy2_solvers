@@ -31,6 +31,7 @@ describe future plans.
 Fixes
 ~~~~~
 
+* Fix ``ModuleNotFoundError: No module named 'hklpy2.misc'``; update imports to ``hklpy2.exceptions`` and ``hklpy2.utils`` for compatibility with hklpy2 ≥ 0.6.0.  :issue:`31`
 * Fix ``forward()`` raising ``AttributeError: no attribute 'set_reals'``; add ``set_reals()`` and ``UB`` setter, change default mode to ``4S+2D mu_chi_phi_fixed``.  :issue:`29`
 * Fix ``calc_UB()`` raising ``SolverError: Lattice must be set``; override ``sample`` setter to push lattice into diffcalc.  :issue:`25`
 * Fix ``wh()`` raising ``SolverError: UB matrix has not been set`` before reflections are added.  :issue:`24`

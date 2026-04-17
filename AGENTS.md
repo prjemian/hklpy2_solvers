@@ -312,6 +312,26 @@ A Pull Request (PR) describes *how* an issue has been (or will be) addressed.
   Agent: OpenCode (claudesonnet46)
   ```
 
+## Tagging a Release
+
+After the PR is merged and `main` is up to date locally:
+
+1. **Stamp the release date** in `RELEASE_NOTES.rst`: replace the
+   ``.. comment -- development version, not yet released`` line under the
+   version heading with ``Released yyyy-mm-dd.`` (today's date).
+2. **Commit** directly on `main`:
+   ```
+   maint vX.Y.Z stamp release date in RELEASE_NOTES
+   ```
+3. **Push** `main`.
+4. **Tag** the release at the patch, minor, or major level as appropriate.
+   Since this project is pre-1.0, no bump to the major version:
+   ```
+   git tag -a vX.Y.Z -m "release X.Y.Z"
+   git push origin vX.Y.Z
+   ```
+5. The tag push triggers CI to build and publish the package.
+
 ## Notes
 
 - Keep agent actions small, reversible, and reviewable.

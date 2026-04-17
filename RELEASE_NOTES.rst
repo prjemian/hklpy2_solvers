@@ -24,15 +24,20 @@ Project `milestones <https://github.com/prjemian/hklpy2_solvers/milestones>`_
 describe future plans.
 
 ..
-    0.1.8
+    0.1.9
     #####
 
     Expected release: tba
 
-    Maintenance
-    ~~~~~~~~~~~
+0.1.8
+#####
 
-    * Pin ``hklpy2>=0.6.0`` in dependencies; ``hklpy2.misc`` was removed in that release.  :issue:`31`
+Released 2026-04-17.
+
+Maintenance
+~~~~~~~~~~~
+
+* Pin ``hklpy2>=0.6.0`` in dependencies; ``hklpy2.misc`` was removed in that release.  :issue:`31`
 
 0.1.7
 #####

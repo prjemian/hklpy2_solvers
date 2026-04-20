@@ -29,6 +29,11 @@ describe future plans.
 
     Expected release: tba
 
+    New Features
+    ~~~~~~~~~~~~
+
+    * Add ``AdHocSolver`` wrapping the ``ad_hoc_diffractometer`` library.  :issue:`1`
+
     Fixes
     ~~~~~
 

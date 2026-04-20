@@ -25,6 +25,7 @@ classifiers = [
   "Topic :: Scientific/Engineering",
 ]
 dependencies = [
+  "ad_hoc_diffractometer",
   "diffcalc-core",
   "hklpy2>=0.6.0",
   "numpy",
@@ -58,6 +59,7 @@ issues = "https://github.com/prjemian/hklpy2_solvers/issues"
 source = "https://github.com/prjemian/hklpy2_solvers"
 
 [project.entry-points."hklpy2.solver"]
+ad_hoc = "hklpy2_solvers.ad_hoc_solver:AdHocSolver"
 diffcalc = "hklpy2_solvers.diffcalc_solver:DiffcalcSolver"
 
 [tool.coverage.run]

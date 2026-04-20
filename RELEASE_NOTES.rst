@@ -29,15 +29,20 @@ describe future plans.
 
     Expected release: tba
 
-    New Features
-    ~~~~~~~~~~~~
+0.2.0
+######
 
-    * Add ``AdHocSolver`` wrapping the ``ad_hoc_diffractometer`` library.  :issue:`1`
+Released 2026-04-20.
 
-    Fixes
-    ~~~~~
+New Features
+~~~~~~~~~~~~
 
-    * ``_summary_dict`` reports correct writable axes per mode.  :issue:`37`
+* Add ``AdHocSolver`` wrapping the ``ad_hoc_diffractometer`` library.  :issue:`1`
+
+Fixes
+~~~~~
+
+* ``_summary_dict`` reports correct writable axes per mode.  :issue:`37`
 
 0.1.9
 ######

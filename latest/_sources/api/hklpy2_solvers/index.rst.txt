@@ -15,6 +15,7 @@ Submodules
 .. toctree::
    :maxdepth: 1
 
+   /api/hklpy2_solvers/ad_hoc_solver/index
    /api/hklpy2_solvers/diffcalc_solver/index
 
 

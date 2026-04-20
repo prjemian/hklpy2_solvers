@@ -16,15 +16,14 @@ library.  All geometries registered with the library are available.
 import logging
 from typing import Any
 
+import ad_hoc_diffractometer as ahd
 import numpy as np
+from ad_hoc_diffractometer.mode import ConstraintViolation, EwaldSphereViolation
+from ad_hoc_diffractometer.refinement import refine_lattice_bl1967
 from hklpy2.backends.base import SolverBase
 from hklpy2.backends.typing import ReflectionDict
 from hklpy2.exceptions import SolverError
 from hklpy2.typing import KeyValueMap, Matrix3x3, NamedFloatDict
-
-import ad_hoc_diffractometer as ahd
-from ad_hoc_diffractometer.mode import ConstraintViolation, EwaldSphereViolation
-from ad_hoc_diffractometer.refinement import refine_lattice_bl1967
 
 logger = logging.getLogger(__name__)
 
@@ -67,8 +66,7 @@ class AdHocSolver(SolverBase):
         available = ahd.list_geometries()
         if geometry not in available:
             raise SolverError(
-                f"AdHocSolver does not support geometry {geometry!r}."
-                f"  Available: {sorted(available.keys())}"
+                f"AdHocSolver does not support geometry {geometry!r}.  Available: {sorted(available.keys())}"
             )
 
         # Extract factory kwargs that are not for SolverBase.
@@ -81,9 +79,7 @@ class AdHocSolver(SolverBase):
         self._geom = ahd.make_geometry(geometry, **factory_kwargs)
 
         # Cache axis names from geometry stages (stable after creation).
-        self._real_axes = [
-            s.name for s in self._geom.sample_stages + self._geom.detector_stages
-        ]
+        self._real_axes = [s.name for s in self._geom.sample_stages + self._geom.detector_stages]
 
         # Internal bookkeeping.
         self._reflections: list[ReflectionDict] = []
@@ -106,10 +102,7 @@ class AdHocSolver(SolverBase):
     def _ensure_ready(self) -> None:
         """Raise if the solver is not ready for forward (hkl -> angles)."""
         if self._geom.sample.UB is None:
-            raise SolverError(
-                "UB matrix has not been set."
-                "  Add reflections and call calculate_UB()."
-            )
+            raise SolverError("UB matrix has not been set.  Add reflections and call calculate_UB().")
         if self._wavelength is None:
             raise SolverError("Wavelength is not set.  Add a reflection first.")
 
@@ -136,9 +129,7 @@ class AdHocSolver(SolverBase):
     def addReflection(self, reflection: ReflectionDict) -> None:
         """Add coordinates of a diffraction condition (a reflection)."""
         if not isinstance(reflection, dict):
-            raise TypeError(
-                f"Must supply ReflectionDict (dict), received {reflection!r}"
-            )
+            raise TypeError(f"Must supply ReflectionDict (dict), received {reflection!r}")
         self._reflections.append(reflection)
 
         pseudos = reflection["pseudos"]
@@ -284,9 +275,7 @@ class AdHocSolver(SolverBase):
         beta = float(value.get("beta", 90.0))
         gamma = float(value.get("gamma", 90.0))
 
-        self._geom.sample.lattice = ahd.Lattice(
-            a=a, b=b, c=c, alpha=alpha, beta=beta, gamma=gamma
-        )
+        self._geom.sample.lattice = ahd.Lattice(a=a, b=b, c=c, alpha=alpha, beta=beta, gamma=gamma)
 
     @SolverBase.sample.setter
     def sample(self, value: dict) -> None:
@@ -360,15 +349,11 @@ class AdHocSolver(SolverBase):
         if not isinstance(reals, dict):
             raise TypeError(f"Must supply dict, received {reals!r}")
         if not all(isinstance(v, (int, float)) for v in reals.values()):
-            raise TypeError(
-                f"All values must be numbers.  Received: {reals!r}"
-            )
+            raise TypeError(f"All values must be numbers.  Received: {reals!r}")
         for axis_name, angle in reals.items():
             self._geom.set_angle(axis_name, float(angle))
 
-    def refineLattice(
-        self, reflections: list[ReflectionDict]
-    ) -> NamedFloatDict | None:
+    def refineLattice(self, reflections: list[ReflectionDict]) -> NamedFloatDict | None:
         """Refine lattice parameters from stored reflections."""
         if len(self._reflections) < 3:
             return None

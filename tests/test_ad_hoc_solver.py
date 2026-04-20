@@ -594,8 +594,7 @@ def test_forward_inverse_roundtrip(parms, context):
             hkl = solver.inverse(sol)
             for axis in ("h", "k", "l"):
                 assert abs(hkl[axis] - parms["pseudos"][axis]) < 0.01, (
-                    f"Roundtrip mismatch on {axis}: "
-                    f"expected {parms['pseudos'][axis]}, got {hkl[axis]}"
+                    f"Roundtrip mismatch on {axis}: expected {parms['pseudos'][axis]}, got {hkl[axis]}"
                 )
 
 

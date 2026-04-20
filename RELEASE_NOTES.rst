@@ -29,6 +29,11 @@ describe future plans.
 
     Expected release: tba
 
+    Fixes
+    ~~~~~
+
+    * ``_summary_dict`` reports correct writable axes per mode.  :issue:`37`
+
 0.1.9
 ######
 

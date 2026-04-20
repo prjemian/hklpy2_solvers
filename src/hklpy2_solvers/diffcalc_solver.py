@@ -24,7 +24,7 @@ from diffcalc.util import DiffcalcException
 from hklpy2.backends.base import SolverBase
 from hklpy2.backends.typing import ReflectionDict
 from hklpy2.exceptions import SolverError
-from hklpy2.typing import Matrix3x3, NamedFloatDict
+from hklpy2.typing import KeyValueMap, Matrix3x3, NamedFloatDict
 
 logger = logging.getLogger(__name__)
 
@@ -273,6 +273,31 @@ class DiffcalcSolver(SolverBase):
         This geometry has no extra parameters; always returns ``{}``.
         """
         return {}
+
+    @property
+    def _summary_dict(self) -> KeyValueMap:
+        """Return a summary of the geometry (modes, axes).
+
+        Overrides :attr:`SolverBase._summary_dict` so that each mode
+        reports only the axes actually computed by :meth:`forward`
+        (via :attr:`axes_w`) rather than listing every real axis as
+        writable.
+        """
+        description: dict[str, Any] = {
+            "name": self.geometry,
+            "pseudos": self.pseudo_axis_names,
+            "reals": self.real_axis_names,
+            "modes": {},
+        }
+        original_mode = self.mode
+        for mode in self.modes:
+            self.mode = mode
+            description["modes"][mode] = {
+                "extras": [],
+                "reals": self.axes_w,
+            }
+        self.mode = original_mode
+        return description
 
     def forward(self, pseudos: NamedFloatDict) -> list[NamedFloatDict]:
         """Compute motor positions from pseudo-axis values (hkl -> angles)."""

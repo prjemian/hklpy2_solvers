@@ -127,11 +127,11 @@ class DiffcalcSolver(SolverBase):
         super().__init__(geometry, **kwargs)
 
         # Apply default mode if none was set via kwargs.
-        # Use mu_chi_phi_fixed: a 3-sample mode with no reference-vector
-        # constraints, robust for most reflections.  See geometries.rst for
-        # why bisector modes are not suitable as a default.
+        # Use bisect_eta_fixed nu_fixed: vertical bisector mode
+        # (eta = delta/2, eta=0, nu=0).  Equivalent to bisecting_vertical
+        # in E6C terminology.  See geometries.rst for details.
         if not self.mode and self.modes:
-            self.mode = "4S+2D mu_chi_phi_fixed"
+            self.mode = "4S+2D bisect_eta_fixed nu_fixed"
 
     # ------------------------------------------------------------------
     # Internal helpers

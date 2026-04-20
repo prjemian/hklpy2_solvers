@@ -23,14 +23,26 @@ Available solvers
 
 .. list-table::
    :header-rows: 1
-   :widths: 20 30 50
+   :widths: 15 25 60
 
    * - Solver name
-     - Geometry name
-     - Common name
+     - Geometry name(s)
+     - Description
    * - ``diffcalc``
      - :ref:`diffcalc_4S_2D <geometry.diffcalc_4S_2D>`
-     - *psic* (You 1999 six-circle)
+     - You (1999) six-circle geometry via
+       `diffcalc-core <https://github.com/DiamondLightSource/diffcalc-core>`_.
+       23 operating modes.
+   * - ``ad_hoc``
+     - :ref:`fourcv <geometry.fourcv>`, :ref:`fourch <geometry.fourch>`,
+       :ref:`psic <geometry.psic>`, :ref:`sixc <geometry.sixc>`,
+       :ref:`fivec <geometry.fivec>`,
+       :ref:`kappa4cv <geometry.kappa4cv>`, :ref:`kappa4ch <geometry.kappa4ch>`,
+       :ref:`kappa6c <geometry.kappa6c>`,
+       :ref:`zaxis <geometry.zaxis>`, :ref:`s2d2 <geometry.s2d2>`
+     - 10 diffractometer geometries via
+       `ad_hoc_diffractometer <https://github.com/prjemian/ad_hoc_diffractometer>`_.
+       2--12 modes per geometry.
 
 See :ref:`geometries` for the full description of each geometry and its
 operating modes.
@@ -46,16 +58,27 @@ select the backend:
 
    import hklpy2
 
+   # Using the diffcalc solver (You 1999 six-circle)
    psic = hklpy2.creator(
        solver="diffcalc",
        geometry="diffcalc_4S_2D",
        name="psic",
    )
 
-The object ``psic`` is a fully-functional ``hklpy2`` diffractometer with
-simulated motor positioners for all six real axes
-(``mu``, ``delta``, ``nu``, ``eta``, ``chi``, ``phi``) and the three
+   # Using the ad_hoc solver (Busing & Levy four-circle vertical)
+   fourc = hklpy2.creator(
+       solver="ad_hoc",
+       geometry="fourcv",
+       name="fourc",
+   )
+
+The resulting objects are fully-functional ``hklpy2`` diffractometers with
+simulated motor positioners for all real axes and the three
 reciprocal-space pseudo axes (``h``, ``k``, ``l``).
+
+See :ref:`guide_diffcalc` and :ref:`guide_ad_hoc` for step-by-step
+instructions on orienting a sample and computing positions with each
+solver.
 
 Further use
 -----------

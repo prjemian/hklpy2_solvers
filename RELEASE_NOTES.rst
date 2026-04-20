@@ -29,6 +29,13 @@ describe future plans.
 
     Expected release: tba
 
+    Enhancements
+    ~~~~~~~~~~~~
+
+    * Add all ``ad_hoc`` solver geometries (10 geometries, modes, and axes) to ``geometries.rst``; add ``ad_hoc`` solver to the "Available solvers" table in ``usage.rst``.  :issue:`40`
+    * Add per-solver how-to guides (``guide_diffcalc.rst``, ``guide_ad_hoc.rst``) following the Diataxis framework.  :issue:`40`
+    * Change ``diffcalc`` default mode from ``4S+2D mu_chi_phi_fixed`` to ``4S+2D bisect_eta_fixed nu_fixed`` (vertical bisector).  :issue:`40`
+
 0.2.0
 ######
 

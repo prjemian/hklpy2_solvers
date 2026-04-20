@@ -51,6 +51,12 @@ Ready-to-use configurations are provided for each supported geometry:
      - :ref:`diffcalc_4S_2D <geometry.diffcalc_4S_2D>`
      - :download:`diffcalc_4s_2d.yml <_static/diffcalc_4s_2d.yml>`
 
+.. note::
+
+   Configuration files for ``ad_hoc`` solver geometries are not yet
+   provided.  You can create your own using the :ref:`guide_ad_hoc`
+   workflow and :meth:`~hklpy2.diffract.DiffractometerBase.export`.
+
 Download the file for your geometry, save it alongside your script, then
 run:
 
@@ -66,7 +72,7 @@ Example output::
    Diffractometer benchmark
      solver:     diffcalc
      geometry:   diffcalc_4S_2D
-     mode:       4S+2D mu_chi_phi_fixed
+     mode:       4S+2D bisect_eta_fixed nu_fixed
      wavelength: 1.54
      calls:      500
 

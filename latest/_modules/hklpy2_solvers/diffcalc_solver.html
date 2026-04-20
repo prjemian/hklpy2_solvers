@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hklpy2_solvers.diffcalc_solver &#8212; hklpy2-solvers 0.1</title>
+    <title>hklpy2_solvers.diffcalc_solver &#8212; hklpy2-solvers 0.2</title>
   
   
   
@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="../../_static/documentation_options.js?v=f3b57163"></script>
+    <script src="../../_static/documentation_options.js?v=fced35cb"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1" />
+  <meta name="docsearch:version" content="0.2" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -127,7 +127,7 @@
   
   
   
-    <p class="title logo__title">hklpy2-solvers 0.1</p>
+    <p class="title logo__title">hklpy2-solvers 0.2</p>
   
 </a></div>
     
@@ -533,11 +533,11 @@
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Apply default mode if none was set via kwargs.</span>
-        <span class="c1"># Use mu_chi_phi_fixed: a 3-sample mode with no reference-vector</span>
-        <span class="c1"># constraints, robust for most reflections.  See geometries.rst for</span>
-        <span class="c1"># why bisector modes are not suitable as a default.</span>
+        <span class="c1"># Use bisect_eta_fixed nu_fixed: vertical bisector mode</span>
+        <span class="c1"># (eta = delta/2, eta=0, nu=0).  Equivalent to bisecting_vertical</span>
+        <span class="c1"># in E6C terminology.  See geometries.rst for details.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modes</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;4S+2D mu_chi_phi_fixed&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;4S+2D bisect_eta_fixed nu_fixed&quot;</span>
 
     <span class="c1"># ------------------------------------------------------------------</span>
     <span class="c1"># Internal helpers</span>

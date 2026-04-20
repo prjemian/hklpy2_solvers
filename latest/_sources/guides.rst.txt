@@ -12,6 +12,8 @@ Each guide assumes you have already :ref:`installed <install>` the package.
 
    install
    usage
+   guide_diffcalc
+   guide_ad_hoc
    geometries
    howto_benchmark
 
@@ -25,6 +27,16 @@ Each guide assumes you have already :ref:`installed <install>` the package.
 
       Create a diffractometer, orient a sample, and compute reciprocal-space
       positions using hklpy2.
+
+   .. grid-item-card:: :ref:`guide_diffcalc`
+
+      Step-by-step guide to orienting a sample and computing positions
+      with the ``diffcalc`` solver (You 1999 six-circle).
+
+   .. grid-item-card:: :ref:`guide_ad_hoc`
+
+      Step-by-step guide to creating diffractometers with the ``ad_hoc``
+      solver (10 geometries from four-circle to kappa six-circle).
 
    .. grid-item-card:: :ref:`geometries`
 

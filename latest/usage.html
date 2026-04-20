@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Using hklpy2-solvers with hklpy2 &#8212; hklpy2-solvers 0.1</title>
+    <title>Using hklpy2-solvers with hklpy2 &#8212; hklpy2-solvers 0.2</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=f3b57163"></script>
+    <script src="_static/documentation_options.js?v=fced35cb"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,11 +60,11 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Geometries" href="geometries.html" />
+    <link rel="next" title="How to use the diffcalc solver" href="guide_diffcalc.html" />
     <link rel="prev" title="Installation" href="install.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1" />
+  <meta name="docsearch:version" content="0.2" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -130,7 +130,7 @@
   
   
   
-    <p class="title logo__title">hklpy2-solvers 0.1</p>
+    <p class="title logo__title">hklpy2-solvers 0.2</p>
   
 </a></div>
     
@@ -366,6 +366,8 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Using hklpy2-solvers with hklpy2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide_diffcalc.html">How to use the <code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide_ad_hoc.html">How to use the <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="geometries.html">Geometries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howto_benchmark.html">How to benchmark a solver geometry</a></li>
 </ul>
@@ -445,20 +447,33 @@ immediately.</p>
 <h2>Available solvers<a class="headerlink" href="#available-solvers" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="table">
 <colgroup>
-<col style="width: 20.0%" />
-<col style="width: 30.0%" />
-<col style="width: 50.0%" />
+<col style="width: 15.0%" />
+<col style="width: 25.0%" />
+<col style="width: 60.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Solver name</p></th>
-<th class="head"><p>Geometry name</p></th>
-<th class="head"><p>Common name</p></th>
+<th class="head"><p>Geometry name(s)</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">diffcalc</span></code></p></td>
 <td><p><a class="reference internal" href="geometries.html#geometry-diffcalc-4s-2d"><span class="std std-ref">diffcalc_4S_2D</span></a></p></td>
-<td><p><em>psic</em> (You 1999 six-circle)</p></td>
+<td><p>You (1999) six-circle geometry via
+<a class="reference external" href="https://github.com/DiamondLightSource/diffcalc-core">diffcalc-core</a>.
+23 operating modes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code></p></td>
+<td><p><a class="reference internal" href="geometries.html#geometry-fourcv"><span class="std std-ref">fourcv</span></a>, <a class="reference internal" href="geometries.html#geometry-fourch"><span class="std std-ref">fourch</span></a>,
+<a class="reference internal" href="geometries.html#geometry-psic"><span class="std std-ref">psic</span></a>, <a class="reference internal" href="geometries.html#geometry-sixc"><span class="std std-ref">sixc</span></a>,
+<a class="reference internal" href="geometries.html#geometry-fivec"><span class="std std-ref">fivec</span></a>,
+<a class="reference internal" href="geometries.html#geometry-kappa4cv"><span class="std std-ref">kappa4cv</span></a>, <a class="reference internal" href="geometries.html#geometry-kappa4ch"><span class="std std-ref">kappa4ch</span></a>,
+<a class="reference internal" href="geometries.html#geometry-kappa6c"><span class="std std-ref">kappa6c</span></a>,
+<a class="reference internal" href="geometries.html#geometry-zaxis"><span class="std std-ref">zaxis</span></a>, <a class="reference internal" href="geometries.html#geometry-s2d2"><span class="std std-ref">s2d2</span></a></p></td>
+<td><p>10 diffractometer geometries via
+<a class="reference external" href="https://github.com/prjemian/ad_hoc_diffractometer">ad_hoc_diffractometer</a>.
+2–12 modes per geometry.</p></td>
 </tr>
 </tbody>
 </table>
@@ -473,17 +488,27 @@ geometry provided by this package.  The <code class="docutils literal notranslat
 select the backend:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
+<span class="c1"># Using the diffcalc solver (You 1999 six-circle)</span>
 <span class="n">psic</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
     <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;diffcalc&quot;</span><span class="p">,</span>
     <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;diffcalc_4S_2D&quot;</span><span class="p">,</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;psic&quot;</span><span class="p">,</span>
 <span class="p">)</span>
+
+<span class="c1"># Using the ad_hoc solver (Busing &amp; Levy four-circle vertical)</span>
+<span class="n">fourc</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;ad_hoc&quot;</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;fourcv&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;fourc&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 </pre></div>
 </div>
-<p>The object <code class="docutils literal notranslate"><span class="pre">psic</span></code> is a fully-functional <code class="docutils literal notranslate"><span class="pre">hklpy2</span></code> diffractometer with
-simulated motor positioners for all six real axes
-(<code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">delta</span></code>, <code class="docutils literal notranslate"><span class="pre">nu</span></code>, <code class="docutils literal notranslate"><span class="pre">eta</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code>) and the three
+<p>The resulting objects are fully-functional <code class="docutils literal notranslate"><span class="pre">hklpy2</span></code> diffractometers with
+simulated motor positioners for all real axes and the three
 reciprocal-space pseudo axes (<code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code>).</p>
+<p>See <a class="reference internal" href="guide_diffcalc.html#guide-diffcalc"><span class="std std-ref">How to use the diffcalc solver</span></a> and <a class="reference internal" href="guide_ad_hoc.html#guide-ad-hoc"><span class="std std-ref">How to use the ad_hoc solver</span></a> for step-by-step
+instructions on orienting a sample and computing positions with each
+solver.</p>
 </section>
 <section id="further-use">
 <h2>Further use<a class="headerlink" href="#further-use" title="Link to this heading">#</a></h2>
@@ -515,11 +540,11 @@ the full user guide.</p>
       </div>
     </a>
     <a class="right-next"
-       href="geometries.html"
+       href="guide_diffcalc.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Geometries</p>
+        <p class="prev-next-title">How to use the <code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

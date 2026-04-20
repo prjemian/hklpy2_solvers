@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>How to benchmark a solver geometry &#8212; hklpy2-solvers 0.1</title>
+    <title>How to benchmark a solver geometry &#8212; hklpy2-solvers 0.2</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=f3b57163"></script>
+    <script src="_static/documentation_options.js?v=fced35cb"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@
     <link rel="prev" title="Geometries" href="geometries.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1" />
+  <meta name="docsearch:version" content="0.2" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -130,7 +130,7 @@
   
   
   
-    <p class="title logo__title">hklpy2-solvers 0.1</p>
+    <p class="title logo__title">hklpy2-solvers 0.2</p>
   
 </a></div>
     
@@ -366,6 +366,8 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Using hklpy2-solvers with hklpy2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide_diffcalc.html">How to use the <code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide_ad_hoc.html">How to use the <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver</a></li>
 <li class="toctree-l1"><a class="reference internal" href="geometries.html">Geometries</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">How to benchmark a solver geometry</a></li>
 </ul>
@@ -480,6 +482,12 @@ Ready-to-use configurations are provided for each supported geometry:</p>
 </tbody>
 </table>
 </div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Configuration files for <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver geometries are not yet
+provided.  You can create your own using the <a class="reference internal" href="guide_ad_hoc.html#guide-ad-hoc"><span class="std std-ref">How to use the ad_hoc solver</span></a>
+workflow and <a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.export" title="(in hklpy2 v0.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">export()</span></code></a>.</p>
+</div>
 <p>Download the file for your geometry, save it alongside your script, then
 run:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
@@ -492,7 +500,7 @@ run:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Diffractometer</span> <span class="n">benchmark</span>
   <span class="n">solver</span><span class="p">:</span>     <span class="n">diffcalc</span>
   <span class="n">geometry</span><span class="p">:</span>   <span class="n">diffcalc_4S_2D</span>
-  <span class="n">mode</span><span class="p">:</span>       <span class="mi">4</span><span class="n">S</span><span class="o">+</span><span class="mi">2</span><span class="n">D</span> <span class="n">mu_chi_phi_fixed</span>
+  <span class="n">mode</span><span class="p">:</span>       <span class="mi">4</span><span class="n">S</span><span class="o">+</span><span class="mi">2</span><span class="n">D</span> <span class="n">bisect_eta_fixed</span> <span class="n">nu_fixed</span>
   <span class="n">wavelength</span><span class="p">:</span> <span class="mf">1.54</span>
   <span class="n">calls</span><span class="p">:</span>      <span class="mi">500</span>
 

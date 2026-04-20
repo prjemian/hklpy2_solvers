@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Geometries &#8212; hklpy2-solvers 0.1</title>
+    <title>Geometries &#8212; hklpy2-solvers 0.2</title>
   
   
   
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=7f76b32a3354e82990f2" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=7f76b32a3354e82990f2" />
 
-    <script src="_static/documentation_options.js?v=f3b57163"></script>
+    <script src="_static/documentation_options.js?v=fced35cb"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,10 +61,10 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="How to benchmark a solver geometry" href="howto_benchmark.html" />
-    <link rel="prev" title="Using hklpy2-solvers with hklpy2" href="usage.html" />
+    <link rel="prev" title="How to use the ad_hoc solver" href="guide_ad_hoc.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.1" />
+  <meta name="docsearch:version" content="0.2" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -130,7 +130,7 @@
   
   
   
-    <p class="title logo__title">hklpy2-solvers 0.1</p>
+    <p class="title logo__title">hklpy2-solvers 0.2</p>
   
 </a></div>
     
@@ -366,6 +366,8 @@
   <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Using hklpy2-solvers with hklpy2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide_diffcalc.html">How to use the <code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guide_ad_hoc.html">How to use the <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Geometries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="howto_benchmark.html">How to benchmark a solver geometry</a></li>
 </ul>
@@ -433,13 +435,44 @@
 <p>Each solver registered under the <code class="docutils literal notranslate"><span class="pre">hklpy2.solver</span></code> entry-point group
 exposes one or more named geometries.  The geometry name is passed to
 the solver when it is instantiated by hklpy2.</p>
+<nav class="contents local" id="on-this-page">
+<p class="topic-title">On this page</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#diffcalc-solver" id="id26"><code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver</a></p>
+<ul>
+<li><p><a class="reference internal" href="#diffcalc-4s-2d" id="id27">diffcalc_4S_2D</a></p></li>
+</ul>
+</li>
+<li><p><a class="reference internal" href="#ad-hoc-solver" id="id28"><code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver</a></p>
+<ul>
+<li><p><a class="reference internal" href="#fourcv" id="id29">fourcv</a></p></li>
+<li><p><a class="reference internal" href="#fourch" id="id30">fourch</a></p></li>
+<li><p><a class="reference internal" href="#psic" id="id31">psic</a></p></li>
+<li><p><a class="reference internal" href="#sixc" id="id32">sixc</a></p></li>
+<li><p><a class="reference internal" href="#fivec" id="id33">fivec</a></p></li>
+<li><p><a class="reference internal" href="#kappa4cv" id="id34">kappa4cv</a></p></li>
+<li><p><a class="reference internal" href="#kappa4ch" id="id35">kappa4ch</a></p></li>
+<li><p><a class="reference internal" href="#kappa6c" id="id36">kappa6c</a></p></li>
+<li><p><a class="reference internal" href="#zaxis" id="id37">zaxis</a></p></li>
+<li><p><a class="reference internal" href="#s2d2" id="id38">s2d2</a></p></li>
+<li><p><a class="reference internal" href="#kappa-geometries" id="id39">Kappa geometries</a></p></li>
+<li><p><a class="reference internal" href="#id3" id="id40">Extensibility</a></p></li>
+</ul>
+</li>
+</ul>
+</nav>
 <section id="diffcalc-solver">
-<span id="geometry-diffcalc-4s-2d"></span><h2>diffcalc solver<a class="headerlink" href="#diffcalc-solver" title="Link to this heading">#</a></h2>
+<span id="geometry-diffcalc-4s-2d"></span><h2><a class="toc-backref" href="#id26" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver</a><a class="headerlink" href="#diffcalc-solver" title="Link to this heading">#</a></h2>
 <p><a class="reference internal" href="api/hklpy2_solvers/diffcalc_solver/index.html#hklpy2_solvers.diffcalc_solver.DiffcalcSolver" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffcalcSolver</span></code></a></p>
 <p>Wraps <a class="reference external" href="https://github.com/DiamondLightSource/diffcalc-core">diffcalc-core</a>
 (You 1999).</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id2">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">diffcalc_4S_2D</span></code> geometry</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<section id="diffcalc-4s-2d">
+<h3><a class="toc-backref" href="#id27" role="doc-backlink">diffcalc_4S_2D</a><a class="headerlink" href="#diffcalc-4s-2d" title="Link to this heading">#</a></h3>
+<ol class="upperalpha simple" start="8">
+<li><p>You, <em>J. Appl. Cryst.</em> <strong>32</strong>, 614 (1999) six-circle geometry.</p></li>
+</ol>
+<div class="pst-scrollable-table-container"><table class="table" id="id5">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">diffcalc_4S_2D</span></code> geometry</span><a class="headerlink" href="#id5" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -459,47 +492,130 @@ the solver when it is instantiated by hklpy2.</p>
 <tr class="row-even"><td><p>Pseudo axes</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
 </tr>
-<tr class="row-odd"><td><p>Reference</p></td>
-<td><ol class="upperalpha simple" start="8">
-<li><p>You, <em>J. Appl. Cryst.</em> <strong>32</strong>, 614 (1999)</p></li>
-</ol>
-</td>
+<tr class="row-odd"><td><p>Default mode</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_eta_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <section id="operating-modes">
-<h3>Operating modes<a class="headerlink" href="#operating-modes" title="Link to this heading">#</a></h3>
+<h4>Operating modes<a class="headerlink" href="#operating-modes" title="Link to this heading">#</a></h4>
 <p>The diffcalc solver selects three diffractometer constraints to fix for
 each operating mode.  This geometry has no extra parameters
 (<code class="docutils literal notranslate"><span class="pre">extras</span></code> is always <code class="docutils literal notranslate"><span class="pre">{}</span></code>).  The axes computed by <code class="docutils literal notranslate"><span class="pre">forward()</span></code>
 (<code class="docutils literal notranslate"><span class="pre">axes_w</span></code>) are all real axes not listed as fixed constraints; the
 remaining axes are held constant (<code class="docutils literal notranslate"><span class="pre">axes_c</span></code>, derived by hklpy2).</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode name</p></th>
+<th class="head"><p>Fixed constraints</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_fixed</span> <span class="pre">a_eq_b</span> <span class="pre">delta_fixed</span></code></p></td>
+<td><p>delta=0, a_eq_b, mu=0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_fixed</span> <span class="pre">a_eq_b</span> <span class="pre">nu_fixed</span></code></p></td>
+<td><p>nu=0, a_eq_b, mu=0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_fixed</span> <span class="pre">a_eq_b</span> <span class="pre">delta_fixed</span></code></p></td>
+<td><p>delta=0, a_eq_b, eta=0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">phi_fixed</span> <span class="pre">psi_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
+<td><p>nu=0, psi=0, phi=0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">chi_phi_fixed</span> <span class="pre">delta_fixed</span></code></p></td>
+<td><p>delta=0, chi=0, phi=0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_eta_fixed</span> <span class="pre">delta_fixed</span></code></p></td>
+<td><p>delta=0, mu=0, eta=0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_phi_fixed</span> <span class="pre">delta_fixed</span></code></p></td>
+<td><p>delta=0, mu=0, phi=0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_chi_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
+<td><p>nu=0, mu=0, chi=0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_phi_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
+<td><p>nu=0, eta=0, phi=0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_chi_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
+<td><p>nu=0, eta=0, chi=0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_mu_fixed</span> <span class="pre">delta_fixed</span></code></p></td>
+<td><p>delta=0, bisect, mu=0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_eta_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
+<td><p>nu=0, bisect, eta=0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_omega_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
+<td><p>nu=0, bisect, omega=0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">chi_phi_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
+<td><p>a_eq_b, chi=0, phi=0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">chi_eta_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
+<td><p>a_eq_b, chi=0, eta=0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">chi_mu_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
+<td><p>a_eq_b, chi=0, mu=0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_eta_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
+<td><p>a_eq_b, mu=0, eta=0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_phi_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
+<td><p>a_eq_b, mu=0, phi=0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_phi_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
+<td><p>a_eq_b, eta=0, phi=0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_chi_phi_fixed</span></code></p></td>
+<td><p>eta=0, chi=0, phi=0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_chi_phi_fixed</span></code></p></td>
+<td><p>mu=0, chi=0, phi=0</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_eta_phi_fixed</span></code></p></td>
+<td><p>mu=0, eta=0, phi=0</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_eta_chi_fixed</span></code></p></td>
+<td><p>mu=0, eta=0, chi=0</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </section>
 <section id="default-mode">
-<h3>Default mode<a class="headerlink" href="#default-mode" title="Link to this heading">#</a></h3>
-<p>The default mode is <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_chi_phi_fixed</span></code> (mu=0, chi=0, phi=0).  This is
-a 3-sample mode with no reference-vector constraints, making it robust for the
-widest range of reflections.  It is equivalent to a basic 4-circle geometry
-operating in the vertical scattering plane.</p>
+<h4>Default mode<a class="headerlink" href="#default-mode" title="Link to this heading">#</a></h4>
+<p>The default mode is <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_eta_fixed</span> <span class="pre">nu_fixed</span></code> (bisect,
+eta=0, nu=0).  This is equivalent to <code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code> in E6C
+terminology: scattering stays in the vertical plane with the sample
+angle bisecting the detector angle (<code class="docutils literal notranslate"><span class="pre">eta</span> <span class="pre">=</span> <span class="pre">delta/2</span></code>).</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>Why not a bisector mode?</strong></p>
+<p><strong>Bisector modes</strong></p>
 <p>Following You (1999) Figure 1 (see also
 <a class="reference external" href="https://diffcalc-core.readthedocs.io">diffcalc-core docs</a>),
 <code class="docutils literal notranslate"><span class="pre">nu</span></code> rotates about the vertical axis and swings the detector
 <strong>horizontally</strong>; <code class="docutils literal notranslate"><span class="pre">delta</span></code> rotates about the horizontal axis and swings
 the detector <strong>vertically</strong>.</p>
-<p>A <code class="docutils literal notranslate"><span class="pre">bissector_vertical</span></code> equivalent (E6C terminology) would require
-<code class="docutils literal notranslate"><span class="pre">bisect=True</span></code> + <code class="docutils literal notranslate"><span class="pre">mu=0</span></code> + <code class="docutils literal notranslate"><span class="pre">nu=0</span></code>, but that combination is not among
-diffcalc’s available modes.  A <code class="docutils literal notranslate"><span class="pre">bissector_horizontal</span></code> equivalent would
-require a <code class="docutils literal notranslate"><span class="pre">mu</span> <span class="pre">=</span> <span class="pre">nu/2</span></code> bisector condition; diffcalc’s <code class="docutils literal notranslate"><span class="pre">bisect</span></code> constraint
-implements only <code class="docutils literal notranslate"><span class="pre">eta</span> <span class="pre">=</span> <span class="pre">delta/2</span></code> (vertical bisector), so that is also
-unavailable.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">bisect</span></code> constraint implements <code class="docutils literal notranslate"><span class="pre">eta</span> <span class="pre">=</span> <span class="pre">delta/2</span></code> (vertical
+bisector).  <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_eta_fixed</span> <span class="pre">nu_fixed</span></code> (bisect + eta=0 +
+nu=0) is equivalent to a <code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code> mode: scattering
+stays in the vertical plane with the sample bisecting the detector
+angle.  <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_mu_fixed</span> <span class="pre">delta_fixed</span></code> (bisect + mu=0 +
+delta=0) is the horizontal counterpart.</p>
+<p>In the mode name the <em>bisected sample axis</em> is stated; the
+corresponding <em>detector axis</em> is implied by the bisect constraint
+(<code class="docutils literal notranslate"><span class="pre">delta</span></code>).</p>
 </div>
 </section>
 <section id="mode-naming-convention">
-<h3>Mode naming convention<a class="headerlink" href="#mode-naming-convention" title="Link to this heading">#</a></h3>
+<h4>Mode naming convention<a class="headerlink" href="#mode-naming-convention" title="Link to this heading">#</a></h4>
 <p>All mode names follow the pattern <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">&lt;constraints&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">4S+2D</span></code>
 identifies the You (1999) geometry and the suffix encodes the three fixed
 constraints:</p>
@@ -509,13 +625,13 @@ zero.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">a_eq_b</span></code> — reference-vector constraint: azimuthal reference equals
 scattering vector direction.  <strong>Caution:</strong> singular when the scattering
 vector is parallel to the reference vector; avoid as a default.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">bisect</span></code> — bisector condition: <code class="docutils literal notranslate"><span class="pre">eta</span> <span class="pre">=</span> <span class="pre">delta/2</span></code>.  Implements the vertical
-bisector only; no horizontal bisector equivalent exists in diffcalc.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bisect</span></code> — bisector condition: <code class="docutils literal notranslate"><span class="pre">eta</span> <span class="pre">=</span> <span class="pre">delta/2</span></code>.  The bisected sample
+axis (e.g. <code class="docutils literal notranslate"><span class="pre">eta</span></code>) is named; the detector axis (<code class="docutils literal notranslate"><span class="pre">delta</span></code>) is implied.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">psi_fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">omega_fixed</span></code> — azimuthal or omega angle fixed at zero.</p></li>
 </ul>
 </section>
 <section id="extensibility">
-<h3>Extensibility<a class="headerlink" href="#extensibility" title="Link to this heading">#</a></h3>
+<h4>Extensibility<a class="headerlink" href="#extensibility" title="Link to this heading">#</a></h4>
 <p>The available constraint names are fixed by diffcalc-core and cannot be
 changed without modifying that library.  Each constraint name has specific
 mathematical implementation inside diffcalc-core’s solver — the name is merely
@@ -523,6 +639,690 @@ a handle for the underlying algebra that reduces the degrees of freedom during
 position calculation.  A new constraint (e.g. <code class="docutils literal notranslate"><span class="pre">mu</span> <span class="pre">=</span> <span class="pre">nu/2</span></code>) would require
 new code in diffcalc-core, not just a new entry in <code class="docutils literal notranslate"><span class="pre">_MODES</span></code>.  From the
 user’s perspective the mode list is not extensible.</p>
+<hr class="docutils" />
+</section>
+</section>
+</section>
+<section id="ad-hoc-solver">
+<span id="geometries-ad-hoc"></span><h2><a class="toc-backref" href="#id28" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver</a><a class="headerlink" href="#ad-hoc-solver" title="Link to this heading">#</a></h2>
+<p><a class="reference internal" href="api/hklpy2_solvers/ad_hoc_solver/index.html#hklpy2_solvers.ad_hoc_solver.AdHocSolver" title="hklpy2_solvers.ad_hoc_solver.AdHocSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdHocSolver</span></code></a></p>
+<p>Wraps <a class="reference external" href="https://github.com/prjemian/ad_hoc_diffractometer">ad_hoc_diffractometer</a>
+(Jemian 2026).</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver discovers geometries dynamically from the
+<a class="reference external" href="https://github.com/prjemian/ad_hoc_diffractometer">ad_hoc_diffractometer</a>
+library.  All geometries registered in the
+library’s geometry registry (including via entry points) are
+automatically available.  The pseudo axes are always <code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code>
+and <code class="docutils literal notranslate"><span class="pre">extras</span></code> is always <code class="docutils literal notranslate"><span class="pre">{}</span></code>.</p>
+<section id="fourcv">
+<span id="geometry-fourcv"></span><h3><a class="toc-backref" href="#id29" role="doc-backlink">fourcv</a><a class="headerlink" href="#fourcv" title="Link to this heading">#</a></h3>
+<p>Busing &amp; Levy four-circle vertical-scattering geometry.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id6">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">fourcv</span></code> geometry</span><a class="headerlink" href="#id6" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Geometry name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fourcv</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Real axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">omega</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code>, <code class="docutils literal notranslate"><span class="pre">ttheta</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Pseudo axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Default mode</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bisecting</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id7">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">fourcv</span></code> operating modes</span><a class="headerlink" href="#id7" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode name</p></th>
+<th class="head"><p>Constant stages</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting</span></code></p></td>
+<td><p>omega</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi</span></code></p></td>
+<td><p>chi</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_phi</span></code></p></td>
+<td><p>phi</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">constant_omega</span></code></p></td>
+<td><p>omega</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant</span></code></p></td>
+<td><p><em>(none)</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
+<td><p><em>(none)</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="fourch">
+<span id="geometry-fourch"></span><h3><a class="toc-backref" href="#id30" role="doc-backlink">fourch</a><a class="headerlink" href="#fourch" title="Link to this heading">#</a></h3>
+<p>Four-circle horizontal-scattering geometry.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id8">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">fourch</span></code> geometry</span><a class="headerlink" href="#id8" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Geometry name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fourch</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Real axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">omega</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code>, <code class="docutils literal notranslate"><span class="pre">ttheta</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Pseudo axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Default mode</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bisecting</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id9">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">fourch</span></code> operating modes</span><a class="headerlink" href="#id9" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode name</p></th>
+<th class="head"><p>Constant stages</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting</span></code></p></td>
+<td><p>omega</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi</span></code></p></td>
+<td><p>chi</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_phi</span></code></p></td>
+<td><p>phi</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">constant_omega</span></code></p></td>
+<td><p>omega</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant</span></code></p></td>
+<td><p><em>(none)</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
+<td><p><em>(none)</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="psic">
+<span id="geometry-psic"></span><h3><a class="toc-backref" href="#id31" role="doc-backlink">psic</a><a class="headerlink" href="#psic" title="Link to this heading">#</a></h3>
+<p>You (1999) six-circle geometry (psi-circle).</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id10">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">psic</span></code> geometry</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Geometry name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">psic</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Real axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">eta</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code>, <code class="docutils literal notranslate"><span class="pre">nu</span></code>, <code class="docutils literal notranslate"><span class="pre">delta</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Pseudo axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Default mode</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id11">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">psic</span></code> operating modes</span><a class="headerlink" href="#id11" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode name</p></th>
+<th class="head"><p>Constant stages</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code></p></td>
+<td><p>eta, mu, nu</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi</span></code></p></td>
+<td><p>chi, eta, nu</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_phi</span></code></p></td>
+<td><p>phi, eta, nu</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu</span></code></p></td>
+<td><p>mu, eta, nu</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_horizontal</span></code></p></td>
+<td><p>mu, eta, delta</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_nu</span></code></p></td>
+<td><p>nu, eta, mu</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_vertical</span></code></p></td>
+<td><p>mu, nu</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_horizontal</span></code></p></td>
+<td><p>eta, delta</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_mu</span></code></p></td>
+<td><p>mu, eta</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_phi</span></code></p></td>
+<td><p>phi, mu</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant_vertical</span></code></p></td>
+<td><p>eta, mu</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant_horizontal</span></code></p></td>
+<td><p>mu, eta</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="sixc">
+<span id="geometry-sixc"></span><h3><a class="toc-backref" href="#id32" role="doc-backlink">sixc</a><a class="headerlink" href="#sixc" title="Link to this heading">#</a></h3>
+<p>Lohmeier &amp; Vlieg (1993) six-circle geometry.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id12">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">sixc</span></code> geometry</span><a class="headerlink" href="#id12" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Geometry name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sixc</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Real axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">alpha</span></code>, <code class="docutils literal notranslate"><span class="pre">omega</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code>, <code class="docutils literal notranslate"><span class="pre">delta</span></code>, <code class="docutils literal notranslate"><span class="pre">gamma</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Pseudo axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Default mode</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bisecting_4c</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id13">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">sixc</span></code> operating modes</span><a class="headerlink" href="#id13" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode name</p></th>
+<th class="head"><p>Constant stages</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_4c</span></code></p></td>
+<td><p>alpha, gamma, omega</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_gamma_5c</span></code></p></td>
+<td><p>gamma, alpha, omega</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_5c</span></code></p></td>
+<td><p>alpha, omega, gamma</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_zaxis</span></code></p></td>
+<td><p>alpha, chi</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_beta_zaxis</span></code></p></td>
+<td><p>gamma, chi</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alpha_eq_beta_zaxis</span></code></p></td>
+<td><p>chi, phi</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="fivec">
+<span id="geometry-fivec"></span><h3><a class="toc-backref" href="#id33" role="doc-backlink">fivec</a><a class="headerlink" href="#fivec" title="Link to this heading">#</a></h3>
+<p>Five-circle geometry (four-circle with additional mu tilt).</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id14">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">fivec</span></code> geometry</span><a class="headerlink" href="#id14" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Geometry name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fivec</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Real axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">omega</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code>, <code class="docutils literal notranslate"><span class="pre">ttheta</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Pseudo axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Default mode</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bisecting_4c</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id15">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">fivec</span></code> operating modes</span><a class="headerlink" href="#id15" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode name</p></th>
+<th class="head"><p>Constant stages</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_4c</span></code></p></td>
+<td><p>mu, omega</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi</span></code></p></td>
+<td><p>mu, chi</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_phi</span></code></p></td>
+<td><p>mu, phi</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu</span></code></p></td>
+<td><p>mu, omega</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">constant_omega_noncoplanar</span></code></p></td>
+<td><p>mu, omega</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="kappa4cv">
+<span id="geometry-kappa4cv"></span><h3><a class="toc-backref" href="#id34" role="doc-backlink">kappa4cv</a><a class="headerlink" href="#kappa4cv" title="Link to this heading">#</a></h3>
+<p>Kappa four-circle vertical-scattering geometry.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id16">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa4cv</span></code> geometry</span><a class="headerlink" href="#id16" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Geometry name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">kappa4cv</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Real axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">komega</span></code>, <code class="docutils literal notranslate"><span class="pre">kappa</span></code>, <code class="docutils literal notranslate"><span class="pre">kphi</span></code>, <code class="docutils literal notranslate"><span class="pre">ttheta</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Pseudo axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Default mode</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bisecting</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id17">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa4cv</span></code> operating modes</span><a class="headerlink" href="#id17" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode name</p></th>
+<th class="head"><p>Constant stages</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting</span></code></p></td>
+<td><p>komega</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_kphi</span></code></p></td>
+<td><p>kphi</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">constant_omega</span></code></p></td>
+<td><p>omega</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">constant_chi</span></code></p></td>
+<td><p>chi</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">constant_phi</span></code></p></td>
+<td><p>phi</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant</span></code></p></td>
+<td><p><em>(none)</em></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
+<td><p><em>(none)</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="kappa4ch">
+<span id="geometry-kappa4ch"></span><h3><a class="toc-backref" href="#id35" role="doc-backlink">kappa4ch</a><a class="headerlink" href="#kappa4ch" title="Link to this heading">#</a></h3>
+<p>Kappa four-circle horizontal-scattering geometry.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id18">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa4ch</span></code> geometry</span><a class="headerlink" href="#id18" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Geometry name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">kappa4ch</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Real axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">komega</span></code>, <code class="docutils literal notranslate"><span class="pre">kappa</span></code>, <code class="docutils literal notranslate"><span class="pre">kphi</span></code>, <code class="docutils literal notranslate"><span class="pre">ttheta</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Pseudo axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Default mode</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bisecting</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id19">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa4ch</span></code> operating modes</span><a class="headerlink" href="#id19" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode name</p></th>
+<th class="head"><p>Constant stages</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting</span></code></p></td>
+<td><p>komega</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_kphi</span></code></p></td>
+<td><p>kphi</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">constant_omega</span></code></p></td>
+<td><p>omega</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">constant_chi</span></code></p></td>
+<td><p>chi</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">constant_phi</span></code></p></td>
+<td><p>phi</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant</span></code></p></td>
+<td><p><em>(none)</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="kappa6c">
+<span id="geometry-kappa6c"></span><h3><a class="toc-backref" href="#id36" role="doc-backlink">kappa6c</a><a class="headerlink" href="#kappa6c" title="Link to this heading">#</a></h3>
+<p>Kappa six-circle geometry.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id20">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa6c</span></code> geometry</span><a class="headerlink" href="#id20" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Geometry name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">kappa6c</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Real axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">komega</span></code>, <code class="docutils literal notranslate"><span class="pre">kappa</span></code>, <code class="docutils literal notranslate"><span class="pre">kphi</span></code>, <code class="docutils literal notranslate"><span class="pre">nu</span></code>, <code class="docutils literal notranslate"><span class="pre">delta</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Pseudo axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Default mode</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id21">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa6c</span></code> operating modes</span><a class="headerlink" href="#id21" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode name</p></th>
+<th class="head"><p>Constant stages</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code></p></td>
+<td><p>komega, mu, nu</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_horizontal</span></code></p></td>
+<td><p>mu, komega, delta</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_kphi</span></code></p></td>
+<td><p>kphi, mu, nu</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu</span></code></p></td>
+<td><p>mu, komega, nu</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_nu</span></code></p></td>
+<td><p>nu, komega, mu</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_delta</span></code></p></td>
+<td><p>delta, mu, komega</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_mu</span></code></p></td>
+<td><p>mu, komega</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_kphi</span></code></p></td>
+<td><p>kphi, mu</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant_vertical</span></code></p></td>
+<td><p>komega, mu</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant_horizontal</span></code></p></td>
+<td><p>mu, komega</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_vertical</span></code></p></td>
+<td><p>mu, nu</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_horizontal</span></code></p></td>
+<td><p>komega, delta</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="zaxis">
+<span id="geometry-zaxis"></span><h3><a class="toc-backref" href="#id37" role="doc-backlink">zaxis</a><a class="headerlink" href="#zaxis" title="Link to this heading">#</a></h3>
+<p>Z-axis surface diffraction geometry.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id22">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">zaxis</span></code> geometry</span><a class="headerlink" href="#id22" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Geometry name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">zaxis</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Real axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">alpha</span></code>, <code class="docutils literal notranslate"><span class="pre">Z</span></code>, <code class="docutils literal notranslate"><span class="pre">delta</span></code>, <code class="docutils literal notranslate"><span class="pre">gamma</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Pseudo axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Default mode</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">zaxis</span></code> (first available)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id23">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">zaxis</span></code> operating modes</span><a class="headerlink" href="#id23" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode name</p></th>
+<th class="head"><p>Constant stages</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">zaxis</span></code></p></td>
+<td><p><em>(none)</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reflectivity</span></code></p></td>
+<td><p><em>(none)</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="s2d2">
+<span id="geometry-s2d2"></span><h3><a class="toc-backref" href="#id38" role="doc-backlink">s2d2</a><a class="headerlink" href="#s2d2" title="Link to this heading">#</a></h3>
+<p>Two-sample / two-detector surface diffraction geometry.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id24">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">s2d2</span></code> geometry</span><a class="headerlink" href="#id24" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 20.0%" />
+<col style="width: 80.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Property</p></th>
+<th class="head"><p>Value</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Geometry name</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">s2d2</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Real axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">Z</span></code>, <code class="docutils literal notranslate"><span class="pre">nu</span></code>, <code class="docutils literal notranslate"><span class="pre">delta</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p>Pseudo axes</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p>Default mode</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mu_fixed</span></code> (first available)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="pst-scrollable-table-container"><table class="table" id="id25">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">s2d2</span></code> operating modes</span><a class="headerlink" href="#id25" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 40.0%" />
+<col style="width: 60.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode name</p></th>
+<th class="head"><p>Constant stages</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mu_fixed</span></code></p></td>
+<td><p>mu</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reflectivity</span></code></p></td>
+<td><p><em>(none)</em></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="kappa-geometries">
+<h3><a class="toc-backref" href="#id39" role="doc-backlink">Kappa geometries</a><a class="headerlink" href="#kappa-geometries" title="Link to this heading">#</a></h3>
+<p>The kappa geometries (<a class="reference internal" href="#geometry-kappa4cv"><span class="std std-ref">kappa4cv</span></a>,
+<a class="reference internal" href="#geometry-kappa4ch"><span class="std std-ref">kappa4ch</span></a>, <a class="reference internal" href="#geometry-kappa6c"><span class="std std-ref">kappa6c</span></a>) accept a
+<code class="docutils literal notranslate"><span class="pre">kappa_alpha_deg</span></code> keyword argument when the solver is created.  This
+sets the fixed tilt angle of the kappa arm.  The default is 50 degrees.
+The kappa modes <code class="docutils literal notranslate"><span class="pre">constant_omega</span></code>, <code class="docutils literal notranslate"><span class="pre">constant_chi</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">constant_phi</span></code> constrain the <em>equivalent Euler</em> angles rather than the
+physical kappa motors.</p>
+</section>
+<section id="id3">
+<h3><a class="toc-backref" href="#id40" role="doc-backlink">Extensibility</a><a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver discovers geometries dynamically from the
+<a class="reference external" href="https://github.com/prjemian/ad_hoc_diffractometer">ad_hoc_diffractometer</a>
+library’s registry.  New geometries added to
+the library (including via entry points) are automatically available
+without changes to the solver code.</p>
 </section>
 </section>
 </section>
@@ -538,12 +1338,12 @@ user’s perspective the mode list is not extensible.</p>
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="usage.html"
+       href="guide_ad_hoc.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Using hklpy2-solvers with hklpy2</p>
+        <p class="prev-next-title">How to use the <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver</p>
       </div>
     </a>
     <a class="right-next"
@@ -574,11 +1374,29 @@ user’s perspective the mode list is not extensible.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diffcalc-solver">diffcalc solver</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#operating-modes">Operating modes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#default-mode">Default mode</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#mode-naming-convention">Mode naming convention</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#extensibility">Extensibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#diffcalc-solver"><code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#diffcalc-4s-2d">diffcalc_4S_2D</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#operating-modes">Operating modes</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#default-mode">Default mode</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#mode-naming-convention">Mode naming convention</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#extensibility">Extensibility</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ad-hoc-solver"><code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fourcv">fourcv</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fourch">fourch</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#psic">psic</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sixc">sixc</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fivec">fivec</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kappa4cv">kappa4cv</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kappa4ch">kappa4ch</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kappa6c">kappa6c</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#zaxis">zaxis</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#s2d2">s2d2</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kappa-geometries">Kappa geometries</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Extensibility</a></li>
 </ul>
 </li>
 </ul>

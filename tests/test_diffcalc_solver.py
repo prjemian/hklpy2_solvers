@@ -8,7 +8,7 @@ from contextlib import nullcontext as does_not_raise
 
 import pytest
 
-from hklpy2_solvers.diffcalc_solver import GEOMETRY_NAME, PSEUDO_AXES, REAL_AXES, DiffcalcSolver
+from hklpy2_solvers.diffcalc_solver import _MODES, GEOMETRY_NAME, PSEUDO_AXES, REAL_AXES, DiffcalcSolver
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -1035,3 +1035,116 @@ def test_forward_after_ub_restore(parms, context):
     with context:
         solutions = solver.forward(parms["pseudos"])
         assert len(solutions) >= 1
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        # -- 1 det + 1 ref + 1 samp (a_eq_b is non-motor) --
+        pytest.param(
+            dict(
+                mode="4S+2D mu_fixed a_eq_b delta_fixed",
+                expected_reals=["nu", "eta", "chi", "phi"],
+            ),
+            does_not_raise(),
+            id="a_eq_b non-motor: only mu,delta fixed",
+        ),
+        # -- 1 det + 1 ref + 1 samp (psi is non-motor) --
+        pytest.param(
+            dict(
+                mode="4S+2D phi_fixed psi_fixed nu_fixed",
+                expected_reals=["mu", "delta", "eta", "chi"],
+            ),
+            does_not_raise(),
+            id="psi non-motor: only nu,phi fixed",
+        ),
+        # -- 1 det + 2 samp --
+        pytest.param(
+            dict(
+                mode="4S+2D chi_phi_fixed delta_fixed",
+                expected_reals=["mu", "nu", "eta"],
+            ),
+            does_not_raise(),
+            id="3 motor constraints: delta,chi,phi fixed",
+        ),
+        # -- 1 det + 2 samp (bisect is non-motor) --
+        pytest.param(
+            dict(
+                mode="4S+2D bisect_mu_fixed delta_fixed",
+                expected_reals=["nu", "eta", "chi", "phi"],
+            ),
+            does_not_raise(),
+            id="bisect non-motor: only mu,delta fixed",
+        ),
+        # -- 1 det + 2 samp (bisect+omega are non-motor) --
+        pytest.param(
+            dict(
+                mode="4S+2D bisect_omega_fixed nu_fixed",
+                expected_reals=["mu", "delta", "eta", "chi", "phi"],
+            ),
+            does_not_raise(),
+            id="bisect+omega non-motor: only nu fixed",
+        ),
+        # -- 1 ref + 2 samp --
+        pytest.param(
+            dict(
+                mode="4S+2D chi_mu_fixed a_eq_b",
+                expected_reals=["delta", "nu", "eta", "phi"],
+            ),
+            does_not_raise(),
+            id="1ref+2samp: mu,chi fixed",
+        ),
+        # -- 3 samp --
+        pytest.param(
+            dict(
+                mode="4S+2D eta_chi_phi_fixed",
+                expected_reals=["mu", "delta", "nu"],
+            ),
+            does_not_raise(),
+            id="3samp: eta,chi,phi fixed",
+        ),
+        pytest.param(
+            dict(
+                mode="4S+2D mu_eta_chi_fixed",
+                expected_reals=["delta", "nu", "phi"],
+            ),
+            does_not_raise(),
+            id="3samp: mu,eta,chi fixed",
+        ),
+    ],
+)
+def test_summary_dict(parms, context):
+    """_summary_dict reports correct writable axes per mode (issue #37)."""
+    solver = DiffcalcSolver()
+    with context:
+        sdict = solver._summary_dict
+        mode_entry = sdict["modes"][parms["mode"]]
+        assert mode_entry["reals"] == parms["expected_reals"]
+        assert mode_entry["extras"] == []
+        # Top-level keys are correct regardless of mode.
+        assert sdict["name"] == GEOMETRY_NAME
+        assert sdict["pseudos"] == list(PSEUDO_AXES)
+        assert sdict["reals"] == list(REAL_AXES)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="all modes writable axes match axes_w",
+        ),
+    ],
+)
+def test_summary_dict_all_modes(parms, context):
+    """Every mode in _summary_dict has reals == axes_w (issue #37)."""
+    solver = DiffcalcSolver()
+    with context:
+        sdict = solver._summary_dict
+        assert set(sdict["modes"].keys()) == set(_MODES.keys())
+        for mode_name in _MODES:
+            solver.mode = mode_name
+            expected = solver.axes_w
+            actual = sdict["modes"][mode_name]["reals"]
+            assert actual == expected, f"Mode {mode_name!r}: expected writable {expected}, got {actual}"

@@ -36,6 +36,11 @@ describe future plans.
     * Add per-solver how-to guides (``guide_diffcalc.rst``, ``guide_ad_hoc.rst``) following the Diataxis framework.  :issue:`40`
     * Change ``diffcalc`` default mode from ``4S+2D mu_chi_phi_fixed`` to ``4S+2D bisect_eta_fixed nu_fixed`` (vertical bisector).  :issue:`40`
 
+    Maintenance
+    ~~~~~~~~~~~
+
+    * Bump ``ad_hoc_diffractometer`` minimum from ``>=0.5.0`` to ``>=0.6.0``; update docstring cross-reference (``geometry.py`` renamed to ``diffractometer.py``); update ``geometries.rst`` for new psic and kappa6c mode names.
+
 0.2.0
 ######
 

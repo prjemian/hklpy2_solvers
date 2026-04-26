@@ -38,7 +38,7 @@ class AdHocSolver(SolverBase):
     """
     Solver wrapping :mod:`ad_hoc_diffractometer` for hklpy2.
 
-    Wraps :class:`ad_hoc_diffractometer.geometry.AdHocDiffractometer` behind
+    Wraps :class:`ad_hoc_diffractometer.diffractometer.AdHocDiffractometer` behind
     the :class:`~hklpy2.backends.base.SolverBase` interface so that hklpy2
     can use it for forward / inverse calculations.
 

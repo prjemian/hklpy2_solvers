@@ -39,7 +39,7 @@ GEOMETRY_INFO = {
     },
     "psic": {
         "real_axes": ["mu", "eta", "chi", "phi", "nu", "delta"],
-        "mode_count": 12,
+        "mode_count": 22,
         "default_mode": "bisecting_vertical",
     },
     "sixc": {

@@ -1,0 +1,193 @@
+#hklpy2 configuration file
+
+_header:
+  datetime: '2026-04-17 11:43:42.774008'
+  hklpy2_version: 0.6.1.dev1+g12c49379e
+  python_class: Hklpy2Diffractometer
+  file: diffcalc_4S_2D.yml
+  comment: benchmark configuration
+name: psic
+axes:
+  pseudo_axes:
+  - h
+  - k
+  - l
+  real_axes:
+  - mu
+  - delta
+  - nu
+  - eta
+  - chi
+  - phi
+  axes_xref:
+    h: h
+    k: k
+    l: l
+    mu: mu
+    delta: delta
+    nu: nu
+    eta: eta
+    chi: chi
+    phi: phi
+  extra_axes: {}
+  auxiliary_axes: []
+digits: 4
+sample_name: vibranium
+samples:
+  sample:
+    name: sample
+    lattice:
+      a: 1
+      b: 1
+      c: 1
+      alpha: 90.0
+      beta: 90.0
+      gamma: 90.0
+      digits: 4
+      angle_units: degrees
+      length_units: angstrom
+    reflections: {}
+    reflections_order: []
+    U: &id001
+    - - 1
+      - 0
+      - 0
+    - - 0
+      - 1
+      - 0
+    - - 0
+      - 0
+      - 1
+    UB:
+    - - 6.283185307179586
+      - 0.0
+      - 0.0
+    - - 0.0
+      - 6.283185307179586
+      - 0.0
+    - - 0.0
+      - 0.0
+      - 6.283185307179586
+    digits: 4
+  vibranium:
+    name: vibranium
+    lattice:
+      a: 6.283185307179586
+      b: 6.283185307179586
+      c: 6.283185307179586
+      alpha: 90.0
+      beta: 90.0
+      gamma: 90.0
+      digits: 5
+      angle_units: degrees
+      length_units: angstrom
+    reflections:
+      r400:
+        name: r400
+        geometry: diffcalc_4S_2D
+        pseudos:
+          h: 4
+          k: 0
+          l: 0
+        reals:
+          mu: 0
+          delta: 58.71
+          nu: 0
+          eta: 29.354
+          chi: 0
+          phi: 2
+        reals_units: angstrom
+        wavelength: 1.54
+        wavelength_units: angstrom
+        digits: 4
+      r040:
+        name: r040
+        geometry: diffcalc_4S_2D
+        pseudos:
+          h: 0
+          k: 4
+          l: 0
+        reals:
+          mu: 0
+          delta: 58.71
+          nu: 0
+          eta: 29.354
+          chi: 0
+          phi: 92
+        reals_units: angstrom
+        wavelength: 1.54
+        wavelength_units: angstrom
+        digits: 4
+    reflections_order:
+    - r400
+    - r040
+    U: *id001
+    UB:
+    - - 0.9993914359780045
+      - -0.03488205403674098
+      - -1.5857849061771973e-16
+    - - 0.03488205403674082
+      - 0.9993914359780045
+      - -6.680453827465974e-17
+    - - 0.0
+      - 0.0
+      - 1.0
+    digits: 5
+constraints:
+  mu:
+    label: mu
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+  delta:
+    label: delta
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+  nu:
+    label: nu
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+  eta:
+    label: eta
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+  chi:
+    label: chi
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+  phi:
+    label: phi
+    low_limit: -180.0
+    high_limit: 180.0
+    cut_point: -180.0
+    class: LimitsConstraint
+solver:
+  name: diffcalc
+  description: DiffcalcSolver(name='diffcalc', version='0.1.0', geometry='diffcalc_4S_2D')
+  geometry: diffcalc_4S_2D
+  real_axes:
+  - mu
+  - delta
+  - nu
+  - eta
+  - chi
+  - phi
+  version: 0.1.0
+beam:
+  class: WavelengthXray
+  source_type: Synchrotron X-ray Source
+  energy: 8.050921976530415
+  wavelength: 1.54
+  energy_units: keV
+  wavelength_units: angstrom
+presets:
+  4S+2D mu_chi_phi_fixed: {}

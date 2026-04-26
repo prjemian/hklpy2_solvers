@@ -21,6 +21,8 @@ the solver when it is instantiated by hklpy2.
 
 Wraps `diffcalc-core <https://github.com/DiamondLightSource/diffcalc-core>`_
 (You 1999).
+See the `diffcalc-core documentation <https://diffcalc-core.readthedocs.io/>`_
+for full details of the underlying library.
 
 diffcalc_4S_2D
 ~~~~~~~~~~~~~~
@@ -48,61 +50,109 @@ Operating modes
 The diffcalc solver selects three diffractometer constraints to fix for
 each operating mode.  This geometry has no extra parameters
 (``extras`` is always ``{}``).  The axes computed by ``forward()``
-(``axes_w``) are all real axes not listed as fixed constraints; the
+(``writable``) are all real axes not listed as fixed constraints; the
 remaining axes are held constant (``axes_c``, derived by hklpy2).
 
 .. list-table::
    :header-rows: 1
-   :widths: 50 50
+   :widths: 35 30 20 15
 
    * - Mode name
      - Fixed constraints
+     - writable(s)
+     - extra(s)
    * - ``4S+2D mu_fixed a_eq_b delta_fixed``
      - delta=0, a_eq_b, mu=0
+     - nu, eta, chi, phi
+     -
    * - ``4S+2D mu_fixed a_eq_b nu_fixed``
      - nu=0, a_eq_b, mu=0
+     - delta, eta, chi, phi
+     -
    * - ``4S+2D eta_fixed a_eq_b delta_fixed``
      - delta=0, a_eq_b, eta=0
+     - mu, nu, chi, phi
+     -
    * - ``4S+2D phi_fixed psi_fixed nu_fixed``
      - nu=0, psi=0, phi=0
+     - mu, delta, eta, chi
+     -
    * - ``4S+2D chi_phi_fixed delta_fixed``
      - delta=0, chi=0, phi=0
+     - mu, nu, eta
+     -
    * - ``4S+2D mu_eta_fixed delta_fixed``
      - delta=0, mu=0, eta=0
+     - nu, chi, phi
+     -
    * - ``4S+2D mu_phi_fixed delta_fixed``
      - delta=0, mu=0, phi=0
+     - nu, eta, chi
+     -
    * - ``4S+2D mu_chi_fixed nu_fixed``
      - nu=0, mu=0, chi=0
+     - delta, eta, phi
+     -
    * - ``4S+2D eta_phi_fixed nu_fixed``
      - nu=0, eta=0, phi=0
+     - mu, delta, chi
+     -
    * - ``4S+2D eta_chi_fixed nu_fixed``
      - nu=0, eta=0, chi=0
+     - mu, delta, phi
+     -
    * - ``4S+2D bisect_mu_fixed delta_fixed``
      - delta=0, bisect, mu=0
+     - nu, eta, chi, phi
+     -
    * - ``4S+2D bisect_eta_fixed nu_fixed``
      - nu=0, bisect, eta=0
+     - mu, delta, chi, phi
+     -
    * - ``4S+2D bisect_omega_fixed nu_fixed``
      - nu=0, bisect, omega=0
+     - mu, delta, eta, chi, phi
+     -
    * - ``4S+2D chi_phi_fixed a_eq_b``
      - a_eq_b, chi=0, phi=0
+     - mu, delta, nu, eta
+     -
    * - ``4S+2D chi_eta_fixed a_eq_b``
      - a_eq_b, chi=0, eta=0
+     - mu, delta, nu, phi
+     -
    * - ``4S+2D chi_mu_fixed a_eq_b``
      - a_eq_b, chi=0, mu=0
+     - delta, nu, eta, phi
+     -
    * - ``4S+2D mu_eta_fixed a_eq_b``
      - a_eq_b, mu=0, eta=0
+     - delta, nu, chi, phi
+     -
    * - ``4S+2D mu_phi_fixed a_eq_b``
      - a_eq_b, mu=0, phi=0
+     - delta, nu, eta, chi
+     -
    * - ``4S+2D eta_phi_fixed a_eq_b``
      - a_eq_b, eta=0, phi=0
+     - mu, delta, nu, chi
+     -
    * - ``4S+2D eta_chi_phi_fixed``
      - eta=0, chi=0, phi=0
+     - mu, delta, nu
+     -
    * - ``4S+2D mu_chi_phi_fixed``
      - mu=0, chi=0, phi=0
+     - delta, nu, eta
+     -
    * - ``4S+2D mu_eta_phi_fixed``
      - mu=0, eta=0, phi=0
+     - delta, nu, chi
+     -
    * - ``4S+2D mu_eta_chi_fixed``
      - mu=0, eta=0, chi=0
+     - delta, nu, phi
+     -
 
 Default mode
 ^^^^^^^^^^^^
@@ -174,15 +224,18 @@ The ``ad_hoc`` solver discovers geometries dynamically from the
 `ad_hoc_diffractometer <https://github.com/prjemian/ad_hoc_diffractometer>`_
 library.  All geometries registered in the
 library's geometry registry (including via entry points) are
-automatically available.  The pseudo axes are always ``h``, ``k``, ``l``
-and ``extras`` is always ``{}``.
+automatically available.  The pseudo axes are always ``h``, ``k``, ``l``.
 
 .. _geometry.fourcv:
 
 fourcv
 ~~~~~~
 
-Busing & Levy four-circle vertical-scattering geometry.
+Busing & Levy (1967) four-circle Eulerian diffractometer
+(vertical scattering plane, transverse ttheta, synchrotron).
+
+See `ad_hoc_diffractometer fourcv
+<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/fourcv.html>`_.
 
 .. list-table:: ``fourcv`` geometry
    :header-rows: 1
@@ -201,29 +254,47 @@ Busing & Levy four-circle vertical-scattering geometry.
 
 .. list-table:: ``fourcv`` operating modes
    :header-rows: 1
-   :widths: 40 60
+   :widths: 25 20 25 30
 
    * - Mode name
      - Constant stages
+     - writable(s)
+     - extra(s)
    * - ``bisecting``
      - omega
+     - omega, chi, phi, ttheta
+     -
    * - ``fixed_chi``
      - chi
+     - omega, phi, ttheta
+     -
    * - ``fixed_phi``
      - phi
+     - omega, chi, ttheta
+     -
    * - ``constant_omega``
      - omega
+     - chi, phi, ttheta
+     -
    * - ``psi_constant``
      - *(none)*
+     - omega, chi, phi, ttheta
+     - psi
    * - ``double_diffraction``
      - *(none)*
+     - omega, chi, phi, ttheta
+     - h2, k2, l2
 
 .. _geometry.fourch:
 
 fourch
 ~~~~~~
 
-Four-circle horizontal-scattering geometry.
+Busing & Levy (1967) four-circle Eulerian diffractometer
+(horizontal scattering plane, vertical ttheta, laboratory).
+
+See `ad_hoc_diffractometer fourch
+<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/fourch.html>`_.
 
 .. list-table:: ``fourch`` geometry
    :header-rows: 1
@@ -242,29 +313,47 @@ Four-circle horizontal-scattering geometry.
 
 .. list-table:: ``fourch`` operating modes
    :header-rows: 1
-   :widths: 40 60
+   :widths: 25 20 25 30
 
    * - Mode name
      - Constant stages
+     - writable(s)
+     - extra(s)
    * - ``bisecting``
      - omega
+     - omega, chi, phi, ttheta
+     -
    * - ``fixed_chi``
      - chi
+     - omega, phi, ttheta
+     -
    * - ``fixed_phi``
      - phi
+     - omega, chi, ttheta
+     -
    * - ``constant_omega``
      - omega
+     - chi, phi, ttheta
+     -
    * - ``psi_constant``
      - *(none)*
+     - omega, chi, phi, ttheta
+     - psi
    * - ``double_diffraction``
      - *(none)*
+     - omega, chi, phi, ttheta
+     - h2, k2, l2
 
 .. _geometry.psic:
 
 psic
 ~~~~
 
-You (1999) six-circle geometry (psi-circle).
+You (1999) 4S+2D six-circle diffractometer
+(transverse detector, vertical scattering plane, synchrotron).
+
+See `ad_hoc_diffractometer psic
+<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/psic.html>`_.
 
 .. list-table:: ``psic`` geometry
    :header-rows: 1
@@ -283,61 +372,110 @@ You (1999) six-circle geometry (psi-circle).
 
 .. list-table:: ``psic`` operating modes
    :header-rows: 1
-   :widths: 40 60
+   :widths: 25 20 25 30
 
    * - Mode name
      - Constant stages
+     - writable(s)
+     - extra(s)
    * - ``bisecting_vertical``
      - eta, mu, nu
+     - eta, chi, phi, delta
+     -
    * - ``fixed_phi_vertical``
      - phi, eta, nu
+     - eta, chi, delta
+     -
    * - ``fixed_chi_vertical``
      - chi, eta, nu
+     - eta, phi, delta
+     -
    * - ``fixed_mu_vertical``
      - mu, eta, nu
+     - eta, chi, phi, delta
+     -
    * - ``fixed_nu_vertical``
      - nu, eta, mu
+     - eta, chi, phi, delta
+     -
    * - ``fixed_alpha_i_vertical``
      - mu, nu
+     - eta, chi, phi, delta
+     - alpha_i, beta_out
    * - ``fixed_beta_out_vertical``
      - mu, nu
+     - eta, chi, phi, delta
+     - alpha_i, beta_out
    * - ``alpha_eq_beta_vertical``
      - mu, nu
+     - eta, chi, phi, delta
+     - alpha_i, beta_out
    * - ``fixed_psi_vertical``
      - eta, mu
+     - eta, chi, phi, delta
+     - psi
    * - ``double_diffraction_vertical``
      - mu, nu
+     - eta, chi, phi, delta
+     - h2, k2, l2
    * - ``bisecting_horizontal``
      - mu, eta, delta
+     - mu, chi, phi, nu
+     -
    * - ``fixed_phi_horizontal``
      - phi, mu, delta
+     - mu, chi, nu
+     -
    * - ``fixed_chi_horizontal``
      - chi, mu, delta
+     - mu, phi, nu
+     -
    * - ``fixed_eta_horizontal``
      - eta, mu, delta
+     - mu, chi, phi, nu
+     -
    * - ``fixed_delta_horizontal``
      - delta, mu, eta
+     - mu, chi, phi, nu
+     -
    * - ``fixed_alpha_i_horizontal``
      - eta, delta
+     - mu, chi, phi, nu
+     - alpha_i, beta_out
    * - ``fixed_beta_out_horizontal``
      - eta, delta
+     - mu, chi, phi, nu
+     - alpha_i, beta_out
    * - ``alpha_eq_beta_horizontal``
      - eta, delta
+     - mu, chi, phi, nu
+     - alpha_i, beta_out
    * - ``fixed_psi_horizontal``
      - mu, eta
+     - mu, chi, phi, nu
+     - psi
    * - ``double_diffraction_horizontal``
      - eta, delta
+     - mu, chi, phi, nu
+     - h2, k2, l2
    * - ``lifting_detector_phi``
      - phi, mu
+     - phi, nu, delta
+     -
    * - ``lifting_detector_mu``
      - mu, eta
+     - mu, nu, delta
+     -
 
 .. _geometry.sixc:
 
 sixc
 ~~~~
 
-Lohmeier & Vlieg (1993) six-circle geometry.
+Lohmeier & Vlieg (1993) six-circle surface diffractometer.
+
+See `ad_hoc_diffractometer sixc
+<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/sixc.html>`_.
 
 .. list-table:: ``sixc`` geometry
    :header-rows: 1
@@ -356,22 +494,36 @@ Lohmeier & Vlieg (1993) six-circle geometry.
 
 .. list-table:: ``sixc`` operating modes
    :header-rows: 1
-   :widths: 40 60
+   :widths: 25 20 25 30
 
    * - Mode name
      - Constant stages
+     - writable(s)
+     - extra(s)
    * - ``bisecting_4c``
      - alpha, gamma, omega
+     - omega, chi, phi, delta
+     -
    * - ``fixed_gamma_5c``
      - gamma, alpha, omega
+     - omega, chi, phi, delta, alpha
+     -
    * - ``fixed_alpha_5c``
      - alpha, omega, gamma
+     - omega, chi, phi, delta, gamma
+     -
    * - ``fixed_alpha_zaxis``
      - alpha, chi
+     - omega, delta, gamma
+     - alpha_i, beta_out
    * - ``fixed_beta_zaxis``
      - gamma, chi
+     - omega, delta, alpha
+     - alpha_i, beta_out
    * - ``alpha_eq_beta_zaxis``
      - chi, phi
+     - omega, delta, alpha, gamma
+     - alpha_i, beta_out
 
 .. _geometry.fivec:
 
@@ -379,6 +531,9 @@ fivec
 ~~~~~
 
 Five-circle geometry (four-circle with additional mu tilt).
+
+See `ad_hoc_diffractometer fivec
+<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/fivec.html>`_.
 
 .. list-table:: ``fivec`` geometry
    :header-rows: 1
@@ -397,20 +552,32 @@ Five-circle geometry (four-circle with additional mu tilt).
 
 .. list-table:: ``fivec`` operating modes
    :header-rows: 1
-   :widths: 40 60
+   :widths: 25 20 25 30
 
    * - Mode name
      - Constant stages
+     - writable(s)
+     - extra(s)
    * - ``bisecting_4c``
      - mu, omega
+     - omega, chi, phi, ttheta
+     -
    * - ``fixed_chi``
      - mu, chi
+     - omega, phi, ttheta
+     -
    * - ``fixed_phi``
      - mu, phi
+     - omega, chi, ttheta
+     -
    * - ``fixed_mu``
      - mu, omega
+     - omega, chi, phi, ttheta
+     -
    * - ``constant_omega_noncoplanar``
      - mu, omega
+     - mu, chi, phi, ttheta
+     -
 
 .. _geometry.kappa4cv:
 
@@ -418,6 +585,9 @@ kappa4cv
 ~~~~~~~~
 
 Kappa four-circle vertical-scattering geometry.
+
+See `ad_hoc_diffractometer kappa4cv
+<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/kappa4cv.html>`_.
 
 .. list-table:: ``kappa4cv`` geometry
    :header-rows: 1
@@ -436,24 +606,40 @@ Kappa four-circle vertical-scattering geometry.
 
 .. list-table:: ``kappa4cv`` operating modes
    :header-rows: 1
-   :widths: 40 60
+   :widths: 25 20 25 30
 
    * - Mode name
      - Constant stages
+     - writable(s)
+     - extra(s)
    * - ``bisecting``
      - komega
+     - komega, kappa, kphi, ttheta
+     -
    * - ``fixed_kphi``
      - kphi
+     - komega, kappa, ttheta
+     -
    * - ``constant_omega``
      - omega
+     - komega, kappa, kphi, ttheta
+     -
    * - ``constant_chi``
      - chi
+     - komega, kappa, kphi, ttheta
+     -
    * - ``constant_phi``
      - phi
+     - komega, kappa, kphi, ttheta
+     -
    * - ``psi_constant``
      - *(none)*
+     - komega, kappa, kphi, ttheta
+     - psi
    * - ``double_diffraction``
      - *(none)*
+     - komega, kappa, kphi, ttheta
+     - h2, k2, l2
 
 .. _geometry.kappa4ch:
 
@@ -461,6 +647,9 @@ kappa4ch
 ~~~~~~~~
 
 Kappa four-circle horizontal-scattering geometry.
+
+See `ad_hoc_diffractometer kappa4ch
+<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/kappa4ch.html>`_.
 
 .. list-table:: ``kappa4ch`` geometry
    :header-rows: 1
@@ -479,29 +668,47 @@ Kappa four-circle horizontal-scattering geometry.
 
 .. list-table:: ``kappa4ch`` operating modes
    :header-rows: 1
-   :widths: 40 60
+   :widths: 25 20 25 30
 
    * - Mode name
      - Constant stages
+     - writable(s)
+     - extra(s)
    * - ``bisecting``
      - komega
+     - komega, kappa, kphi, ttheta
+     -
    * - ``fixed_kphi``
      - kphi
+     - komega, kappa, ttheta
+     -
    * - ``constant_omega``
      - omega
+     - komega, kappa, kphi, ttheta
+     -
    * - ``constant_chi``
      - chi
+     - komega, kappa, kphi, ttheta
+     -
    * - ``constant_phi``
      - phi
+     - komega, kappa, kphi, ttheta
+     -
    * - ``psi_constant``
      - *(none)*
+     - komega, kappa, kphi, ttheta
+     - psi
 
 .. _geometry.kappa6c:
 
 kappa6c
 ~~~~~~~
 
-Kappa six-circle geometry.
+Kappa six-circle geometry (psic-style outer axes, transverse detector,
+synchrotron).
+
+See `ad_hoc_diffractometer kappa6c
+<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/kappa6c.html>`_.
 
 .. list-table:: ``kappa6c`` geometry
    :header-rows: 1
@@ -520,41 +727,71 @@ Kappa six-circle geometry.
 
 .. list-table:: ``kappa6c`` operating modes
    :header-rows: 1
-   :widths: 40 60
+   :widths: 25 20 25 30
 
    * - Mode name
      - Constant stages
+     - writable(s)
+     - extra(s)
    * - ``bisecting_vertical``
      - komega, mu, nu
+     - komega, kappa, kphi, delta
+     -
    * - ``bisecting_horizontal``
      - mu, komega, delta
+     - mu, kappa, kphi, nu
+     -
    * - ``fixed_kphi``
      - kphi, mu, nu
+     - komega, kappa, delta
+     -
    * - ``fixed_mu``
      - mu, komega, nu
+     - komega, kappa, kphi, delta
+     -
    * - ``fixed_nu``
      - nu, komega, mu
+     - komega, kappa, kphi, delta
+     -
    * - ``fixed_delta``
      - delta, mu, komega
+     - mu, kappa, kphi, nu
+     -
    * - ``lifting_detector_mu``
      - mu, komega
+     - mu, nu, delta
+     -
    * - ``lifting_detector_kphi``
      - kphi, mu
+     - kphi, nu, delta
+     -
    * - ``fixed_psi_vertical``
      - komega, mu
+     - komega, kappa, kphi, delta
+     - psi
    * - ``fixed_psi_horizontal``
      - mu, komega
+     - mu, kappa, kphi, nu
+     - psi
    * - ``double_diffraction_vertical``
      - mu, nu
+     - komega, kappa, kphi, delta
+     - h2, k2, l2
    * - ``double_diffraction_horizontal``
      - komega, delta
+     - mu, kappa, kphi, nu
+     - h2, k2, l2
 
 .. _geometry.zaxis:
 
 zaxis
 ~~~~~
 
-Z-axis surface diffraction geometry.
+Z-axis four-circle surface diffraction geometry
+(Bloch 1985).
+
+See `ad_hoc_diffractometer zaxis
+<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/zaxis.html>`_.
 
 .. list-table:: ``zaxis`` geometry
    :header-rows: 1
@@ -573,21 +810,31 @@ Z-axis surface diffraction geometry.
 
 .. list-table:: ``zaxis`` operating modes
    :header-rows: 1
-   :widths: 40 60
+   :widths: 25 20 25 30
 
    * - Mode name
      - Constant stages
+     - writable(s)
+     - extra(s)
    * - ``zaxis``
      - *(none)*
+     - Z, delta, gamma
+     - alpha_i, beta_out
    * - ``reflectivity``
      - *(none)*
+     - Z, delta, alpha, gamma
+     - alpha_i, beta_out
 
 .. _geometry.s2d2:
 
 s2d2
 ~~~~
 
-Two-sample / two-detector surface diffraction geometry.
+Two-sample / two-detector surface diffraction geometry
+(Evans-Lutterodt & Tang 1995).
+
+See `ad_hoc_diffractometer s2d2
+<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/s2d2.html>`_.
 
 .. list-table:: ``s2d2`` geometry
    :header-rows: 1
@@ -606,14 +853,20 @@ Two-sample / two-detector surface diffraction geometry.
 
 .. list-table:: ``s2d2`` operating modes
    :header-rows: 1
-   :widths: 40 60
+   :widths: 25 20 25 30
 
    * - Mode name
      - Constant stages
+     - writable(s)
+     - extra(s)
    * - ``mu_fixed``
      - mu
+     - Z, nu, delta
+     -
    * - ``reflectivity``
      - *(none)*
+     - mu, Z, nu, delta
+     - alpha_i, beta_out
 
 Kappa geometries
 ~~~~~~~~~~~~~~~~

@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="_static/documentation_options.js?v=01cfb757"></script>
+    <script src="_static/documentation_options.js?v=000c92bf"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -426,25 +426,47 @@
 <p>Project <a class="reference external" href="https://github.com/prjemian/hklpy2_solvers/milestones">milestones</a>
 describe future plans.</p>
 <section id="id1">
-<h2>0.2.1<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<h2>0.2.2<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p>Released 2026-04-26.</p>
 <section id="enhancements">
 <h3>Enhancements<a class="headerlink" href="#enhancements" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Docs: add writable(s) and extra(s) columns to geometry mode tables; link each geometry to its backend library documentation.  <span class="issue">42</span></p></li>
+</ul>
+</section>
+<section id="fixes">
+<h3>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>CI: serialize <code class="docutils literal notranslate"><span class="pre">gh-pages</span></code> deploys to prevent race condition between <code class="docutils literal notranslate"><span class="pre">main</span></code> and tag pushes.  <span class="issue">42</span></p></li>
+</ul>
+</section>
+<section id="maintenance">
+<h3>Maintenance<a class="headerlink" href="#maintenance" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>CI: add concurrency limits to all workflows (<code class="docutils literal notranslate"><span class="pre">docs.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">ci.yml</span></code>, <code class="docutils literal notranslate"><span class="pre">pypi.yml</span></code>).  <span class="issue">42</span></p></li>
+</ul>
+</section>
+</section>
+<section id="id2">
+<h2>0.2.1<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<p>Released 2026-04-26.</p>
+<section id="id3">
+<h3>Enhancements<a class="headerlink" href="#id3" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add all <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver geometries (10 geometries, modes, and axes) to <code class="docutils literal notranslate"><span class="pre">geometries.rst</span></code>; add <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver to the “Available solvers” table in <code class="docutils literal notranslate"><span class="pre">usage.rst</span></code>.  <span class="issue">40</span></p></li>
 <li><p>Add per-solver how-to guides (<code class="docutils literal notranslate"><span class="pre">guide_diffcalc.rst</span></code>, <code class="docutils literal notranslate"><span class="pre">guide_ad_hoc.rst</span></code>) following the Diataxis framework.  <span class="issue">40</span></p></li>
 <li><p>Change <code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> default mode from <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_chi_phi_fixed</span></code> to <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_eta_fixed</span> <span class="pre">nu_fixed</span></code> (vertical bisector).  <span class="issue">40</span></p></li>
 </ul>
 </section>
-<section id="maintenance">
-<h3>Maintenance<a class="headerlink" href="#maintenance" title="Link to this heading">#</a></h3>
+<section id="id4">
+<h3>Maintenance<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Bump <code class="docutils literal notranslate"><span class="pre">ad_hoc_diffractometer</span></code> minimum from <code class="docutils literal notranslate"><span class="pre">&gt;=0.5.0</span></code> to <code class="docutils literal notranslate"><span class="pre">&gt;=0.6.0</span></code>; update docstring cross-reference (<code class="docutils literal notranslate"><span class="pre">geometry.py</span></code> renamed to <code class="docutils literal notranslate"><span class="pre">diffractometer.py</span></code>); update <code class="docutils literal notranslate"><span class="pre">geometries.rst</span></code> for new psic and kappa6c mode names.</p></li>
 </ul>
 </section>
 </section>
-<section id="id2">
-<h2>0.2.0<a class="headerlink" href="#id2" title="Link to this heading">#</a></h2>
+<section id="id5">
+<h2>0.2.0<a class="headerlink" href="#id5" title="Link to this heading">#</a></h2>
 <p>Released 2026-04-20.</p>
 <section id="new-features">
 <h3>New Features<a class="headerlink" href="#new-features" title="Link to this heading">#</a></h3>
@@ -452,46 +474,46 @@ describe future plans.</p>
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">AdHocSolver</span></code> wrapping the <code class="docutils literal notranslate"><span class="pre">ad_hoc_diffractometer</span></code> library.  <span class="issue">1</span></p></li>
 </ul>
 </section>
-<section id="fixes">
-<h3>Fixes<a class="headerlink" href="#fixes" title="Link to this heading">#</a></h3>
+<section id="id6">
+<h3>Fixes<a class="headerlink" href="#id6" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">_summary_dict</span></code> reports correct writable axes per mode.  <span class="issue">37</span></p></li>
 </ul>
 </section>
 </section>
-<section id="id3">
-<h2>0.1.9<a class="headerlink" href="#id3" title="Link to this heading">#</a></h2>
+<section id="id7">
+<h2>0.1.9<a class="headerlink" href="#id7" title="Link to this heading">#</a></h2>
 <p>Released 2026-04-17.</p>
-<section id="id4">
-<h3>Enhancements<a class="headerlink" href="#id4" title="Link to this heading">#</a></h3>
+<section id="id8">
+<h3>Enhancements<a class="headerlink" href="#id8" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add HOWTO: benchmark a solver geometry; include downloadable configuration files for each supported geometry.  <span class="issue">35</span></p></li>
 <li><p>Guard <code class="docutils literal notranslate"><span class="pre">_apply_mode_constraints()</span></code> to skip rebuilding diffcalc objects when the mode is unchanged, reducing <code class="docutils literal notranslate"><span class="pre">forward()</span></code> overhead by ~9%.  <span class="issue">33</span></p></li>
 </ul>
 </section>
-<section id="id5">
-<h3>Maintenance<a class="headerlink" href="#id5" title="Link to this heading">#</a></h3>
+<section id="id9">
+<h3>Maintenance<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Refactor <code class="docutils literal notranslate"><span class="pre">scripts/stamp_release.py</span></code>: read VERSION from RST comment block title (<code class="docutils literal notranslate"><span class="pre">SEMVER</span></code> auto-bumps patch; PEP 440 explicit versions accepted); add <code class="docutils literal notranslate"><span class="pre">--dry-run</span></code> and <code class="docutils literal notranslate"><span class="pre">--version</span></code> options; always insert <code class="docutils literal notranslate"><span class="pre">SEMVER</span></code> as next block title.  Use <code class="docutils literal notranslate"><span class="pre">packaging.version.Version</span></code> for version comparison.</p></li>
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">packaging</span></code> to dev dependencies in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p></li>
 </ul>
 </section>
 </section>
-<section id="id6">
-<h2>0.1.8<a class="headerlink" href="#id6" title="Link to this heading">#</a></h2>
+<section id="id10">
+<h2>0.1.8<a class="headerlink" href="#id10" title="Link to this heading">#</a></h2>
 <p>Released 2026-04-17.</p>
-<section id="id7">
-<h3>Maintenance<a class="headerlink" href="#id7" title="Link to this heading">#</a></h3>
+<section id="id11">
+<h3>Maintenance<a class="headerlink" href="#id11" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Pin <code class="docutils literal notranslate"><span class="pre">hklpy2&gt;=0.6.0</span></code> in dependencies; <code class="docutils literal notranslate"><span class="pre">hklpy2.misc</span></code> was removed in that release.  <span class="issue">31</span></p></li>
 </ul>
 </section>
 </section>
-<section id="id8">
-<h2>0.1.7<a class="headerlink" href="#id8" title="Link to this heading">#</a></h2>
+<section id="id12">
+<h2>0.1.7<a class="headerlink" href="#id12" title="Link to this heading">#</a></h2>
 <p>Released 2026-04-17.</p>
-<section id="id9">
-<h3>Fixes<a class="headerlink" href="#id9" title="Link to this heading">#</a></h3>
+<section id="id13">
+<h3>Fixes<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fix <code class="docutils literal notranslate"><span class="pre">ModuleNotFoundError:</span> <span class="pre">No</span> <span class="pre">module</span> <span class="pre">named</span> <span class="pre">'hklpy2.misc'</span></code>; update imports to <code class="docutils literal notranslate"><span class="pre">hklpy2.exceptions</span></code> and <code class="docutils literal notranslate"><span class="pre">hklpy2.utils</span></code> for compatibility with hklpy2 ≥ 0.6.0.  <span class="issue">31</span></p></li>
 <li><p>Fix <code class="docutils literal notranslate"><span class="pre">forward()</span></code> raising <code class="docutils literal notranslate"><span class="pre">AttributeError:</span> <span class="pre">no</span> <span class="pre">attribute</span> <span class="pre">'set_reals'</span></code>; add <code class="docutils literal notranslate"><span class="pre">set_reals()</span></code> and <code class="docutils literal notranslate"><span class="pre">UB</span></code> setter, change default mode to <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_chi_phi_fixed</span></code>.  <span class="issue">29</span></p></li>
@@ -499,18 +521,18 @@ describe future plans.</p>
 <li><p>Fix <code class="docutils literal notranslate"><span class="pre">wh()</span></code> raising <code class="docutils literal notranslate"><span class="pre">SolverError:</span> <span class="pre">UB</span> <span class="pre">matrix</span> <span class="pre">has</span> <span class="pre">not</span> <span class="pre">been</span> <span class="pre">set</span></code> before reflections are added.  <span class="issue">24</span></p></li>
 </ul>
 </section>
-<section id="id10">
-<h3>Maintenance<a class="headerlink" href="#id10" title="Link to this heading">#</a></h3>
+<section id="id14">
+<h3>Maintenance<a class="headerlink" href="#id14" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Document mode naming convention, bisector mode analysis, and extensibility limits in <code class="docutils literal notranslate"><span class="pre">geometries.rst</span></code>.  <span class="issue">29</span></p></li>
 </ul>
 </section>
 </section>
-<section id="id11">
-<h2>0.1.6<a class="headerlink" href="#id11" title="Link to this heading">#</a></h2>
+<section id="id15">
+<h2>0.1.6<a class="headerlink" href="#id15" title="Link to this heading">#</a></h2>
 <p>Released 2026-04-13.</p>
-<section id="id12">
-<h3>Fixes<a class="headerlink" href="#id12" title="Link to this heading">#</a></h3>
+<section id="id16">
+<h3>Fixes<a class="headerlink" href="#id16" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fix <code class="docutils literal notranslate"><span class="pre">extra_axis_names</span></code> and <code class="docutils literal notranslate"><span class="pre">extras</span></code>: always <code class="docutils literal notranslate"><span class="pre">[]</span></code>/<code class="docutils literal notranslate"><span class="pre">{}</span></code> (no
 non-motor extra parameters in this geometry).  Add <code class="docutils literal notranslate"><span class="pre">axes_w</span></code> property
@@ -520,35 +542,35 @@ presets feature for constant axes.  <span class="issue">17</span></p></li>
 point; describe all solvers generically.  <span class="issue">18</span></p></li>
 </ul>
 </section>
-<section id="id13">
-<h3>Maintenance<a class="headerlink" href="#id13" title="Link to this heading">#</a></h3>
+<section id="id17">
+<h3>Maintenance<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add root redirect page to GitHub Pages.</p></li>
 <li><p>Add usage guide for hklpy2-solvers with hklpy2.</p></li>
 </ul>
 </section>
 </section>
-<section id="id14">
-<h2>0.1.5<a class="headerlink" href="#id14" title="Link to this heading">#</a></h2>
+<section id="id18">
+<h2>0.1.5<a class="headerlink" href="#id18" title="Link to this heading">#</a></h2>
 <p>Released 2026-04-13.</p>
-<section id="id15">
-<h3>New Features<a class="headerlink" href="#id15" title="Link to this heading">#</a></h3>
+<section id="id19">
+<h3>New Features<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add Sphinx documentation framework with versioned GitHub Pages deployment.  <span class="issue">15</span></p></li>
 </ul>
 </section>
 </section>
-<section id="id16">
-<h2>0.1.4<a class="headerlink" href="#id16" title="Link to this heading">#</a></h2>
+<section id="id20">
+<h2>0.1.4<a class="headerlink" href="#id20" title="Link to this heading">#</a></h2>
 <p>Released 2026-04-12.</p>
-<section id="id17">
-<h3>Fixes<a class="headerlink" href="#id17" title="Link to this heading">#</a></h3>
+<section id="id21">
+<h3>Fixes<a class="headerlink" href="#id21" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fix PyPI publish workflow trigger.  <span class="issue">13</span></p></li>
 </ul>
 </section>
-<section id="id18">
-<h3>Maintenance<a class="headerlink" href="#id18" title="Link to this heading">#</a></h3>
+<section id="id22">
+<h3>Maintenance<a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Bump <code class="docutils literal notranslate"><span class="pre">actions/checkout</span></code> from 4 to 6.</p></li>
 <li><p>Bump <code class="docutils literal notranslate"><span class="pre">actions/download-artifact</span></code> from 4 to 8.</p></li>
@@ -557,32 +579,32 @@ point; describe all solvers generically.  <span class="issue">18</span></p></li>
 </ul>
 </section>
 </section>
-<section id="id19">
-<h2>0.1.3<a class="headerlink" href="#id19" title="Link to this heading">#</a></h2>
+<section id="id23">
+<h2>0.1.3<a class="headerlink" href="#id23" title="Link to this heading">#</a></h2>
 <p>Released 2026-04-12.</p>
-<section id="id20">
-<h3>Fixes<a class="headerlink" href="#id20" title="Link to this heading">#</a></h3>
+<section id="id24">
+<h3>Fixes<a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fix CI workflow: pytest path and coverage source.  <span class="issue">11</span></p></li>
 </ul>
 </section>
 </section>
-<section id="id21">
-<h2>0.1.2<a class="headerlink" href="#id21" title="Link to this heading">#</a></h2>
+<section id="id25">
+<h2>0.1.2<a class="headerlink" href="#id25" title="Link to this heading">#</a></h2>
 <p>Released 2026-04-12.</p>
-<section id="id22">
-<h3>Maintenance<a class="headerlink" href="#id22" title="Link to this heading">#</a></h3>
+<section id="id26">
+<h3>Maintenance<a class="headerlink" href="#id26" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add solvers table and badges to README.</p></li>
 <li><p>Apply ruff formatting to <code class="docutils literal notranslate"><span class="pre">diffcalc_solver.py</span></code>.</p></li>
 </ul>
 </section>
 </section>
-<section id="id23">
-<h2>0.1.1<a class="headerlink" href="#id23" title="Link to this heading">#</a></h2>
+<section id="id27">
+<h2>0.1.1<a class="headerlink" href="#id27" title="Link to this heading">#</a></h2>
 <p>Released 2026-04-12.</p>
-<section id="id24">
-<h3>Maintenance<a class="headerlink" href="#id24" title="Link to this heading">#</a></h3>
+<section id="id28">
+<h3>Maintenance<a class="headerlink" href="#id28" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add CI workflow (pytest on Python 3.10–3.13, ruff lint/format).</p></li>
 <li><p>Add PyPI trusted publishing workflow.</p></li>
@@ -590,11 +612,11 @@ point; describe all solvers generically.  <span class="issue">18</span></p></li>
 </ul>
 </section>
 </section>
-<section id="id25">
-<h2>0.1.0<a class="headerlink" href="#id25" title="Link to this heading">#</a></h2>
+<section id="id29">
+<h2>0.1.0<a class="headerlink" href="#id29" title="Link to this heading">#</a></h2>
 <p>Released 2026-04-12.</p>
-<section id="id26">
-<h3>New Features<a class="headerlink" href="#id26" title="Link to this heading">#</a></h3>
+<section id="id30">
+<h3>New Features<a class="headerlink" href="#id30" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver adapter wrapping diffcalc-core (You 1999,
 4S+2D six-circle geometry).  <span class="issue">2</span></p></li>
@@ -641,58 +663,64 @@ point; describe all solvers generically.  <span class="issue">18</span></p></li>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">0.2.1</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">0.2.2</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#enhancements">Enhancements</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixes">Fixes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#maintenance">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">0.2.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">0.2.1</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">Enhancements</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Maintenance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">0.2.0</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#new-features">New Features</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fixes">Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">Fixes</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">0.1.9</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">Enhancements</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">Maintenance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">0.1.9</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">Enhancements</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">0.1.8</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">Maintenance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">0.1.8</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">0.1.7</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">Fixes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">Maintenance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">0.1.7</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">0.1.6</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">Fixes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">Maintenance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">0.1.6</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">Fixes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">0.1.5</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">New Features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">0.1.5</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">New Features</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">0.1.4</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">Fixes</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">Maintenance</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">0.1.3</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">Fixes</a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">0.1.2</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">0.1.4</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">Fixes</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">Maintenance</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">0.1.1</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">Maintenance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">0.1.3</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">Fixes</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">0.1.0</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">New Features</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">0.1.2</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">Maintenance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">0.1.1</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">Maintenance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">0.1.0</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id30">New Features</a></li>
 </ul>
 </li>
 </ul>

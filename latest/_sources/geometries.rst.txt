@@ -289,27 +289,47 @@ You (1999) six-circle geometry (psi-circle).
      - Constant stages
    * - ``bisecting_vertical``
      - eta, mu, nu
-   * - ``fixed_chi``
-     - chi, eta, nu
-   * - ``fixed_phi``
+   * - ``fixed_phi_vertical``
      - phi, eta, nu
-   * - ``fixed_mu``
+   * - ``fixed_chi_vertical``
+     - chi, eta, nu
+   * - ``fixed_mu_vertical``
      - mu, eta, nu
-   * - ``bisecting_horizontal``
-     - mu, eta, delta
-   * - ``fixed_nu``
+   * - ``fixed_nu_vertical``
      - nu, eta, mu
+   * - ``fixed_alpha_i_vertical``
+     - mu, nu
+   * - ``fixed_beta_out_vertical``
+     - mu, nu
+   * - ``alpha_eq_beta_vertical``
+     - mu, nu
+   * - ``fixed_psi_vertical``
+     - eta, mu
    * - ``double_diffraction_vertical``
      - mu, nu
+   * - ``bisecting_horizontal``
+     - mu, eta, delta
+   * - ``fixed_phi_horizontal``
+     - phi, mu, delta
+   * - ``fixed_chi_horizontal``
+     - chi, mu, delta
+   * - ``fixed_eta_horizontal``
+     - eta, mu, delta
+   * - ``fixed_delta_horizontal``
+     - delta, mu, eta
+   * - ``fixed_alpha_i_horizontal``
+     - eta, delta
+   * - ``fixed_beta_out_horizontal``
+     - eta, delta
+   * - ``alpha_eq_beta_horizontal``
+     - eta, delta
+   * - ``fixed_psi_horizontal``
+     - mu, eta
    * - ``double_diffraction_horizontal``
      - eta, delta
-   * - ``lifting_detector_mu``
-     - mu, eta
    * - ``lifting_detector_phi``
      - phi, mu
-   * - ``psi_constant_vertical``
-     - eta, mu
-   * - ``psi_constant_horizontal``
+   * - ``lifting_detector_mu``
      - mu, eta
 
 .. _geometry.sixc:
@@ -520,9 +540,9 @@ Kappa six-circle geometry.
      - mu, komega
    * - ``lifting_detector_kphi``
      - kphi, mu
-   * - ``psi_constant_vertical``
+   * - ``fixed_psi_vertical``
      - komega, mu
-   * - ``psi_constant_horizontal``
+   * - ``fixed_psi_horizontal``
      - mu, komega
    * - ``double_diffraction_vertical``
      - mu, nu

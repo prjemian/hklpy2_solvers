@@ -18,8 +18,8 @@ on:
         default: false
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  group: gh-pages-deploy
+  cancel-in-progress: false
 
 permissions:
   contents: write

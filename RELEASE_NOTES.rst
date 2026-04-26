@@ -29,6 +29,21 @@ describe future plans.
 
     Expected release: tba
 
+    Enhancements
+    ~~~~~~~~~~~~
+
+    * Docs: add writable(s) and extra(s) columns to geometry mode tables; link each geometry to its backend library documentation.  :issue:`42`
+
+    Fixes
+    ~~~~~
+
+    * CI: serialize ``gh-pages`` deploys to prevent race condition between ``main`` and tag pushes.  :issue:`42`
+
+    Maintenance
+    ~~~~~~~~~~~
+
+    * CI: add concurrency limits to all workflows (``docs.yml``, ``ci.yml``, ``pypi.yml``).  :issue:`42`
+
 0.2.1
 ######
 

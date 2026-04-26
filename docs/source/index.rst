@@ -26,15 +26,15 @@ framework via its entry-point interface.
       How to use with hklpy2: load solver, set lattice, add reflections,
       calculate UB, forward and inverse calculations.
 
-   .. grid-item-card:: :ref:`guide_diffcalc`
-
-      Guide: orient a sample and compute positions with the ``diffcalc``
-      solver.
-
    .. grid-item-card:: :ref:`guide_ad_hoc`
 
       Guide: create diffractometers with the ``ad_hoc`` solver
       (10 geometries).
+
+   .. grid-item-card:: :ref:`guide_diffcalc`
+
+      Guide: orient a sample and compute positions with the ``diffcalc``
+      solver.
 
    .. grid-item-card:: :ref:`geometries`
 

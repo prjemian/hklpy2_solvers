@@ -13,10 +13,18 @@ concurrency:
 jobs:
   test:
     runs-on: ubuntu-latest
+    # Allow experimental Python versions to fail without failing the
+    # workflow as a whole (informational signal only).  Required jobs
+    # still gate merges via branch protection.
+    continue-on-error: ${{ matrix.experimental || false }}
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
+        experimental: [false]
+        include:
+          - python-version: "3.14-dev"
+            experimental: true
 
     steps:
       - uses: actions/checkout@v6
@@ -25,6 +33,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python-version }}
+          allow-prereleases: true
 
       - name: Install package with dev dependencies
         run: pip install -e ".[dev]"

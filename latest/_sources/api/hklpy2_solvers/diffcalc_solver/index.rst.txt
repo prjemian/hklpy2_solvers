@@ -210,8 +210,6 @@ Module Contents
 
 
    .. py:attribute:: version
-      :value: '0.1.0'
-
 
       Version of this Solver.
 

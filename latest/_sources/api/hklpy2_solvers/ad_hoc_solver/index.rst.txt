@@ -99,18 +99,26 @@ Module Contents
       :type: list[str]
 
 
-      Extra parameter names beyond the real motor axes.
+      Ordered list of input extra parameter names for the current mode.
 
-      Always returns ``[]``.
+      Drawn from the underlying mode's ``extras`` dict (filtered to the
+      names the user is expected to supply: ``n_hat``, ``psi``,
+      ``alpha_i``, ``beta_out``, ``h2``, ``k2``, ``l2``) plus the
+      scalar name of the active :class:`ReferenceConstraint` if it
+      names one of those inputs and is not already listed.
+
+      Solver-output placeholders (e.g. ``psi`` populated by the solver
+      after :meth:`forward`) are also exposed as inputs so the user can
+      change the target value before the next forward call.
+
+      Returns ``[]`` for modes with no extras.
 
 
    .. py:property:: extras
       :type: dict[str, Any]
 
 
-      Extra parameters beyond the real motor axes.
-
-      Always returns ``{}``.
+      Current values of the mode's extra parameters.
 
 
    .. py:method:: forward(pseudos: hklpy2.typing.NamedFloatDict) -> list[hklpy2.typing.NamedFloatDict]
@@ -200,8 +208,6 @@ Module Contents
 
 
    .. py:attribute:: version
-      :value: '0.1.0'
-
 
       Version of this Solver.
 

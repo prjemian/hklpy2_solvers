@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=000c92bf"></script>
+    <script src="../../_static/documentation_options.js?v=84649a45"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -420,11 +420,19 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">PackageNotFoundError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span> <span class="k">as</span> <span class="n">_pkg_version</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ahd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.mode</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConstraintViolation</span><span class="p">,</span> <span class="n">EwaldSphereViolation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.mode</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">OPTIONAL</span><span class="p">,</span>
+    <span class="n">REQUIRED</span><span class="p">,</span>
+    <span class="n">ConstraintSet</span><span class="p">,</span>
+    <span class="n">ConstraintViolation</span><span class="p">,</span>
+    <span class="n">EwaldSphereViolation</span><span class="p">,</span>
+<span class="p">)</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.refinement</span><span class="w"> </span><span class="kn">import</span> <span class="n">refine_lattice_bl1967</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReflectionDict</span>
@@ -438,6 +446,20 @@
 
 <span class="n">DEFAULT_GEOMETRY</span> <span class="o">=</span> <span class="s2">&quot;fourcv&quot;</span>
 <span class="sd">&quot;&quot;&quot;Default geometry (Busing &amp; Levy four-circle vertical).&quot;&quot;&quot;</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">_BACKEND_VERSION</span> <span class="o">=</span> <span class="n">_pkg_version</span><span class="p">(</span><span class="s2">&quot;ad_hoc_diffractometer&quot;</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">PackageNotFoundError</span><span class="p">:</span>  <span class="c1"># pragma: no cover - defensive</span>
+    <span class="n">_BACKEND_VERSION</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
+
+<span class="n">_INPUT_EXTRA_NAMES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;n_hat&quot;</span><span class="p">,</span> <span class="s2">&quot;psi&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_i&quot;</span><span class="p">,</span> <span class="s2">&quot;beta_out&quot;</span><span class="p">,</span> <span class="s2">&quot;h2&quot;</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">})</span>
+<span class="sd">&quot;&quot;&quot;Names of mode-extra parameters supplied by the user (vs. solver outputs).&quot;&quot;&quot;</span>
+
+<span class="n">_REFERENCE_EXTRA_NAMES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;psi&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_i&quot;</span><span class="p">,</span> <span class="s2">&quot;beta_out&quot;</span><span class="p">})</span>
+<span class="sd">&quot;&quot;&quot;Reference-constraint scalar extras (set via ConstraintSet rebuild).&quot;&quot;&quot;</span>
+
+<span class="n">_DOUBLE_DIFF_EXTRA_NAMES</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;h2&quot;</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Double-diffraction Miller indices stored directly in mode.extras.&quot;&quot;&quot;</span>
 
 
 <div class="viewcode-block" id="AdHocSolver">
@@ -468,7 +490,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;ad_hoc&quot;</span>
-    <span class="n">version</span> <span class="o">=</span> <span class="s2">&quot;0.1.0&quot;</span>
+    <span class="n">version</span> <span class="o">=</span> <span class="n">_BACKEND_VERSION</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_GEOMETRY</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">available</span> <span class="o">=</span> <span class="n">ahd</span><span class="o">.</span><span class="n">list_geometries</span><span class="p">()</span>
@@ -590,26 +612,115 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">extra_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extra parameter names beyond the real motor axes.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Ordered list of input extra parameter names for the current mode.</span>
 
-<span class="sd">        Always returns ``[]``.</span>
+<span class="sd">        Drawn from the underlying mode&#39;s ``extras`` dict (filtered to the</span>
+<span class="sd">        names the user is expected to supply: ``n_hat``, ``psi``,</span>
+<span class="sd">        ``alpha_i``, ``beta_out``, ``h2``, ``k2``, ``l2``) plus the</span>
+<span class="sd">        scalar name of the active :class:`ReferenceConstraint` if it</span>
+<span class="sd">        names one of those inputs and is not already listed.</span>
+
+<span class="sd">        Solver-output placeholders (e.g. ``psi`` populated by the solver</span>
+<span class="sd">        after :meth:`forward`) are also exposed as inputs so the user can</span>
+<span class="sd">        change the target value before the next forward call.</span>
+
+<span class="sd">        Returns ``[]`` for modes with no extras.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">mode_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">mode</span>
+        <span class="k">if</span> <span class="n">mode_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        <span class="n">names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">mode_obj</span><span class="o">.</span><span class="n">extras</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">_INPUT_EXTRA_NAMES</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+                <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mode_obj</span><span class="p">,</span> <span class="s2">&quot;reference_constraint&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">rc</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">_INPUT_EXTRA_NAMES</span> <span class="ow">and</span> <span class="n">rc</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+            <span class="n">names</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rc</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">names</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">extras</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Extra parameters beyond the real motor axes.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Current values of the mode&#39;s extra parameters.&quot;&quot;&quot;</span>
+        <span class="n">out</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">mode_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">mode</span>
+        <span class="k">if</span> <span class="n">mode_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">out</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_axis_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;n_hat&quot;</span><span class="p">:</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">surface_normal</span>
+            <span class="k">elif</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_REFERENCE_EXTRA_NAMES</span><span class="p">:</span>
+                <span class="n">rc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mode_obj</span><span class="p">,</span> <span class="s2">&quot;reference_constraint&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">rc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">rc</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+                    <span class="n">out</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">rc</span><span class="o">.</span><span class="n">value</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">raw</span> <span class="o">=</span> <span class="n">mode_obj</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                    <span class="n">out</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">raw</span> <span class="ow">in</span> <span class="p">(</span><span class="n">REQUIRED</span><span class="p">,</span> <span class="n">OPTIONAL</span><span class="p">)</span> <span class="k">else</span> <span class="n">raw</span>
+            <span class="k">else</span><span class="p">:</span>  <span class="c1"># h2, k2, l2 (double-diffraction)</span>
+                <span class="n">raw</span> <span class="o">=</span> <span class="n">mode_obj</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">raw</span> <span class="ow">in</span> <span class="p">(</span><span class="n">REQUIRED</span><span class="p">,</span> <span class="n">OPTIONAL</span><span class="p">)</span> <span class="k">else</span> <span class="n">raw</span>
+        <span class="k">return</span> <span class="n">out</span>
 
-<span class="sd">        Always returns ``{}``.</span>
+    <span class="nd">@extras</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extras</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Push extra parameter values into the current mode.</span>
+
+<span class="sd">        Routing:</span>
+
+<span class="sd">        * ``n_hat``  -&gt; ``geometry.surface_normal`` (length-3 sequence or</span>
+<span class="sd">          ``None``).</span>
+<span class="sd">        * ``psi``, ``alpha_i``, ``beta_out`` -&gt; rebuild the active</span>
+<span class="sd">          :class:`ConstraintSet` via ``to_dict``/``from_dict`` so the</span>
+<span class="sd">          :class:`ReferenceConstraint` carries the new scalar value.</span>
+<span class="sd">        * ``h2``, ``k2``, ``l2`` -&gt; written directly into the mode&#39;s</span>
+<span class="sd">          ``extras`` dict (used by double-diffraction modes).</span>
+
+<span class="sd">        Unknown keys are ignored silently (consistent with hklpy2 Core</span>
+<span class="sd">        behaviour, which always passes the full extras dict).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply dict, received </span><span class="si">{</span><span class="n">values</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">values</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">mode_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">mode</span>
+        <span class="k">if</span> <span class="n">mode_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Surface-normal vector.</span>
+        <span class="k">if</span> <span class="s2">&quot;n_hat&quot;</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;n_hat&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">surface_normal</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">surface_normal</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">)</span>
+
+        <span class="c1"># Reference-constraint scalar (psi / alpha_i / beta_out).</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mode_obj</span><span class="p">,</span> <span class="s2">&quot;reference_constraint&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">rc</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">_REFERENCE_EXTRA_NAMES</span> <span class="ow">and</span> <span class="n">rc</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+            <span class="n">new_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">rc</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+            <span class="n">cs_dict</span> <span class="o">=</span> <span class="n">mode_obj</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">cs_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;constraints&quot;</span><span class="p">,</span> <span class="p">[]):</span>
+                <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;ReferenceConstraint&quot;</span> <span class="ow">and</span> <span class="n">c</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">rc</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                    <span class="n">c</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span>
+                    <span class="k">break</span>
+            <span class="n">new_cs</span> <span class="o">=</span> <span class="n">ConstraintSet</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">cs_dict</span><span class="p">)</span>
+            <span class="c1"># Replace the per-mode ConstraintSet and re-select so that</span>
+            <span class="c1"># ``self._geom.mode`` returns the new object.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">_modes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_cs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">mode_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span>
+
+        <span class="c1"># Double-diffraction Miller indices (mutated in place).</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">_DOUBLE_DIFF_EXTRA_NAMES</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
+                <span class="c1"># Refresh mode_obj because rebuild above may have replaced it.</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">mode</span><span class="o">.</span><span class="n">extras</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_summary_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">KeyValueMap</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a summary of the geometry (modes, axes).</span>
 
 <span class="sd">        Overrides :attr:`SolverBase._summary_dict` so that each mode</span>
-<span class="sd">        reports only the axes actually computed by :meth:`forward`.</span>
+<span class="sd">        reports both the writable axes computed by :meth:`forward`</span>
+<span class="sd">        (:attr:`axes_w`) and the per-mode :attr:`extra_axis_names`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">description</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">,</span>
@@ -621,7 +732,7 @@
         <span class="k">for</span> <span class="n">mode</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">modes</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">mode</span>
             <span class="n">description</span><span class="p">[</span><span class="s2">&quot;modes&quot;</span><span class="p">][</span><span class="n">mode</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;extras&quot;</span><span class="p">:</span> <span class="p">[],</span>
+                <span class="s2">&quot;extras&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_axis_names</span><span class="p">,</span>
                 <span class="s2">&quot;reals&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">axes_w</span><span class="p">,</span>
             <span class="p">}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">original_mode</span>

@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=000c92bf"></script>
+    <script src="../../../_static/documentation_options.js?v=84649a45"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -530,15 +530,22 @@ by the current mode.</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="hklpy2_solvers.ad_hoc_solver.AdHocSolver.extra_axis_names">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">extra_axis_names</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.14)"><span class="pre">list</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#hklpy2_solvers.ad_hoc_solver.AdHocSolver.extra_axis_names" title="Link to this definition">#</a></dt>
-<dd><p>Extra parameter names beyond the real motor axes.</p>
-<p>Always returns <code class="docutils literal notranslate"><span class="pre">[]</span></code>.</p>
+<dd><p>Ordered list of input extra parameter names for the current mode.</p>
+<p>Drawn from the underlying mode’s <code class="docutils literal notranslate"><span class="pre">extras</span></code> dict (filtered to the
+names the user is expected to supply: <code class="docutils literal notranslate"><span class="pre">n_hat</span></code>, <code class="docutils literal notranslate"><span class="pre">psi</span></code>,
+<code class="docutils literal notranslate"><span class="pre">alpha_i</span></code>, <code class="docutils literal notranslate"><span class="pre">beta_out</span></code>, <code class="docutils literal notranslate"><span class="pre">h2</span></code>, <code class="docutils literal notranslate"><span class="pre">k2</span></code>, <code class="docutils literal notranslate"><span class="pre">l2</span></code>) plus the
+scalar name of the active <code class="xref py py-class docutils literal notranslate"><span class="pre">ReferenceConstraint</span></code> if it
+names one of those inputs and is not already listed.</p>
+<p>Solver-output placeholders (e.g. <code class="docutils literal notranslate"><span class="pre">psi</span></code> populated by the solver
+after <a class="reference internal" href="#hklpy2_solvers.ad_hoc_solver.AdHocSolver.forward" title="hklpy2_solvers.ad_hoc_solver.AdHocSolver.forward"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a>) are also exposed as inputs so the user can
+change the target value before the next forward call.</p>
+<p>Returns <code class="docutils literal notranslate"><span class="pre">[]</span></code> for modes with no extras.</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="hklpy2_solvers.ad_hoc_solver.AdHocSolver.extras">
 <span class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">extras</span></span><span class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.14)"><span class="pre">dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span><a class="headerlink" href="#hklpy2_solvers.ad_hoc_solver.AdHocSolver.extras" title="Link to this definition">#</a></dt>
-<dd><p>Extra parameters beyond the real motor axes.</p>
-<p>Always returns <code class="docutils literal notranslate"><span class="pre">{}</span></code>.</p>
+<dd><p>Current values of the mode’s extra parameters.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -619,7 +626,7 @@ current motor positions into the solver.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="hklpy2_solvers.ad_hoc_solver.AdHocSolver.version">
-<span class="sig-name descname"><span class="pre">version</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'0.1.0'</span></span><a class="headerlink" href="#hklpy2_solvers.ad_hoc_solver.AdHocSolver.version" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#hklpy2_solvers.ad_hoc_solver.AdHocSolver.version" title="Link to this definition">#</a></dt>
 <dd><p>Version of this Solver.</p>
 </dd></dl>
 

@@ -9,6 +9,7 @@ Solvers for the [hklpy2](https://github.com/prjemian/hklpy2) package.
 
 | Solver | Library | Geometry | Description |
 | --- | --- | --- | --- |
+| `ad_hoc` | [ad_hoc_diffractometer](https://github.com/prjemian/ad_hoc_diffractometer) | 10 pre-built geometries | Configurable Eulerian/kappa/surface diffractometers (fourcv, fourch, fivec, psic, sixc, kappa4cv, kappa4ch, kappa6c, zaxis, s2d2) |
 | `diffcalc` | [diffcalc-core](https://github.com/DiamondLightSource/diffcalc-core) | 4S+2D six-circle | You (1999) six-circle diffractometer (mu, delta, nu, eta, chi, phi) |
 
 ## Installation

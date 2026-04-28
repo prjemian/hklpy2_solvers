@@ -39,6 +39,7 @@ describe future plans.
     Maintenance
     ~~~~~~~~~~~
 
+    * CI: add Python 3.14-dev to the test matrix (allowed to fail).  :issue:`48`
     * Enforce 100% line and branch coverage in CI (``fail_under = 100`` in ``pyproject.toml``).  :issue:`46`
     * Require ``ad_hoc_diffractometer >= 0.8.0`` (true virtual bisecting in kappa modes).  :issue:`44`
 

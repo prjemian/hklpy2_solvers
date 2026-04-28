@@ -14,6 +14,8 @@ library (You 1999, 4S+2D six-circle geometry).
 """
 
 import logging
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as _pkg_version
 from typing import Any
 
 from diffcalc.hkl.calc import HklCalculation
@@ -39,6 +41,11 @@ PSEUDO_AXES = ["h", "k", "l"]
 
 ENERGY_REST_KEV = 12.39842
 """Product of photon energy (keV) and wavelength (Angstrom)."""
+
+try:
+    _BACKEND_VERSION = _pkg_version("diffcalc-core")
+except PackageNotFoundError:  # pragma: no cover - defensive
+    _BACKEND_VERSION = "unknown"
 
 # ---------------------------------------------------------------------------
 # Mode definitions
@@ -107,7 +114,7 @@ class DiffcalcSolver(SolverBase):
     """
 
     name = "diffcalc"
-    version = "0.1.0"
+    version = _BACKEND_VERSION
 
     def __init__(self, geometry: str = GEOMETRY_NAME, **kwargs: Any) -> None:
         if geometry != GEOMETRY_NAME:

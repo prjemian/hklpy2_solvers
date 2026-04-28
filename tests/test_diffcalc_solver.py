@@ -1148,3 +1148,22 @@ def test_summary_dict_all_modes(parms, context):
             expected = solver.axes_w
             actual = sdict["modes"][mode_name]["reals"]
             assert actual == expected, f"Mode {mode_name!r}: expected writable {expected}, got {actual}"
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="DiffcalcSolver.version matches diffcalc-core package",
+        ),
+    ],
+)
+def test_solver_version(parms, context):
+    from importlib.metadata import version as _pkg_version
+
+    with context:
+        assert DiffcalcSolver.version == _pkg_version("diffcalc-core")
+        # Sanity: not the legacy hardcoded value.
+        assert DiffcalcSolver.version != "0.1.0"

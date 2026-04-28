@@ -14,11 +14,19 @@ library.  All geometries registered with the library are available.
 """
 
 import logging
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version as _pkg_version
 from typing import Any
 
 import ad_hoc_diffractometer as ahd
 import numpy as np
-from ad_hoc_diffractometer.mode import ConstraintViolation, EwaldSphereViolation
+from ad_hoc_diffractometer.mode import (
+    OPTIONAL,
+    REQUIRED,
+    ConstraintSet,
+    ConstraintViolation,
+    EwaldSphereViolation,
+)
 from ad_hoc_diffractometer.refinement import refine_lattice_bl1967
 from hklpy2.backends.base import SolverBase
 from hklpy2.backends.typing import ReflectionDict
@@ -32,6 +40,20 @@ PSEUDO_AXES = ["h", "k", "l"]
 
 DEFAULT_GEOMETRY = "fourcv"
 """Default geometry (Busing & Levy four-circle vertical)."""
+
+try:
+    _BACKEND_VERSION = _pkg_version("ad_hoc_diffractometer")
+except PackageNotFoundError:  # pragma: no cover - defensive
+    _BACKEND_VERSION = "unknown"
+
+_INPUT_EXTRA_NAMES: frozenset[str] = frozenset({"n_hat", "psi", "alpha_i", "beta_out", "h2", "k2", "l2"})
+"""Names of mode-extra parameters supplied by the user (vs. solver outputs)."""
+
+_REFERENCE_EXTRA_NAMES: frozenset[str] = frozenset({"psi", "alpha_i", "beta_out"})
+"""Reference-constraint scalar extras (set via ConstraintSet rebuild)."""
+
+_DOUBLE_DIFF_EXTRA_NAMES: tuple[str, ...] = ("h2", "k2", "l2")
+"""Double-diffraction Miller indices stored directly in mode.extras."""
 
 
 class AdHocSolver(SolverBase):
@@ -60,7 +82,7 @@ class AdHocSolver(SolverBase):
     """
 
     name = "ad_hoc"
-    version = "0.1.0"
+    version = _BACKEND_VERSION
 
     def __init__(self, geometry: str = DEFAULT_GEOMETRY, **kwargs: Any) -> None:
         available = ahd.list_geometries()
@@ -176,26 +198,115 @@ class AdHocSolver(SolverBase):
 
     @property
     def extra_axis_names(self) -> list[str]:
-        """Extra parameter names beyond the real motor axes.
+        """Ordered list of input extra parameter names for the current mode.
 
-        Always returns ``[]``.
+        Drawn from the underlying mode's ``extras`` dict (filtered to the
+        names the user is expected to supply: ``n_hat``, ``psi``,
+        ``alpha_i``, ``beta_out``, ``h2``, ``k2``, ``l2``) plus the
+        scalar name of the active :class:`ReferenceConstraint` if it
+        names one of those inputs and is not already listed.
+
+        Solver-output placeholders (e.g. ``psi`` populated by the solver
+        after :meth:`forward`) are also exposed as inputs so the user can
+        change the target value before the next forward call.
+
+        Returns ``[]`` for modes with no extras.
         """
-        return []
+        mode_obj = self._geom.mode
+        if mode_obj is None:
+            return []
+        names: list[str] = []
+        for key in mode_obj.extras:
+            if key in _INPUT_EXTRA_NAMES and key not in names:
+                names.append(key)
+        rc = getattr(mode_obj, "reference_constraint", None)
+        if rc is not None and rc.name in _INPUT_EXTRA_NAMES and rc.name not in names:
+            names.append(rc.name)
+        return names
 
     @property
     def extras(self) -> dict[str, Any]:
-        """Extra parameters beyond the real motor axes.
+        """Current values of the mode's extra parameters."""
+        out: dict[str, Any] = {}
+        mode_obj = self._geom.mode
+        if mode_obj is None:
+            return out
+        for name in self.extra_axis_names:
+            if name == "n_hat":
+                out[name] = self._geom.surface_normal
+            elif name in _REFERENCE_EXTRA_NAMES:
+                rc = getattr(mode_obj, "reference_constraint", None)
+                if rc is not None and rc.name == name:
+                    out[name] = rc.value
+                else:
+                    raw = mode_obj.extras.get(name)
+                    out[name] = None if raw in (REQUIRED, OPTIONAL) else raw
+            else:  # h2, k2, l2 (double-diffraction)
+                raw = mode_obj.extras.get(name)
+                out[name] = None if raw in (REQUIRED, OPTIONAL) else raw
+        return out
 
-        Always returns ``{}``.
+    @extras.setter
+    def extras(self, values: dict[str, Any]) -> None:
+        """Push extra parameter values into the current mode.
+
+        Routing:
+
+        * ``n_hat``  -> ``geometry.surface_normal`` (length-3 sequence or
+          ``None``).
+        * ``psi``, ``alpha_i``, ``beta_out`` -> rebuild the active
+          :class:`ConstraintSet` via ``to_dict``/``from_dict`` so the
+          :class:`ReferenceConstraint` carries the new scalar value.
+        * ``h2``, ``k2``, ``l2`` -> written directly into the mode's
+          ``extras`` dict (used by double-diffraction modes).
+
+        Unknown keys are ignored silently (consistent with hklpy2 Core
+        behaviour, which always passes the full extras dict).
         """
-        return {}
+        if not isinstance(values, dict):
+            raise TypeError(f"Must supply dict, received {values!r}")
+        if not values:
+            return
+        mode_obj = self._geom.mode
+        if mode_obj is None:
+            return
+
+        # Surface-normal vector.
+        if "n_hat" in values:
+            v = values["n_hat"]
+            if v is None:
+                self._geom.surface_normal = None
+            else:
+                self._geom.surface_normal = tuple(float(x) for x in v)
+
+        # Reference-constraint scalar (psi / alpha_i / beta_out).
+        rc = getattr(mode_obj, "reference_constraint", None)
+        if rc is not None and rc.name in _REFERENCE_EXTRA_NAMES and rc.name in values:
+            new_value = float(values[rc.name])
+            cs_dict = mode_obj.to_dict()
+            for c in cs_dict.get("constraints", []):
+                if c.get("type") == "ReferenceConstraint" and c.get("name") == rc.name:
+                    c["value"] = new_value
+                    break
+            new_cs = ConstraintSet.from_dict(cs_dict)
+            # Replace the per-mode ConstraintSet and re-select so that
+            # ``self._geom.mode`` returns the new object.
+            self._geom._modes[self._mode] = new_cs
+            self._geom.mode_name = self._mode
+
+        # Double-diffraction Miller indices (mutated in place).
+        for k in _DOUBLE_DIFF_EXTRA_NAMES:
+            if k in values:
+                # Refresh mode_obj because rebuild above may have replaced it.
+                self._geom.mode.extras[k] = float(values[k])
 
     @property
     def _summary_dict(self) -> KeyValueMap:
         """Return a summary of the geometry (modes, axes).
 
         Overrides :attr:`SolverBase._summary_dict` so that each mode
-        reports only the axes actually computed by :meth:`forward`.
+        reports both the writable axes computed by :meth:`forward`
+        (:attr:`axes_w`) and the per-mode :attr:`extra_axis_names`.
         """
         description: dict[str, Any] = {
             "name": self.geometry,
@@ -207,7 +318,7 @@ class AdHocSolver(SolverBase):
         for mode in self.modes:
             self.mode = mode
             description["modes"][mode] = {
-                "extras": [],
+                "extras": self.extra_axis_names,
                 "reals": self.axes_w,
             }
         self.mode = original_mode

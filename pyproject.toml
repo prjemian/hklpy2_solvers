@@ -63,7 +63,18 @@ ad_hoc = "hklpy2_solvers.ad_hoc_solver:AdHocSolver"
 diffcalc = "hklpy2_solvers.diffcalc_solver:DiffcalcSolver"
 
 [tool.coverage.run]
+branch = true
 source = ["hklpy2_solvers"]
+
+[tool.coverage.report]
+fail_under = 100
+precision = 3
+show_missing = true
+skip_covered = false
+exclude_also = [
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError",
+]
 
 [tool.hatch.version]
 source = "vcs"

@@ -1430,3 +1430,215 @@ def test_refine_lattice_success(parms, context):
             assert "alpha" in result
             assert "beta" in result
             assert "gamma" in result
+
+
+# ---------------------------------------------------------------------------
+# Coverage-targeted edge-case tests (issue #46)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(geometry="kappa6c", kwargs={"kappa_alpha_deg": 50.0}),
+            does_not_raise(),
+            id="kappa_alpha_deg passed through to factory",
+        ),
+        pytest.param(
+            dict(geometry="kappa4cv", kwargs={"kappa_alpha_deg": 60.0}),
+            does_not_raise(),
+            id="kappa_alpha_deg accepted by kappa4cv",
+        ),
+    ],
+)
+def test_kappa_alpha_deg(parms, context):
+    """``kappa_alpha_deg`` keyword reaches the geometry factory."""
+    with context:
+        solver = AdHocSolver(parms["geometry"], **parms["kwargs"])
+        assert solver._geom._kappa_alpha_deg == parms["kwargs"]["kappa_alpha_deg"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(wavelength=1.5),
+            does_not_raise(),
+            id="default UB respects pre-set wavelength",
+        ),
+    ],
+)
+def test_default_ub_preserves_wavelength(parms, context):
+    """``_init_default_ub`` must not overwrite an already-set wavelength."""
+    with context:
+        solver = AdHocSolver()
+        solver.wavelength = parms["wavelength"]
+        # Trigger _init_default_ub via inverse() before any UB is set.
+        solver.inverse({"omega": 0, "chi": 0, "phi": 0, "ttheta": 0})
+        assert solver._geom.wavelength == parms["wavelength"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(value="not a dict"),
+            pytest.raises(TypeError, match=re.escape("Must supply dict")),
+            id="non-dict raises TypeError",
+        ),
+        pytest.param(
+            dict(value={"a": 5.0}),
+            does_not_raise(),
+            id="b/c default to a when omitted",
+        ),
+    ],
+)
+def test_lattice_setter_edge_cases(parms, context):
+    """``lattice`` setter validates type and applies default for ``b``/``c``."""
+    solver = AdHocSolver()
+    with context:
+        solver.lattice = parms["value"]
+        if isinstance(parms["value"], dict):
+            assert solver._geom.sample.lattice.a == parms["value"]["a"]
+            assert solver._geom.sample.lattice.b == parms["value"]["a"]
+            assert solver._geom.sample.lattice.c == parms["value"]["a"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(value="not a dict"),
+            pytest.raises(TypeError, match=re.escape("Must supply dictionary")),
+            id="non-dict raises TypeError",
+        ),
+        pytest.param(
+            dict(value={"order": []}),
+            does_not_raise(),
+            id="missing lattice key is tolerated",
+        ),
+        pytest.param(
+            dict(
+                value={
+                    "lattice": SI_LATTICE,
+                    "reflections": [FOURCV_R1, FOURCV_R2],
+                    "order": ["r1", "r2"],
+                },
+            ),
+            does_not_raise(),
+            id="reflections supplied as list",
+        ),
+        pytest.param(
+            dict(
+                value={
+                    "lattice": SI_LATTICE,
+                    "reflections": {"r1": FOURCV_R1},
+                    "order": ["r1", "missing"],
+                },
+            ),
+            does_not_raise(),
+            id="order names absent from reflections are skipped",
+        ),
+    ],
+)
+def test_sample_setter_edge_cases(parms, context):
+    """Cover ``sample`` setter type guard, list reflections, and missing names."""
+    solver = AdHocSolver()
+    with context:
+        solver.sample = parms["value"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="mode getter heals missing _mode attribute",
+        ),
+    ],
+)
+def test_mode_getter_attribute_error_recovery(parms, context):
+    """``mode`` getter returns ``''`` after deleting ``_mode``."""
+    solver = AdHocSolver()
+    with context:
+        del solver._mode
+        assert solver.mode == ""
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="refineLattice swallows backend errors and warns",
+        ),
+    ],
+)
+def test_refine_lattice_failure(parms, context):
+    """``refineLattice`` returns ``None`` when the backend raises."""
+    solver = _make_solver_with_ub()
+    # Add a third reflection so the >=3 guard passes.
+    solver.addReflection(
+        {
+            "name": "r3",
+            "pseudos": {"h": 0.0, "k": 0.0, "l": 1.0},
+            "reals": {"omega": THETA_100, "chi": 90, "phi": 0, "ttheta": TTH_100},
+            "wavelength": WAVELENGTH,
+        }
+    )
+    # Replace one reflection's geometry sample with an object that will
+    # break refine_lattice_bl1967 (drop the lattice).
+    solver._geom.sample.lattice = None
+    with context:
+        result = solver.refineLattice([])
+        assert result is None
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="removeAllReflections skips lattice re-apply when none stored",
+        ),
+    ],
+)
+def test_remove_all_reflections_no_lattice(parms, context):
+    """Cover the branch where ``self._lattice`` is empty after reset."""
+    solver = AdHocSolver()
+    with context:
+        solver.removeAllReflections()
+        assert solver._lattice == {}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(stored=None),
+            does_not_raise(),
+            id="UB setter falls back to unit lattice when none stored",
+        ),
+        pytest.param(
+            dict(stored=SI_LATTICE),
+            does_not_raise(),
+            id="UB setter restores stored lattice when geometry has none",
+        ),
+    ],
+)
+def test_ub_setter_default_lattice(parms, context):
+    """Cover both branches of the ``UB`` setter lattice-fallback logic."""
+    solver = AdHocSolver()
+    if parms["stored"] is not None:
+        solver.lattice = dict(parms["stored"])
+    # Wipe the geometry-side lattice so the setter has to restore it.
+    solver._geom.sample.lattice = None
+    if parms["stored"] is None:
+        solver._lattice = {}
+    with context:
+        solver.UB = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
+        assert solver._geom.sample.lattice is not None

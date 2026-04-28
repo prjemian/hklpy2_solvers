@@ -137,7 +137,7 @@ class DiffcalcSolver(SolverBase):
         # Use bisect_eta_fixed nu_fixed: vertical bisector mode
         # (eta = delta/2, eta=0, nu=0).  Equivalent to bisecting_vertical
         # in E6C terminology.  See geometries.rst for details.
-        if not self.mode and self.modes:
+        if not self.mode and self.modes:  # pragma: no branch
             self.mode = "4S+2D bisect_eta_fixed nu_fixed"
 
     # ------------------------------------------------------------------
@@ -155,7 +155,7 @@ class DiffcalcSolver(SolverBase):
         mode has changed since the last call, avoiding redundant object
         construction on every :meth:`forward` call.
         """
-        if not self.mode:
+        if not self.mode:  # pragma: no cover - constructor always sets a mode
             return
         if getattr(self, "_applied_mode", None) == self.mode:
             return
@@ -195,7 +195,7 @@ class DiffcalcSolver(SolverBase):
         """
         if self._ubcalc.UB is None:
             self._init_default_ub()
-        if self._hklcalc is None:
+        if self._hklcalc is None:  # pragma: no cover - UB setter rebuilds it
             self._rebuild_hklcalc()
 
     def _ensure_ready(self) -> None:
@@ -210,7 +210,7 @@ class DiffcalcSolver(SolverBase):
             raise SolverError("UB matrix has not been set. Add reflections and call calculate_UB().")
         if self._wavelength is None:
             raise SolverError("Wavelength is not set. Add a reflection first.")
-        if self._hklcalc is None:
+        if self._hklcalc is None:  # pragma: no cover - calculate_UB rebuilds it
             self._rebuild_hklcalc()
 
     # ------------------------------------------------------------------
@@ -351,7 +351,7 @@ class DiffcalcSolver(SolverBase):
         pos = self._position_from_reals(reals)
         try:
             h, k, l = self._hklcalc.get_hkl(pos, wavelength)  # noqa: E741
-        except DiffcalcException as exc:
+        except DiffcalcException as exc:  # pragma: no cover - inverse is closed-form
             raise SolverError(str(exc)) from exc
 
         return {"h": h, "k": k, "l": l}

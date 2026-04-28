@@ -91,11 +91,13 @@ class AdHocSolver(SolverBase):
                 f"AdHocSolver does not support geometry {geometry!r}.  Available: {sorted(available.keys())}"
             )
 
-        # Extract factory kwargs that are not for SolverBase.
+        # Extract factory kwargs that are not for SolverBase.  ``ad_hoc``
+        # kappa factories take ``alpha_deg``; we accept the more explicit
+        # ``kappa_alpha_deg`` name (documented in the class docstring) and
+        # translate it on the way through.
         factory_kwargs: dict[str, Any] = {}
-        for key in ("kappa_alpha_deg",):
-            if key in kwargs:
-                factory_kwargs[key] = kwargs.pop(key)
+        if "kappa_alpha_deg" in kwargs:
+            factory_kwargs["alpha_deg"] = kwargs.pop("kappa_alpha_deg")
 
         # Create the internal geometry object.
         self._geom = ahd.make_geometry(geometry, **factory_kwargs)
@@ -111,9 +113,12 @@ class AdHocSolver(SolverBase):
         super().__init__(geometry, **kwargs)
 
         # Set default mode: library's default or first available.
-        if not self.mode and self.modes:
+        # Every registered ahd geometry has at least one mode, so the
+        # ``self.modes`` guard never falls through; it remains as a
+        # defensive belt-and-braces check.
+        if not self.mode and self.modes:  # pragma: no branch
             default = self._geom.mode_name  # library's own default
-            if default is None:
+            if default is None:  # pragma: no cover - geometry always sets one
                 default = self.modes[0]
             self.mode = default
 
@@ -188,10 +193,10 @@ class AdHocSolver(SolverBase):
         These are the real axes *not* constrained to a fixed motor position
         by the current mode.
         """
-        if not self.mode:
+        if not self.mode:  # pragma: no cover - constructor always sets a mode
             return list(self._real_axes)
         mode_obj = self._geom.mode
-        if mode_obj is None:
+        if mode_obj is None:  # pragma: no cover - mode setter guarantees object
             return list(self._real_axes)
         constrained = set(mode_obj.constant_stages)
         return [ax for ax in self._real_axes if ax not in constrained]
@@ -213,14 +218,21 @@ class AdHocSolver(SolverBase):
         Returns ``[]`` for modes with no extras.
         """
         mode_obj = self._geom.mode
-        if mode_obj is None:
+        if mode_obj is None:  # pragma: no cover - mode setter guarantees object
             return []
         names: list[str] = []
         for key in mode_obj.extras:
-            if key in _INPUT_EXTRA_NAMES and key not in names:
+            # ``mode.extras`` is a plain dict so its keys are unique; the
+            # ``not in names`` guard is defensive against future changes.
+            if key in _INPUT_EXTRA_NAMES and key not in names:  # pragma: no branch
                 names.append(key)
         rc = getattr(mode_obj, "reference_constraint", None)
-        if rc is not None and rc.name in _INPUT_EXTRA_NAMES and rc.name not in names:
+        # Every reference-constraint scalar is also declared in
+        # ``mode.extras`` by the library, so the ``rc.name not in names``
+        # branch is currently unreachable; kept defensive.
+        if (
+            rc is not None and rc.name in _INPUT_EXTRA_NAMES and rc.name not in names
+        ):  # pragma: no cover - defensive
             names.append(rc.name)
         return names
 
@@ -229,7 +241,7 @@ class AdHocSolver(SolverBase):
         """Current values of the mode's extra parameters."""
         out: dict[str, Any] = {}
         mode_obj = self._geom.mode
-        if mode_obj is None:
+        if mode_obj is None:  # pragma: no cover - mode setter guarantees object
             return out
         for name in self.extra_axis_names:
             if name == "n_hat":
@@ -268,7 +280,7 @@ class AdHocSolver(SolverBase):
         if not values:
             return
         mode_obj = self._geom.mode
-        if mode_obj is None:
+        if mode_obj is None:  # pragma: no cover - mode setter guarantees object
             return
 
         # Surface-normal vector.
@@ -284,7 +296,10 @@ class AdHocSolver(SolverBase):
         if rc is not None and rc.name in _REFERENCE_EXTRA_NAMES and rc.name in values:
             new_value = float(values[rc.name])
             cs_dict = mode_obj.to_dict()
-            for c in cs_dict.get("constraints", []):
+            # The ReferenceConstraint is guaranteed to be present because
+            # ``rc`` came from ``mode_obj.reference_constraint``; the loop
+            # always finds it and ``break``s.
+            for c in cs_dict.get("constraints", []):  # pragma: no branch
                 if c.get("type") == "ReferenceConstraint" and c.get("name") == rc.name:
                     c["value"] = new_value
                     break
@@ -358,12 +373,12 @@ class AdHocSolver(SolverBase):
 
         if self._wavelength is None:
             self._geom.wavelength = 1.0
-        elif self._geom.wavelength != self._wavelength:
+        elif self._geom.wavelength != self._wavelength:  # pragma: no cover - kept in sync by setters
             self._geom.wavelength = self._wavelength
 
         try:
             h, k, l = self._geom.inverse(reals)  # noqa: E741
-        except (ValueError, np.linalg.LinAlgError) as exc:
+        except (ValueError, np.linalg.LinAlgError) as exc:  # pragma: no cover - ahd inverse is closed-form
             raise SolverError(str(exc)) from exc
 
         return {"h": h, "k": k, "l": l}

@@ -29,19 +29,24 @@ describe future plans.
 
     Expected release: tba
 
-    Fixes
-    ~~~~~
+0.3.0
+######
 
-    * Expose mode extras (``psi``, ``alpha_i``, ``beta_out``, ``h2``/``k2``/``l2``, ``n_hat``) for ``ad_hoc`` geometries.  :issue:`44`
-    * Report ``ad_hoc`` and ``diffcalc`` solver versions from the backend library.  :issue:`44`
-    * Translate ``kappa_alpha_deg`` keyword to the underlying ``alpha_deg`` argument when constructing kappa geometries.  :issue:`46`
+Released 2026-04-27.
 
-    Maintenance
-    ~~~~~~~~~~~
+Fixes
+~~~~~
 
-    * CI: add Python 3.14-dev to the test matrix (allowed to fail).  :issue:`48`
-    * Enforce 100% line and branch coverage in CI (``fail_under = 100`` in ``pyproject.toml``).  :issue:`46`
-    * Require ``ad_hoc_diffractometer >= 0.8.0`` (true virtual bisecting in kappa modes).  :issue:`44`
+* Expose mode extras (``psi``, ``alpha_i``, ``beta_out``, ``h2``/``k2``/``l2``, ``n_hat``) for ``ad_hoc`` geometries.  :issue:`44`
+* Report ``ad_hoc`` and ``diffcalc`` solver versions from the backend library.  :issue:`44`
+* Translate ``kappa_alpha_deg`` keyword to the underlying ``alpha_deg`` argument when constructing kappa geometries.  :issue:`46`
+
+Maintenance
+~~~~~~~~~~~
+
+* CI: add Python 3.14-dev to the test matrix (allowed to fail).  :issue:`48`
+* Enforce 100% line and branch coverage in CI (``fail_under = 100`` in ``pyproject.toml``).  :issue:`46`
+* Require ``ad_hoc_diffractometer >= 0.8.0`` (true virtual bisecting in kappa modes).  :issue:`44`
 
 0.2.2
 ######

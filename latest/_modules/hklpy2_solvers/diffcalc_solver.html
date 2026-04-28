@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=84649a45"></script>
+    <script src="../../_static/documentation_options.js?v=330666b7"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -545,7 +545,7 @@
         <span class="c1"># Use bisect_eta_fixed nu_fixed: vertical bisector mode</span>
         <span class="c1"># (eta = delta/2, eta=0, nu=0).  Equivalent to bisecting_vertical</span>
         <span class="c1"># in E6C terminology.  See geometries.rst for details.</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modes</span><span class="p">:</span>  <span class="c1"># pragma: no branch</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;4S+2D bisect_eta_fixed nu_fixed&quot;</span>
 
     <span class="c1"># ------------------------------------------------------------------</span>
@@ -563,7 +563,7 @@
 <span class="sd">        mode has changed since the last call, avoiding redundant object</span>
 <span class="sd">        construction on every :meth:`forward` call.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>  <span class="c1"># pragma: no cover - constructor always sets a mode</span>
             <span class="k">return</span>
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_applied_mode&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
             <span class="k">return</span>
@@ -603,7 +603,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">UB</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_init_default_ub</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hklcalc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hklcalc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover - UB setter rebuilds it</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_hklcalc</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_ensure_ready</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -618,7 +618,7 @@
             <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="s2">&quot;UB matrix has not been set. Add reflections and call calculate_UB().&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="s2">&quot;Wavelength is not set. Add a reflection first.&quot;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hklcalc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hklcalc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover - calculate_UB rebuilds it</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_hklcalc</span><span class="p">()</span>
 
     <span class="c1"># ------------------------------------------------------------------</span>
@@ -773,7 +773,7 @@
         <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_position_from_reals</span><span class="p">(</span><span class="n">reals</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hklcalc</span><span class="o">.</span><span class="n">get_hkl</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">wavelength</span><span class="p">)</span>  <span class="c1"># noqa: E741</span>
-        <span class="k">except</span> <span class="n">DiffcalcException</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">except</span> <span class="n">DiffcalcException</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pragma: no cover - inverse is closed-form</span>
             <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
         <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="n">h</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="n">l</span><span class="p">}</span></div>

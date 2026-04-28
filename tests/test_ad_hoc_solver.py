@@ -75,7 +75,7 @@ GEOMETRY_INFO = {
     "s2d2": {
         "real_axes": ["mu", "Z", "nu", "delta"],
         "mode_count": 2,
-        "default_mode": "mu_fixed",  # library has None, solver picks first
+        "default_mode": "fixed_mu",  # library has None, solver picks first
     },
 }
 
@@ -602,18 +602,285 @@ def test_forward_inverse_roundtrip(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(mode="bisecting"),
+            dict(geometry="fourcv", mode="bisecting", expected=[]),
             does_not_raise(),
-            id="extra_axis_names is always empty",
+            id="fourcv bisecting has no extras",
+        ),
+        pytest.param(
+            dict(geometry="fourcv", mode="fixed_psi", expected=["n_hat", "psi"]),
+            does_not_raise(),
+            id="fourcv fixed_psi exposes n_hat+psi",
+        ),
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="double_diffraction",
+                expected=["h2", "k2", "l2"],
+            ),
+            does_not_raise(),
+            id="fourcv double_diffraction exposes h2/k2/l2",
+        ),
+        pytest.param(
+            dict(geometry="psic", mode="bisecting_vertical", expected=[]),
+            does_not_raise(),
+            id="psic bisecting_vertical has no extras",
+        ),
+        pytest.param(
+            dict(
+                geometry="psic",
+                mode="fixed_psi_vertical",
+                expected=["n_hat", "psi"],
+            ),
+            does_not_raise(),
+            id="psic fixed_psi_vertical exposes n_hat+psi",
+        ),
+        pytest.param(
+            dict(
+                geometry="psic",
+                mode="fixed_alpha_i_vertical",
+                expected=["n_hat", "alpha_i", "beta_out"],
+            ),
+            does_not_raise(),
+            id="psic fixed_alpha_i_vertical exposes alpha_i+beta_out",
+        ),
+        pytest.param(
+            dict(
+                geometry="psic",
+                mode="double_diffraction_vertical",
+                expected=["h2", "k2", "l2"],
+            ),
+            does_not_raise(),
+            id="psic double_diffraction_vertical exposes h2/k2/l2",
+        ),
+        pytest.param(
+            dict(
+                geometry="kappa6c",
+                mode="fixed_psi_horizontal",
+                expected=["n_hat", "psi"],
+            ),
+            does_not_raise(),
+            id="kappa6c fixed_psi_horizontal exposes n_hat+psi",
+        ),
+        pytest.param(
+            dict(
+                geometry="sixc",
+                mode="alpha_eq_beta_zaxis",
+                expected=["n_hat", "alpha_i", "beta_out"],
+            ),
+            does_not_raise(),
+            id="sixc alpha_eq_beta_zaxis exposes alpha_i+beta_out",
+        ),
+        pytest.param(
+            dict(
+                geometry="s2d2",
+                mode="reflectivity",
+                expected=["n_hat", "alpha_i", "beta_out"],
+            ),
+            does_not_raise(),
+            id="s2d2 reflectivity exposes alpha_i+beta_out",
         ),
     ],
 )
 def test_extra_axis_names(parms, context):
-    solver = AdHocSolver()
-    solver.mode = parms["mode"]
     with context:
-        assert solver.extra_axis_names == []
-        assert solver.extras == {}
+        solver = AdHocSolver(parms["geometry"])
+        solver.mode = parms["mode"]
+        assert solver.extra_axis_names == parms["expected"]
+        # extras dict has exactly the same keys as extra_axis_names.
+        assert list(solver.extras.keys()) == parms["expected"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="fixed_psi",
+                values={"psi": 45.0, "n_hat": (0, 0, 1)},
+                check={"psi": 45.0, "n_hat": (0.0, 0.0, 1.0)},
+            ),
+            does_not_raise(),
+            id="set psi scalar and n_hat on fourcv fixed_psi",
+        ),
+        pytest.param(
+            dict(
+                geometry="psic",
+                mode="fixed_alpha_i_vertical",
+                values={"alpha_i": 1.5, "n_hat": [1, 0, 0]},
+                check={"alpha_i": 1.5, "n_hat": (1.0, 0.0, 0.0)},
+            ),
+            does_not_raise(),
+            id="set alpha_i and n_hat on psic fixed_alpha_i_vertical",
+        ),
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="double_diffraction",
+                values={"h2": 1.0, "k2": 2.0, "l2": 3.0},
+                check={"h2": 1.0, "k2": 2.0, "l2": 3.0},
+            ),
+            does_not_raise(),
+            id="set h2/k2/l2 on fourcv double_diffraction",
+        ),
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="fixed_psi",
+                values={"n_hat": None},
+                check={"n_hat": None},
+            ),
+            does_not_raise(),
+            id="clear n_hat by setting None",
+        ),
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="fixed_psi",
+                values={"unknown_extra": 99.0},
+                check={},
+            ),
+            does_not_raise(),
+            id="unknown extras are silently ignored",
+        ),
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="fixed_psi",
+                values=[("psi", 1.0)],  # wrong type
+                check={},
+            ),
+            pytest.raises(TypeError, match=re.escape("Must supply dict")),
+            id="non-dict raises TypeError",
+        ),
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="fixed_psi",
+                values={},
+                check={"psi": 0.0},  # default psi unchanged
+            ),
+            does_not_raise(),
+            id="empty dict is a no-op",
+        ),
+    ],
+)
+def test_set_get_extras(parms, context):
+    with context:
+        solver = AdHocSolver(parms["geometry"])
+        solver.mode = parms["mode"]
+        solver.extras = parms["values"]
+        current = solver.extras
+        for key, expected in parms["check"].items():
+            assert current[key] == expected, f"extras[{key!r}] expected {expected!r} got {current[key]!r}"
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="double_diffraction",
+                extras={"h2": 0.0, "k2": 1.0, "l2": 0.0},
+                pseudos={"h": 1.0, "k": 0.0, "l": 0.0},
+            ),
+            does_not_raise(),
+            id="fourcv double_diffraction forward with h2/k2/l2",
+        ),
+        pytest.param(
+            dict(
+                geometry="psic",
+                mode="double_diffraction_vertical",
+                extras={"h2": 0.0, "k2": 1.0, "l2": 0.0},
+                pseudos={"h": 1.0, "k": 0.0, "l": 0.0},
+            ),
+            does_not_raise(),
+            id="psic double_diffraction_vertical forward with h2/k2/l2",
+        ),
+    ],
+)
+def test_forward_with_extras(parms, context):
+    """Forward calculation honours extras for implemented modes.
+
+    .. note::
+        ``ad_hoc_diffractometer`` 0.8.0 marks the surface (``alpha_i``,
+        ``beta_out``, ``alpha_eq_beta``) and ``fixed_psi_*`` modes as
+        not yet implemented.  This test exercises the ``double_diffraction``
+        family because it is implemented and uses extras (``h2``, ``k2``,
+        ``l2``).  When upstream implements the surface modes, additional
+        cases should be added here.
+    """
+    with context:
+        solver = _make_solver_with_ub(parms["geometry"])
+        solver.mode = parms["mode"]
+        solver.extras = parms["extras"]
+        solutions = solver.forward(parms["pseudos"])
+        assert len(solutions) >= 1
+        for key, value in parms["extras"].items():
+            stored = solver.extras[key]
+            if isinstance(value, (list, tuple)):
+                assert stored == tuple(float(x) for x in value)
+            else:
+                assert stored == value
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="fixed_psi",
+                expected_extras=["n_hat", "psi"],
+            ),
+            does_not_raise(),
+            id="summary_dict reports fixed_psi extras",
+        ),
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="bisecting",
+                expected_extras=[],
+            ),
+            does_not_raise(),
+            id="summary_dict reports empty extras for bisecting",
+        ),
+        pytest.param(
+            dict(
+                geometry="psic",
+                mode="double_diffraction_vertical",
+                expected_extras=["h2", "k2", "l2"],
+            ),
+            does_not_raise(),
+            id="summary_dict reports h2/k2/l2 for double_diffraction_vertical",
+        ),
+    ],
+)
+def test_summary_dict_includes_extras(parms, context):
+    with context:
+        solver = AdHocSolver(parms["geometry"])
+        sd = solver._summary_dict
+        assert sd["modes"][parms["mode"]]["extras"] == parms["expected_extras"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="AdHocSolver.version matches backend library",
+        ),
+    ],
+)
+def test_solver_version(parms, context):
+    from importlib.metadata import version as _pkg_version
+
+    with context:
+        assert AdHocSolver.version == _pkg_version("ad_hoc_diffractometer")
+        # Sanity: not the legacy hardcoded value.
+        assert AdHocSolver.version != "0.1.0"
 
 
 @pytest.mark.parametrize(

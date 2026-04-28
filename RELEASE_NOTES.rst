@@ -29,6 +29,17 @@ describe future plans.
 
     Expected release: tba
 
+    Fixes
+    ~~~~~
+
+    * Expose mode extras (``psi``, ``alpha_i``, ``beta_out``, ``h2``/``k2``/``l2``, ``n_hat``) for ``ad_hoc`` geometries.  :issue:`44`
+    * Report ``ad_hoc`` and ``diffcalc`` solver versions from the backend library.  :issue:`44`
+
+    Maintenance
+    ~~~~~~~~~~~
+
+    * Require ``ad_hoc_diffractometer >= 0.8.0`` (true virtual bisecting in kappa modes).  :issue:`44`
+
 0.2.2
 ######
 

@@ -407,4 +407,13 @@ After the PR is merged and `main` is up to date locally:
 
 ## Code Coverage
 
-- Aim for 100% coverage, but prioritize meaningful tests over simply hitting every line.
+- **100% line and branch coverage are required.** CI runs
+  ``coverage report`` with ``fail_under = 100`` (configured in
+  ``pyproject.toml``); any drop fails the build.
+- Prefer meaningful tests over coverage gaming.  When a line or branch is
+  truly defensive or unreachable in normal flow, mark it with
+  ``# pragma: no cover`` (or ``# pragma: no branch``) and add a brief
+  inline comment explaining why.
+- New code must ship with tests in the mandatory parametrized style
+  (see "Agent pytest style" above) that exercise both success and
+  failure paths.

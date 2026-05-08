@@ -4,6 +4,8 @@
 hklpy2-solvers
 ==============
 
+**Version** (published): |release| (|today|)
+
 **hklpy2-solvers** provides solvers that plug into the
 `hklpy2 <https://blueskyproject.io/hklpy2/>`_ diffractometer control
 framework via its entry-point interface.
@@ -13,56 +15,22 @@ framework via its entry-point interface.
 
    guides
    api
-   release_notes
 
 .. grid:: 2
 
-   .. grid-item-card:: :ref:`install`
+   .. grid-item-card:: :material-outlined:`directions_run;3em` Solvers
 
-      Installation instructions.
+      :ref:`geometries`
+      · :ref:`ad_hoc <guide_ad_hoc>`
+      · :ref:`diffcalc <guide_diffcalc>`
 
-   .. grid-item-card:: :ref:`usage`
+   .. grid-item-card:: :material-outlined:`library_books;3em` User Guide
 
-      How to use with hklpy2: load solver, set lattice, add reflections,
-      calculate UB, forward and inverse calculations.
-
-   .. grid-item-card:: :ref:`guide_ad_hoc`
-
-      Guide: create diffractometers with the ``ad_hoc`` solver
-      (10 geometries).
-
-   .. grid-item-card:: :ref:`guide_diffcalc`
-
-      Guide: orient a sample and compute positions with the ``diffcalc``
-      solver.
-
-   .. grid-item-card:: :ref:`geometries`
-
-      Supported solver geometries and operating modes.
-
-   .. grid-item-card:: :ref:`howto_benchmark`
-
-      How to benchmark a solver geometry's forward/inverse throughput.
-
-   .. grid-item-card:: API Reference
-
-      `API Reference <api/hklpy2_solvers/index.html>`_
-
-   .. grid-item-card:: :ref:`release_notes`
-
-      Release history and changelog.
-
-About
------
-
-.. list-table::
-   :stub-columns: 1
-
-   * - Homepage
-     - https://github.com/prjemian/hklpy2_solvers
-   * - Source
-     - https://github.com/prjemian/hklpy2_solvers
-   * - License
-     - `LicenseRef-UChicago-Argonne-LLC-License <https://github.com/prjemian/hklpy2_solvers/blob/main/LICENSE>`_
-   * - Version
-     - |release|
+      :ref:`guides`
+      · :ref:`install`
+      · :doc:`API <api/hklpy2_solvers/index>`
+      · `documentation <https://prjemian.github.io/hklpy2_solvers>`_
+      · `source <https://github.com/prjemian/hklpy2_solvers>`_
+      · :ref:`release_notes`
+      · :ref:`license`
+      · :ref:`genindex`

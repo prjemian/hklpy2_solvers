@@ -15,7 +15,10 @@ Each guide assumes you have already :ref:`installed <install>` the package.
    guide_ad_hoc
    guide_diffcalc
    howto_benchmark
+   api
    install
+   release_notes
+   license
 
 .. grid:: 2
 

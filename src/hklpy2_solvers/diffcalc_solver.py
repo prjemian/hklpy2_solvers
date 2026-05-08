@@ -4,9 +4,9 @@
 Solver wrapping *diffcalc-core* for hklpy2.
 
 Provides the :class:`DiffcalcSolver` class, which implements the
-:class:`hklpy2.backends.base.SolverBase` interface on top of the
-`diffcalc-core <https://github.com/DiamondLightSource/diffcalc-core>`_
-library (You 1999, 4S+2D six-circle geometry).
+:class:`hklpy2.backends.base.SolverBase` interface on top of the `diffcalc-core
+<https://github.com/DiamondLightSource/diffcalc-core>`_ library.  This library
+provides one geometry (You 1999, 4S+2D six-circle ``psic`` geometry).
 
 .. autosummary::
 
@@ -95,7 +95,7 @@ _MODES: dict[str, dict[str, Any]] = {
 
 class DiffcalcSolver(SolverBase):
     """
-    Solver for diffcalc-core (You 1999, 4S+2D six-circle geometry).
+    Solver for diffcalc-core (You 1999, 4S+2D six-circle 'psic' geometry).
 
     Wraps :class:`diffcalc.hkl.calc.HklCalculation` behind the
     :class:`~hklpy2.backends.base.SolverBase` interface so that hklpy2

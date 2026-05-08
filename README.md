@@ -1,37 +1,33 @@
 # hklpy2_solvers
 
 [![PyPI](https://img.shields.io/pypi/v/hklpy2-solvers.svg)](https://pypi.org/project/hklpy2-solvers)
-[![License](https://img.shields.io/pypi/l/hklpy2-solvers.svg)](https://github.com/prjemian/hklpy2_solvers/blob/main/LICENSE)
+[![Documentation](https://img.shields.io/badge/docs-latest-blue)](https://prjemian.github.io/hklpy2_solvers/latest/)
+[![License: ANL](https://img.shields.io/badge/license-ANL-brightgreen)](LICENSE)
 
 Solvers for the [hklpy2](https://github.com/prjemian/hklpy2) package.
 
-## Solvers
-
-| Solver | Library | Geometry | Description |
-| --- | --- | --- | --- |
-| `ad_hoc` | [ad_hoc_diffractometer](https://github.com/prjemian/ad_hoc_diffractometer) | 10 pre-built geometries | Configurable Eulerian/kappa/surface diffractometers (fourcv, fourch, fivec, psic, sixc, kappa4cv, kappa4ch, kappa6c, zaxis, s2d2) |
-| `diffcalc` | [diffcalc-core](https://github.com/DiamondLightSource/diffcalc-core) | 4S+2D six-circle | You (1999) six-circle diffractometer (mu, delta, nu, eta, chi, phi) |
-
-## Installation
-
-```bash
-pip install hklpy2-solvers
-```
-
-## Development
-
-```bash
-git clone https://github.com/prjemian/hklpy2_solvers
-cd hklpy2_solvers
-pip install -e ".[dev]"
-pytest
-```
-
-## Versioning
-
-Versions are derived automatically from git tags using [hatch-vcs](https://github.com/ofek/hatch-vcs).
-To release a new version, create an annotated git tag:
-
-```bash
-git tag -a v0.1.0 -m "Release v0.1.0"
-```
+<table>
+    <tr>
+        <td>
+            <b>Solvers</b>
+            <p>
+                <a href="https://prjemian.github.io/hklpy2_solvers/geometries.html">Geometries</a>
+                · <a href="https://prjemian.github.io/hklpy2_solvers/guide_ad_hoc.html">ad_hoc</a>
+                · <a href="https://prjemian.github.io/hklpy2_solvers/guide_diffcalc.html">diffcalc</a>
+            </p>
+        </td>
+        <td>
+            <b>User Guide</b>
+            <p>
+                <a href="https://prjemian.github.io/hklpy2_solvers/guides.html">Guides</a>
+                · <a href="https://prjemian.github.io/hklpy2_solvers/install.html">Installation</a>
+                · <a href="https://prjemian.github.io/hklpy2_solvers/api/hklpy2_solvers/">API</a>
+                · <a href="https://prjemian.github.io/hklpy2_solvers">documentation</a>
+                · <a href="https://github.com/prjemian/hklpy2_solvers">source</a>
+                · <a href="https://prjemian.github.io/hklpy2_solvers/release_notes.html">Releases</a>
+                · <a href="https://prjemian.github.io/hklpy2_solvers/license.html">License</a>
+                · <a href="https://prjemian.github.io/hklpy2_solvers/genindex.html">Index</a>
+            </p>
+        </td>
+    </tr>
+</table>

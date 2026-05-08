@@ -2,7 +2,7 @@
 
 [![PyPI](https://img.shields.io/pypi/v/hklpy2-solvers.svg)](https://pypi.org/project/hklpy2-solvers)
 [![Documentation](https://img.shields.io/badge/docs-latest-blue)](https://prjemian.github.io/hklpy2_solvers/latest/)
-[![License](https://img.shields.io/pypi/l/hklpy2-solvers.svg)](https://github.com/prjemian/hklpy2_solvers/blob/main/LICENSE)
+[![License: ANL](https://img.shields.io/badge/license-ANL-brightgreen)](LICENSE)
 
 Solvers for the [hklpy2](https://github.com/prjemian/hklpy2) package.
 

@@ -2,5 +2,42 @@
     {
         "version": "latest",
         "url": "https://prjemian.github.io/hklpy2_solvers/latest/"
+    },
+    {
+        "version": "v0.3.0",
+        "url": "https://prjemian.github.io/hklpy2_solvers/v0.3.0/",
+        "preferred": true
+    },
+    {
+        "version": "v0.2.2",
+        "url": "https://prjemian.github.io/hklpy2_solvers/v0.2.2/"
+    },
+    {
+        "version": "v0.2.1",
+        "url": "https://prjemian.github.io/hklpy2_solvers/v0.2.1/"
+    },
+    {
+        "version": "v0.2.0",
+        "url": "https://prjemian.github.io/hklpy2_solvers/v0.2.0/"
+    },
+    {
+        "version": "v0.1.9",
+        "url": "https://prjemian.github.io/hklpy2_solvers/v0.1.9/"
+    },
+    {
+        "version": "v0.1.8",
+        "url": "https://prjemian.github.io/hklpy2_solvers/v0.1.8/"
+    },
+    {
+        "version": "v0.1.7",
+        "url": "https://prjemian.github.io/hklpy2_solvers/v0.1.7/"
+    },
+    {
+        "version": "v0.1.6",
+        "url": "https://prjemian.github.io/hklpy2_solvers/v0.1.6/"
+    },
+    {
+        "version": "v0.1.5",
+        "url": "https://prjemian.github.io/hklpy2_solvers/v0.1.5/"
     }
 ]

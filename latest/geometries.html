@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="_static/documentation_options.js?v=58f3c89d"></script>
+    <script src="_static/documentation_options.js?v=9b3f9772"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -757,7 +757,7 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting</span></code></p></td>
 <td><p>omega</p></td>
-<td><p>omega, chi, phi, ttheta</p></td>
+<td><p>chi, phi, ttheta</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi</span></code></p></td>
@@ -770,15 +770,15 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <td><p>omega, chi, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">constant_omega</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_omega</span></code></p></td>
 <td><p>omega</p></td>
 <td><p>chi, phi, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>omega, chi, phi, ttheta</p></td>
-<td><p>psi</p></td>
+<td><p>n_hat, psi</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
 <td><p><em>(none)</em></p></td>
@@ -839,7 +839,7 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting</span></code></p></td>
 <td><p>omega</p></td>
-<td><p>omega, chi, phi, ttheta</p></td>
+<td><p>chi, phi, ttheta</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi</span></code></p></td>
@@ -852,15 +852,15 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <td><p>omega, chi, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">constant_omega</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_omega</span></code></p></td>
 <td><p>omega</p></td>
 <td><p>chi, phi, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>omega, chi, phi, ttheta</p></td>
-<td><p>psi</p></td>
+<td><p>n_hat, psi</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
 <td><p><em>(none)</em></p></td>
@@ -921,48 +921,48 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code></p></td>
 <td><p>eta, mu, nu</p></td>
-<td><p>eta, chi, phi, delta</p></td>
+<td><p>chi, phi, delta</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_phi_vertical</span></code></p></td>
-<td><p>phi, eta, nu</p></td>
+<td><p>mu, nu, phi</p></td>
 <td><p>eta, chi, delta</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi_vertical</span></code></p></td>
-<td><p>chi, eta, nu</p></td>
+<td><p>chi, mu, nu</p></td>
 <td><p>eta, phi, delta</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu_vertical</span></code></p></td>
-<td><p>mu, eta, nu</p></td>
-<td><p>eta, chi, phi, delta</p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_nu_vertical</span></code></p></td>
-<td><p>nu, eta, mu</p></td>
-<td><p>eta, chi, phi, delta</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_vertical</span></code></p></td>
 <td><p>mu, nu</p></td>
 <td><p>eta, chi, phi, delta</p></td>
-<td><p>alpha_i, beta_out</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_beta_out_vertical</span></code></p></td>
 <td><p>mu, nu</p></td>
 <td><p>eta, chi, phi, delta</p></td>
-<td><p>alpha_i, beta_out</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alpha_eq_beta_vertical</span></code></p></td>
 <td><p>mu, nu</p></td>
 <td><p>eta, chi, phi, delta</p></td>
-<td><p>alpha_i, beta_out</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi_vertical</span></code></p></td>
-<td><p>eta, mu</p></td>
+<td><p>mu, nu</p></td>
 <td><p>eta, chi, phi, delta</p></td>
-<td><p>psi</p></td>
+<td><p>n_hat, psi</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_fixed_chi_fixed_phi</span></code></p></td>
+<td><p>chi, phi</p></td>
+<td><p>mu, eta, nu, delta</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_omega_vertical</span></code></p></td>
+<td><p>mu, nu</p></td>
+<td><p>eta, chi, phi, delta</p></td>
+<td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_vertical</span></code></p></td>
 <td><p>mu, nu</p></td>
@@ -970,63 +970,73 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <td><p>h2, k2, l2</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_horizontal</span></code></p></td>
-<td><p>mu, eta, delta</p></td>
-<td><p>mu, chi, phi, nu</p></td>
+<td><p>delta, eta, mu</p></td>
+<td><p>chi, phi, nu</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_phi_horizontal</span></code></p></td>
-<td><p>phi, mu, delta</p></td>
+<td><p>delta, eta, phi</p></td>
 <td><p>mu, chi, nu</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi_horizontal</span></code></p></td>
-<td><p>chi, mu, delta</p></td>
+<td><p>chi, delta, eta</p></td>
 <td><p>mu, phi, nu</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_eta_horizontal</span></code></p></td>
-<td><p>eta, mu, delta</p></td>
-<td><p>mu, chi, phi, nu</p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_delta_horizontal</span></code></p></td>
-<td><p>delta, mu, eta</p></td>
-<td><p>mu, chi, phi, nu</p></td>
-<td></td>
-</tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_horizontal</span></code></p></td>
-<td><p>eta, delta</p></td>
+<td><p>delta, eta</p></td>
 <td><p>mu, chi, phi, nu</p></td>
-<td><p>alpha_i, beta_out</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_beta_out_horizontal</span></code></p></td>
-<td><p>eta, delta</p></td>
+<td><p>delta, eta</p></td>
 <td><p>mu, chi, phi, nu</p></td>
-<td><p>alpha_i, beta_out</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alpha_eq_beta_horizontal</span></code></p></td>
-<td><p>eta, delta</p></td>
+<td><p>delta, eta</p></td>
 <td><p>mu, chi, phi, nu</p></td>
-<td><p>alpha_i, beta_out</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi_horizontal</span></code></p></td>
-<td><p>mu, eta</p></td>
+<td><p>delta, eta</p></td>
 <td><p>mu, chi, phi, nu</p></td>
-<td><p>psi</p></td>
+<td><p>n_hat, psi</p></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_horizontal</span></code></p></td>
-<td><p>eta, delta</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_omega_horizontal</span></code></p></td>
+<td><p>delta, eta</p></td>
+<td><p>mu, chi, phi, nu</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_horizontal</span></code></p></td>
+<td><p>delta, eta</p></td>
 <td><p>mu, chi, phi, nu</p></td>
 <td><p>h2, k2, l2</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_phi</span></code></p></td>
-<td><p>phi, mu</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">zone_vertical</span></code></p></td>
+<td><p>mu, nu</p></td>
+<td><p>eta, chi, phi, delta</p></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">zone_horizontal</span></code></p></td>
+<td><p>delta, eta</p></td>
+<td><p>mu, chi, phi, nu</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_phi</span></code></p></td>
+<td><p>chi, eta, mu</p></td>
 <td><p>phi, nu, delta</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_mu</span></code></p></td>
-<td><p>mu, eta</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_mu</span></code></p></td>
+<td><p>chi, eta, phi</p></td>
 <td><p>mu, nu, delta</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_eta</span></code></p></td>
+<td><p>chi, mu, phi</p></td>
+<td><p>eta, nu, delta</p></td>
 <td></td>
 </tr>
 </tbody>
@@ -1082,33 +1092,33 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_4c</span></code></p></td>
 <td><p>alpha, gamma, omega</p></td>
-<td><p>omega, chi, phi, delta</p></td>
+<td><p>chi, phi, delta</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_gamma_5c</span></code></p></td>
-<td><p>gamma, alpha, omega</p></td>
-<td><p>omega, chi, phi, delta, alpha</p></td>
+<td><p>alpha, gamma, omega</p></td>
+<td><p>chi, phi, delta</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_5c</span></code></p></td>
-<td><p>alpha, omega, gamma</p></td>
-<td><p>omega, chi, phi, delta, gamma</p></td>
+<td><p>alpha, gamma, omega</p></td>
+<td><p>chi, phi, delta</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_zaxis</span></code></p></td>
 <td><p>alpha, chi</p></td>
-<td><p>omega, delta, gamma</p></td>
-<td><p>alpha_i, beta_out</p></td>
+<td><p>omega, phi, delta, gamma</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_beta_zaxis</span></code></p></td>
-<td><p>gamma, chi</p></td>
-<td><p>omega, delta, alpha</p></td>
-<td><p>alpha_i, beta_out</p></td>
+<td><p>chi, gamma</p></td>
+<td><p>alpha, omega, phi, delta</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alpha_eq_beta_zaxis</span></code></p></td>
 <td><p>chi, phi</p></td>
-<td><p>omega, delta, alpha, gamma</p></td>
-<td><p>alpha_i, beta_out</p></td>
+<td><p>alpha, omega, delta, gamma</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
 </tr>
 </tbody>
 </table>
@@ -1163,11 +1173,11 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_4c</span></code></p></td>
 <td><p>mu, omega</p></td>
-<td><p>omega, chi, phi, ttheta</p></td>
+<td><p>chi, phi, ttheta</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi</span></code></p></td>
-<td><p>mu, chi</p></td>
+<td><p>chi, mu</p></td>
 <td><p>omega, phi, ttheta</p></td>
 <td></td>
 </tr>
@@ -1178,12 +1188,12 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu</span></code></p></td>
 <td><p>mu, omega</p></td>
-<td><p>omega, chi, phi, ttheta</p></td>
+<td><p>chi, phi, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">constant_omega_noncoplanar</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_omega_noncoplanar</span></code></p></td>
 <td><p>mu, omega</p></td>
-<td><p>mu, chi, phi, ttheta</p></td>
+<td><p>chi, phi, ttheta</p></td>
 <td></td>
 </tr>
 </tbody>
@@ -1238,7 +1248,7 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting</span></code></p></td>
-<td><p>komega</p></td>
+<td><p>omega (virtual)</p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
 <td></td>
 </tr>
@@ -1247,25 +1257,25 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <td><p>komega, kappa, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">constant_omega</span></code></p></td>
-<td><p>omega</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_omega</span></code></p></td>
+<td><p>omega (virtual)</p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">constant_chi</span></code></p></td>
-<td><p>chi</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi</span></code></p></td>
+<td><p>chi (virtual)</p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">constant_phi</span></code></p></td>
-<td><p>phi</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_phi</span></code></p></td>
+<td><p>phi (virtual)</p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
-<td><p>psi</p></td>
+<td><p>n_hat, psi</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
 <td><p><em>(none)</em></p></td>
@@ -1324,7 +1334,7 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting</span></code></p></td>
-<td><p>komega</p></td>
+<td><p>omega (virtual)</p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
 <td></td>
 </tr>
@@ -1333,25 +1343,25 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <td><p>komega, kappa, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">constant_omega</span></code></p></td>
-<td><p>omega</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_omega</span></code></p></td>
+<td><p>omega (virtual)</p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">constant_chi</span></code></p></td>
-<td><p>chi</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi</span></code></p></td>
+<td><p>chi (virtual)</p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">constant_phi</span></code></p></td>
-<td><p>phi</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_phi</span></code></p></td>
+<td><p>phi (virtual)</p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
-<td><p>psi</p></td>
+<td><p>n_hat, psi</p></td>
 </tr>
 </tbody>
 </table>
@@ -1406,13 +1416,13 @@ synchrotron).</p>
 </thead>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code></p></td>
-<td><p>komega, mu, nu</p></td>
+<td><p>mu, nu, omega (virtual)</p></td>
 <td><p>komega, kappa, kphi, delta</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_horizontal</span></code></p></td>
-<td><p>mu, komega, delta</p></td>
-<td><p>mu, kappa, kphi, nu</p></td>
+<td><p>delta, komega, mu</p></td>
+<td><p>kappa, kphi, nu</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_kphi</span></code></p></td>
@@ -1421,39 +1431,39 @@ synchrotron).</p>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu</span></code></p></td>
-<td><p>mu, komega, nu</p></td>
+<td><p>mu, nu, omega (virtual)</p></td>
 <td><p>komega, kappa, kphi, delta</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_nu</span></code></p></td>
-<td><p>nu, komega, mu</p></td>
+<td><p>mu, nu, omega (virtual)</p></td>
 <td><p>komega, kappa, kphi, delta</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_delta</span></code></p></td>
-<td><p>delta, mu, komega</p></td>
-<td><p>mu, kappa, kphi, nu</p></td>
+<td><p>delta, komega, mu</p></td>
+<td><p>kappa, kphi, nu</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_mu</span></code></p></td>
-<td><p>mu, komega</p></td>
-<td><p>mu, nu, delta</p></td>
+<td><p>komega, mu</p></td>
+<td><p>kappa, kphi, nu, delta</p></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_kphi</span></code></p></td>
 <td><p>kphi, mu</p></td>
-<td><p>kphi, nu, delta</p></td>
+<td><p>komega, kappa, nu, delta</p></td>
 <td></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi_vertical</span></code></p></td>
-<td><p>komega, mu</p></td>
-<td><p>komega, kappa, kphi, delta</p></td>
-<td><p>psi</p></td>
+<td><p>mu, omega (virtual)</p></td>
+<td><p>komega, kappa, kphi, nu, delta</p></td>
+<td><p>n_hat, psi</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi_horizontal</span></code></p></td>
-<td><p>mu, komega</p></td>
-<td><p>mu, kappa, kphi, nu</p></td>
-<td><p>psi</p></td>
+<td><p>komega, mu</p></td>
+<td><p>kappa, kphi, nu, delta</p></td>
+<td><p>n_hat, psi</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_vertical</span></code></p></td>
 <td><p>mu, nu</p></td>
@@ -1461,9 +1471,19 @@ synchrotron).</p>
 <td><p>h2, k2, l2</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_horizontal</span></code></p></td>
-<td><p>komega, delta</p></td>
+<td><p>delta, komega</p></td>
 <td><p>mu, kappa, kphi, nu</p></td>
 <td><p>h2, k2, l2</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">zone_vertical</span></code></p></td>
+<td><p>mu, nu</p></td>
+<td><p>komega, kappa, kphi, delta</p></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">zone_horizontal</span></code></p></td>
+<td><p>delta, komega</p></td>
+<td><p>mu, kappa, kphi, nu</p></td>
+<td></td>
 </tr>
 </tbody>
 </table>
@@ -1519,13 +1539,13 @@ synchrotron).</p>
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">zaxis</span></code></p></td>
 <td><p><em>(none)</em></p></td>
-<td><p>Z, delta, gamma</p></td>
-<td><p>alpha_i, beta_out</p></td>
+<td><p>alpha, Z, delta, gamma</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reflectivity</span></code></p></td>
 <td><p><em>(none)</em></p></td>
-<td><p>Z, delta, alpha, gamma</p></td>
-<td><p>alpha_i, beta_out</p></td>
+<td><p>alpha, Z, delta, gamma</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
 </tr>
 </tbody>
 </table>
@@ -1558,7 +1578,7 @@ synchrotron).</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>Default mode</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">mu_fixed</span></code> (first available)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu</span></code> (first available)</p></td>
 </tr>
 </tbody>
 </table>
@@ -1579,7 +1599,7 @@ synchrotron).</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">mu_fixed</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu</span></code></p></td>
 <td><p>mu</p></td>
 <td><p>Z, nu, delta</p></td>
 <td></td>
@@ -1587,7 +1607,7 @@ synchrotron).</p>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reflectivity</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>mu, Z, nu, delta</p></td>
-<td><p>alpha_i, beta_out</p></td>
+<td><p>n_hat, alpha_i, beta_out</p></td>
 </tr>
 </tbody>
 </table>
@@ -1599,8 +1619,9 @@ synchrotron).</p>
 <a class="reference internal" href="#geometry-kappa4ch"><span class="std std-ref">kappa4ch</span></a>, <a class="reference internal" href="#geometry-kappa6c"><span class="std std-ref">kappa6c</span></a>) accept a
 <code class="docutils literal notranslate"><span class="pre">kappa_alpha_deg</span></code> keyword argument when the solver is created.  This
 sets the fixed tilt angle of the kappa arm.  The default is 50 degrees.
-The kappa modes <code class="docutils literal notranslate"><span class="pre">constant_omega</span></code>, <code class="docutils literal notranslate"><span class="pre">constant_chi</span></code>, and
-<code class="docutils literal notranslate"><span class="pre">constant_phi</span></code> constrain the <em>equivalent Euler</em> angles rather than the
+The kappa modes <code class="docutils literal notranslate"><span class="pre">fixed_omega</span></code>, <code class="docutils literal notranslate"><span class="pre">fixed_chi</span></code>, and <code class="docutils literal notranslate"><span class="pre">fixed_phi</span></code> (and,
+on <code class="docutils literal notranslate"><span class="pre">kappa6c</span></code>, <code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code> / <code class="docutils literal notranslate"><span class="pre">fixed_mu</span></code> / <code class="docutils literal notranslate"><span class="pre">fixed_nu</span></code>)
+constrain the <em>equivalent Euler</em> (virtual) angles rather than the
 physical kappa motors.</p>
 </section>
 <section id="id3">

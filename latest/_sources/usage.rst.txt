@@ -42,7 +42,7 @@ Available solvers
        :ref:`zaxis <geometry.zaxis>`, :ref:`s2d2 <geometry.s2d2>`
      - 10 diffractometer geometries via
        `ad_hoc_diffractometer <https://github.com/prjemian/ad_hoc_diffractometer>`_.
-       2--12 modes per geometry.
+       2--24 modes per geometry.
 
 See :ref:`geometries` for the full description of each geometry and its
 operating modes.

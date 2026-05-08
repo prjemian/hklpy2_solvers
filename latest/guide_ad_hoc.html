@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="_static/documentation_options.js?v=58f3c89d"></script>
+    <script src="_static/documentation_options.js?v=9b3f9772"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -563,7 +563,7 @@ positions.</p>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="geometries.html#geometry-psic"><span class="std std-ref">psic</span></a></p></td>
 <td><p>mu, eta, chi, phi, nu, delta</p></td>
-<td><p>12</p></td>
+<td><p>24</p></td>
 <td><p>bisecting_vertical</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="geometries.html#geometry-sixc"><span class="std std-ref">sixc</span></a></p></td>
@@ -588,7 +588,7 @@ positions.</p>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="geometries.html#geometry-kappa6c"><span class="std std-ref">kappa6c</span></a></p></td>
 <td><p>mu, komega, kappa, kphi, nu, delta</p></td>
-<td><p>12</p></td>
+<td><p>14</p></td>
 <td><p>bisecting_vertical</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="geometries.html#geometry-zaxis"><span class="std std-ref">zaxis</span></a></p></td>
@@ -599,11 +599,48 @@ positions.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="geometries.html#geometry-s2d2"><span class="std std-ref">s2d2</span></a></p></td>
 <td><p>mu, Z, nu, delta</p></td>
 <td><p>2</p></td>
-<td><p>mu_fixed</p></td>
+<td><p>fixed_mu</p></td>
 </tr>
 </tbody>
 </table>
 </div>
+</section>
+<section id="register-a-custom-yaml-geometry">
+<h2>Register a custom YAML geometry<a class="headerlink" href="#register-a-custom-yaml-geometry" title="Link to this heading">#</a></h2>
+<p>Since <code class="docutils literal notranslate"><span class="pre">ad_hoc_diffractometer</span></code> 0.10.0 (issue
+<a class="reference external" href="https://github.com/prjemian/ad_hoc_diffractometer/issues/267">#267</a>),
+geometries are described in declarative YAML files.  You can extend the
+<code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver with your own geometry by registering a YAML file
+<strong>before</strong> creating the diffractometer.  The
+<a class="reference internal" href="api/hklpy2_solvers/ad_hoc_solver/index.html#hklpy2_solvers.ad_hoc_solver.AdHocSolver" title="hklpy2_solvers.ad_hoc_solver.AdHocSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdHocSolver</span></code></a> discovers geometries
+dynamically from the library’s registry, so no wrapper change is
+required.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ahd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+
+<span class="c1"># Register a YAML geometry from disk under the name &#39;mybeamline&#39;.</span>
+<span class="n">ahd</span><span class="o">.</span><span class="n">register_geometry_file</span><span class="p">(</span><span class="s2">&quot;/path/to/mybeamline.yml&quot;</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mybeamline&quot;</span><span class="p">)</span>
+
+<span class="c1"># Or load and inspect without registering:</span>
+<span class="n">geom</span> <span class="o">=</span> <span class="n">ahd</span><span class="o">.</span><span class="n">load_geometry_file</span><span class="p">(</span><span class="s2">&quot;/path/to/mybeamline.yml&quot;</span><span class="p">)</span>
+
+<span class="c1"># The new geometry is now discoverable through the ad_hoc solver.</span>
+<span class="n">diff</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span>
+    <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;ad_hoc&quot;</span><span class="p">,</span>
+    <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;mybeamline&quot;</span><span class="p">,</span>
+    <span class="n">name</span><span class="o">=</span><span class="s2">&quot;mybeamline&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">name</span></code> argument is optional; when omitted, the geometry is
+registered under the <code class="docutils literal notranslate"><span class="pre">name:</span></code> field declared inside the YAML file.
+See the
+<a class="reference external" href="https://prjemian.github.io/ad_hoc_diffractometer/latest/howtos/declarative_yaml.html">ad_hoc_diffractometer schema</a>
+for the YAML format.</p>
+<p>Third-party packages can alternatively contribute geometries via the
+<code class="docutils literal notranslate"><span class="pre">&quot;ad_hoc_diffractometer.geometries&quot;</span></code> entry-point group; those are
+discovered automatically the first time
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ad_hoc_diffractometer.list_geometries()</span></code> is called.</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -671,6 +708,7 @@ hklpy2 documentation</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-motor-positions-forward">Compute motor positions (forward)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-h-k-l-from-motor-positions-inverse">Compute (h, k, l) from motor positions (inverse)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-geometries-at-a-glance">Available geometries at a glance</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#register-a-custom-yaml-geometry">Register a custom YAML geometry</a></li>
 </ul>
   </nav></div>
 

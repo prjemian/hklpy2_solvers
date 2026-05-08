@@ -1,7 +1,15 @@
 # hklpy2_solvers
 
-[![PyPI](https://img.shields.io/pypi/v/hklpy2-solvers.svg)](https://pypi.org/project/hklpy2-solvers)
-[![Documentation](https://img.shields.io/badge/docs-latest-blue)](https://prjemian.github.io/hklpy2_solvers/latest/)
+[![Release](https://img.shields.io/github/v/release/prjemian/hklpy2_solvers)](https://github.com/prjemian/hklpy2_solvers/releases)
+[![Tag](https://img.shields.io/github/v/tag/prjemian/hklpy2_solvers)](https://github.com/prjemian/hklpy2_solvers/tags)
+[![PyPi](https://img.shields.io/pypi/v/hklpy2_solvers.svg)](https://pypi.python.org/pypi/hklpy2_solvers)
+[![Conda Package](https://img.shields.io/badge/package-hklpy2_solvers-green.svg)](https://anaconda.org/channels/conda-forge/packages/hklpy2_solvers/overview)
+[![Conda Version](https://anaconda.org/conda-forge/hklpy2_solvers/badges/version.svg)](https://anaconda.org/channels/conda-forge/packages/hklpy2_solvers/overview)
+[![Conda Downloads](https://anaconda.org/conda-forge/hklpy2_solvers/badges/downloads.svg)](https://anaconda.org/channels/conda-forge/packages/hklpy2_solvers/overview)
+[![Conda Platforms](https://anaconda.org/conda-forge/hklpy2_solvers/badges/platforms.svg)](https://anaconda.org/channels/conda-forge/packages/hklpy2_solvers/overview)
+[![Coverage Status](https://coveralls.io/repos/github/prjemian/hklpy2_solvers/badge.svg?branch=main)](https://coveralls.io/github/prjemian/hklpy2_solvers?branch=main)
+[![Documentation](https://img.shields.io/badge/docs-blue)](https://prjemian.github.io/hklpy2_solvers/)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/prjemian/hklpy2_solvers)
 [![License: ANL](https://img.shields.io/badge/license-ANL-brightgreen)](LICENSE)
 
 Solvers for the [hklpy2](https://github.com/prjemian/hklpy2) package.

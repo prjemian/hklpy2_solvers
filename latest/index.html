@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="_static/documentation_options.js?v=56fb8ab1"></script>
+    <script src="_static/documentation_options.js?v=85e1e98b"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -155,13 +155,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="api.html">
     API Reference
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="release_notes.html">
-    Releases
   </a>
 </li>
 
@@ -289,13 +282,6 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="release_notes.html">
-    Releases
-  </a>
-</li>
-
   </ul>
 </nav></div>
           
@@ -384,6 +370,7 @@
                   
   <section id="hklpy2-solvers">
 <span id="index"></span><h1>hklpy2-solvers<a class="headerlink" href="#hklpy2-solvers" title="Link to this heading">#</a></h1>
+<p><strong>Version</strong> (published): 0.3.1.dev16+g62d915c1f (May 08, 2026)</p>
 <p><strong>hklpy2-solvers</strong> provides solvers that plug into the
 <a class="reference external" href="https://blueskyproject.io/hklpy2/">hklpy2</a> diffractometer control
 framework via its entry-point interface.</p>
@@ -395,8 +382,10 @@ framework via its entry-point interface.</p>
 <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
-<a class="reference internal" href="install.html#install"><span class="std std-ref">Installation</span></a></div>
-<p class="sd-card-text">Installation instructions.</p>
+<svg version="4.0.0.63c5cb3" width="3.0em" height="3.0em" class="sd-material-icon sd-material-icon-directions_run" viewBox="0 0 24 24" aria-hidden="true"><path d="M0 0h24v24H0V0z" fill="none"></path><path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"></path></svg> Solvers</div>
+<p class="sd-card-text"><a class="reference internal" href="geometries.html#geometries"><span class="std std-ref">Geometries</span></a>
+· <a class="reference internal" href="guide_ad_hoc.html#guide-ad-hoc"><span class="std std-ref">ad_hoc</span></a>
+· <a class="reference internal" href="guide_diffcalc.html#guide-diffcalc"><span class="std std-ref">diffcalc</span></a></p>
 </div>
 </div>
 </div>
@@ -404,90 +393,20 @@ framework via its entry-point interface.</p>
 <div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
 <div class="sd-card-body docutils">
 <div class="sd-card-title sd-font-weight-bold docutils">
-<a class="reference internal" href="usage.html#usage"><span class="std std-ref">Using hklpy2-solvers with hklpy2</span></a></div>
-<p class="sd-card-text">How to use with hklpy2: load solver, set lattice, add reflections,
-calculate UB, forward and inverse calculations.</p>
-</div>
-</div>
-</div>
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-<a class="reference internal" href="guide_ad_hoc.html#guide-ad-hoc"><span class="std std-ref">How to use the ad_hoc solver</span></a></div>
-<p class="sd-card-text">Guide: create diffractometers with the <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver
-(10 geometries).</p>
-</div>
-</div>
-</div>
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-<a class="reference internal" href="guide_diffcalc.html#guide-diffcalc"><span class="std std-ref">How to use the diffcalc solver</span></a></div>
-<p class="sd-card-text">Guide: orient a sample and compute positions with the <code class="docutils literal notranslate"><span class="pre">diffcalc</span></code>
-solver.</p>
-</div>
-</div>
-</div>
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-<a class="reference internal" href="geometries.html#geometries"><span class="std std-ref">Geometries</span></a></div>
-<p class="sd-card-text">Supported solver geometries and operating modes.</p>
-</div>
-</div>
-</div>
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-<a class="reference internal" href="howto_benchmark.html#howto-benchmark"><span class="std std-ref">How to benchmark a solver geometry</span></a></div>
-<p class="sd-card-text">How to benchmark a solver geometry’s forward/inverse throughput.</p>
-</div>
-</div>
-</div>
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-API Reference</div>
-<p class="sd-card-text"><a class="reference external" href="api/hklpy2_solvers/index.html">API Reference</a></p>
-</div>
-</div>
-</div>
-<div class="sd-col sd-d-flex-row docutils">
-<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm docutils">
-<div class="sd-card-body docutils">
-<div class="sd-card-title sd-font-weight-bold docutils">
-<a class="reference internal" href="release_notes.html#release-notes"><span class="std std-ref">Releases</span></a></div>
-<p class="sd-card-text">Release history and changelog.</p>
+<svg version="4.0.0.63c5cb3" width="3.0em" height="3.0em" class="sd-material-icon sd-material-icon-library_books" viewBox="0 0 24 24" aria-hidden="true"><path d="M0 0h24v24H0V0z" fill="none"></path><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12zM10 9h8v2h-8zm0 3h4v2h-4zm0-6h8v2h-8z"></path></svg> User Guide</div>
+<p class="sd-card-text"><a class="reference internal" href="guides.html#guides"><span class="std std-ref">Guides</span></a>
+· <a class="reference internal" href="install.html#install"><span class="std std-ref">Installation</span></a>
+· <a class="reference internal" href="api/hklpy2_solvers/index.html"><span class="doc">API</span></a>
+· <a class="reference external" href="https://prjemian.github.io/hklpy2_solvers">documentation</a>
+· <a class="reference external" href="https://github.com/prjemian/hklpy2_solvers">source</a>
+· <a class="reference internal" href="release_notes.html#release-notes"><span class="std std-ref">Releases</span></a>
+· <a class="reference internal" href="license.html#license"><span class="std std-ref">License</span></a>
+· <a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p>
 </div>
 </div>
 </div>
 </div>
 </div>
-<section id="about">
-<h2>About<a class="headerlink" href="#about" title="Link to this heading">#</a></h2>
-<div class="pst-scrollable-table-container"><table class="table">
-<tbody>
-<tr class="row-odd"><th class="stub"><p>Homepage</p></th>
-<td><p><a class="github reference external" href="https://github.com/prjemian/hklpy2_solvers">prjemian/hklpy2_solvers</a></p></td>
-</tr>
-<tr class="row-even"><th class="stub"><p>Source</p></th>
-<td><p><a class="github reference external" href="https://github.com/prjemian/hklpy2_solvers">prjemian/hklpy2_solvers</a></p></td>
-</tr>
-<tr class="row-odd"><th class="stub"><p>License</p></th>
-<td><p><a class="reference external" href="https://github.com/prjemian/hklpy2_solvers/blob/main/LICENSE">LicenseRef-UChicago-Argonne-LLC-License</a></p></td>
-</tr>
-<tr class="row-even"><th class="stub"><p>Version</p></th>
-<td><p>0.3.1.dev10+ga1d7733a8</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
 </section>
 
 
@@ -519,18 +438,6 @@ API Reference</div>
                 <dialog id="pst-secondary-sidebar-modal"></dialog>
                 <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-
-  <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="pst-show_toc_level nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#about">About</a></li>
-</ul>
-  </nav></div>
 
   <div class="sidebar-secondary-item">
 

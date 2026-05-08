@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=56fb8ab1"></script>
+    <script src="../../../_static/documentation_options.js?v=85e1e98b"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
-    <link rel="next" title="Releases" href="../../../release_notes.html" />
+    <link rel="next" title="Installation" href="../../../install.html" />
     <link rel="prev" title="hklpy2_solvers.ad_hoc_solver" href="../ad_hoc_solver/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -156,13 +156,6 @@
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="../../../api.html">
     API Reference
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../release_notes.html">
-    Releases
   </a>
 </li>
 
@@ -288,13 +281,6 @@
   </a>
 </li>
 
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../release_notes.html">
-    Releases
-  </a>
-</li>
-
   </ul>
 </nav></div>
           
@@ -412,6 +398,9 @@
       </a>
     </li>
     
+    <li class="breadcrumb-item"><a href="../../../guides.html" class="nav-link">Guides</a></li>
+    
+    
     <li class="breadcrumb-item"><a href="../../../api.html" class="nav-link">API Reference</a></li>
     
     
@@ -438,13 +427,12 @@
 <span id="hklpy2-solvers-diffcalc-solver"></span><h1>hklpy2_solvers.diffcalc_solver<a class="headerlink" href="#module-hklpy2_solvers.diffcalc_solver" title="Link to this heading">#</a></h1>
 <p>Solver wrapping <em>diffcalc-core</em> for hklpy2.</p>
 <p>Provides the <a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffcalcSolver</span></code></a> class, which implements the
-<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="(in hklpy2 v0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.backends.base.SolverBase</span></code></a> interface on top of the
-<a class="reference external" href="https://github.com/DiamondLightSource/diffcalc-core">diffcalc-core</a>
-library (You 1999, 4S+2D six-circle geometry).</p>
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="(in hklpy2 v0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">hklpy2.backends.base.SolverBase</span></code></a> interface on top of the <a class="reference external" href="https://github.com/DiamondLightSource/diffcalc-core">diffcalc-core</a> library.  This library
+provides one geometry (You 1999, 4S+2D six-circle <code class="docutils literal notranslate"><span class="pre">psic</span></code> geometry).</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffcalcSolver</span></code></a>([geometry])</p></td>
-<td><p>Solver for diffcalc-core (You 1999, 4S+2D six-circle geometry).</p></td>
+<td><p>Solver for diffcalc-core (You 1999, 4S+2D six-circle 'psic' geometry).</p></td>
 </tr>
 </tbody>
 </table>
@@ -474,7 +462,7 @@ library (You 1999, 4S+2D six-circle geometry).</p>
 <div class="pst-scrollable-table-container"><table class="autosummary longtable table">
 <tbody>
 <tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DiffcalcSolver</span></code></a></p></td>
-<td><p>Solver for diffcalc-core (You 1999, 4S+2D six-circle geometry).</p></td>
+<td><p>Solver for diffcalc-core (You 1999, 4S+2D six-circle 'psic' geometry).</p></td>
 </tr>
 </tbody>
 </table>
@@ -486,7 +474,7 @@ library (You 1999, 4S+2D six-circle geometry).</p>
 <dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.DiffcalcSolver">
 <span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-prename descclassname"><span class="pre">hklpy2_solvers.diffcalc_solver.</span></span><span class="sig-name descname"><span class="pre">DiffcalcSolver</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.14)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">GEOMETRY_NAME</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Any</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/hklpy2_solvers/diffcalc_solver.html#DiffcalcSolver"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="(in hklpy2 v0.6)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hklpy2.backends.base.SolverBase</span></code></a></p>
-<p>Solver for diffcalc-core (You 1999, 4S+2D six-circle geometry).</p>
+<p>Solver for diffcalc-core (You 1999, 4S+2D six-circle ‘psic’ geometry).</p>
 <p>Wraps <code class="xref py py-class docutils literal notranslate"><span class="pre">diffcalc.hkl.calc.HklCalculation</span></code> behind the
 <a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="(in hklpy2 v0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a> interface so that hklpy2
 can use diffcalc-core for forward / inverse calculations.</p>
@@ -689,11 +677,11 @@ the hklpy2 presets feature and is currently only defined on
       </div>
     </a>
     <a class="right-next"
-       href="../../../release_notes.html"
+       href="../../../install.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Releases</p>
+        <p class="prev-next-title">Installation</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

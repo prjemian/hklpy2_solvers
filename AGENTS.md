@@ -245,12 +245,67 @@ The title of the comment block controls what version is used at release time:
   feature, fix, enhancement, or maintenance change.
 - Add the entry **inside the RST comment block** (``..`` + 4-space indent)
   for the next unreleased version at the top of the file.
-- Entries should be terse — one or two lines — and reference the issue or PR
-  number with ``:issue:`N``` or ``:pr:`N```.
 - Use the appropriate subsection and keep subsections in the logical order
   defined at the top of ``RELEASE_NOTES.rst``: Notice, Breaking Changes, New
   Features, Enhancements, Fixes, Maintenance, Deprecations, New Contributors.
 - Sort entries alphabetically within each subsection.
+
+#### CRITICAL: entries MUST be terse — one line each
+
+Release-note entries are a changelog summary, not a place to explain *why*
+or *how*.  Reviewers and downstream consumers scan these entries quickly;
+verbose entries get skipped.  Detailed rationale belongs in the linked
+issue/PR, the commit message body, or the documentation itself.
+
+**Hard rules** (each entry MUST satisfy all of these):
+
+1. **One line.**  A single bullet on a single physical line.  Do not wrap
+   onto continuation lines.  Two short lines are acceptable only when a
+   single sentence is genuinely longer than ~120 characters and cannot be
+   shortened without losing meaning.
+2. **End with the issue or PR reference.**  Every entry ends with
+   ``:issue:`N``` or ``:pr:`N```.  Do not include a reference inside the
+   sentence and again at the end.
+3. **No parenthetical explanations longer than five words.**  If you find
+   yourself writing a long ``(because …)`` or ``(this changes …)`` clause,
+   delete it — that detail belongs in the issue/PR.
+4. **No enumerations of affected files, modules, geometries, modes,
+   functions, or symbols.**  Summarise the *kind* of change, not the
+   inventory.  The diff and the issue are the inventory.
+5. **No multi-paragraph entries.**  Use one entry per concern; if you have
+   three concerns, write three one-line entries (still alphabetised).
+6. **No "this PR …" / "we now …" / "in order to …" phrasing.**  Use the
+   imperative, present-tense changelog voice ("Add X.", "Fix Y.",
+   "Document Z.", "Bump W to >=N.").
+
+Good (do this):
+
+```rst
+* Bump ``ad_hoc_diffractometer`` floor to ``>=0.10.0``.  :issue:`51`
+* Document ``register_geometry_file`` in the ``ad_hoc`` guide.  :issue:`51`
+* Refresh ``ad_hoc`` geometry mode tables for v0.10.0.  :issue:`51`
+```
+
+Bad (do NOT do this):
+
+```rst
+* Refresh ``ad_hoc`` geometry mode tables (``fourcv``, ``fourch``,
+  ``psic``, ``sixc``, ``fivec``, ``kappa4cv``, ``kappa4ch``,
+  ``kappa6c``, ``zaxis``, ``s2d2``) for ``ad_hoc_diffractometer``
+  v0.10.0; new psic/kappa6c modes (``zone_*``, psic
+  ``fixed_omega_*``, ``fixed_alpha_i_fixed_chi_fixed_phi``,
+  ``lifting_detector_eta``) are listed.  :issue:`51`
+```
+
+(The bad example: enumerates files, enumerates modes, multi-line, mixes
+two concerns into one bullet.  Replace with the three good entries above.)
+
+#### Enforcement
+
+PR reviewers and automated agents MUST check that every entry added to
+``RELEASE_NOTES.rst`` satisfies the hard rules above.  Entries that
+violate them will be sent back for revision.  When in doubt, write the
+shortest sentence that names the change and link the issue.
 
 ## Git Issues, Branches, Commits, and Pull Requests
 

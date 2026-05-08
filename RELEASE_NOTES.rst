@@ -29,6 +29,13 @@ describe future plans.
 
     Expected release: tba
 
+    Documentation
+    ~~~~~~~~~~~~~
+
+    * Document ``register_geometry_file`` in the ``ad_hoc`` guide.  :issue:`51`
+    * Refresh ``ad_hoc`` geometry mode tables for ``ad_hoc_diffractometer`` v0.10.0.  :issue:`51`
+    * Update ``ad_hoc_diffractometer`` documentation URLs to ``bcda-aps.github.io``.  :issue:`53`
+
 0.3.0
 ######
 

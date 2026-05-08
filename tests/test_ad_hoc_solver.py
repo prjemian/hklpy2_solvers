@@ -39,7 +39,7 @@ GEOMETRY_INFO = {
     },
     "psic": {
         "real_axes": ["mu", "eta", "chi", "phi", "nu", "delta"],
-        "mode_count": 22,
+        "mode_count": 24,
         "default_mode": "bisecting_vertical",
     },
     "sixc": {
@@ -64,7 +64,7 @@ GEOMETRY_INFO = {
     },
     "kappa6c": {
         "real_axes": ["mu", "komega", "kappa", "kphi", "nu", "delta"],
-        "mode_count": 12,
+        "mode_count": 14,
         "default_mode": "bisecting_vertical",
     },
     "zaxis": {

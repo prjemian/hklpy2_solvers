@@ -29,21 +29,12 @@ describe future plans.
 
     Expected release: tba
 
-    Notice
-    ~~~~~~
-
-    * UB matrices saved with ``ad_hoc_diffractometer<0.9.2`` may need re-derivation (non-orthogonal lattice and kappa pseudoangle changes).  :issue:`51`
-
-    Maintenance
-    ~~~~~~~~~~~
-
-    * Bump ``ad_hoc_diffractometer`` floor to ``>=0.10.0``.  :issue:`51`
-
     Documentation
     ~~~~~~~~~~~~~
 
     * Document ``register_geometry_file`` in the ``ad_hoc`` guide.  :issue:`51`
     * Refresh ``ad_hoc`` geometry mode tables for ``ad_hoc_diffractometer`` v0.10.0.  :issue:`51`
+    * Update ``ad_hoc_diffractometer`` documentation URLs to ``bcda-aps.github.io``.  :issue:`53`
 
 0.3.0
 ######

@@ -29,22 +29,27 @@ describe future plans.
 
     Expected release: tba
 
-    Documentation
-    ~~~~~~~~~~~~~
+0.3.1
+######
 
-    * Document ``register_geometry_file`` in the ``ad_hoc`` guide.  :issue:`51`
-    * Refresh ``ad_hoc`` geometry mode tables for ``ad_hoc_diffractometer`` v0.10.0.  :issue:`51`
-    * Update ``ad_hoc_diffractometer`` documentation URLs to ``bcda-aps.github.io``.  :issue:`53`
+Released 2026-05-08.
 
-    Fixes
-    ~~~~~
+Documentation
+~~~~~~~~~~~~~
 
-    * Populate version-switcher dropdown from existing gh-pages version directories.  :issue:`54`
+* Document ``register_geometry_file`` in the ``ad_hoc`` guide.  :issue:`51`
+* Refresh ``ad_hoc`` geometry mode tables for ``ad_hoc_diffractometer`` v0.10.0.  :issue:`51`
+* Update ``ad_hoc_diffractometer`` documentation URLs to ``bcda-aps.github.io``.  :issue:`53`
 
-    Maintenance
-    ~~~~~~~~~~~
+Fixes
+~~~~~
 
-    * Consolidate content on README and home pages.  :issue:`54`
+* Populate version-switcher dropdown from existing gh-pages version directories.  :issue:`54`
+
+Maintenance
+~~~~~~~~~~~
+
+* Consolidate content on README and home pages.  :issue:`54`
 
 0.3.0
 ######

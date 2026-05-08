@@ -5,7 +5,7 @@ Solver wrapping *ad_hoc_diffractometer* for hklpy2.
 
 Provides the :class:`AdHocSolver` class, which implements the
 :class:`hklpy2.backends.base.SolverBase` interface on top of the
-`ad_hoc_diffractometer <https://github.com/prjemian/ad_hoc_diffractometer>`_
+`ad_hoc_diffractometer <https://github.com/bcda-aps/ad_hoc_diffractometer>`_
 library.  All geometries registered with the library are available.
 
 .. autosummary::

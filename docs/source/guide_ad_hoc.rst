@@ -145,7 +145,7 @@ Available geometries at a glance
      - bisecting
    * - :ref:`psic <geometry.psic>`
      - mu, eta, chi, phi, nu, delta
-     - 12
+     - 24
      - bisecting_vertical
    * - :ref:`sixc <geometry.sixc>`
      - alpha, omega, chi, phi, delta, gamma
@@ -165,7 +165,7 @@ Available geometries at a glance
      - bisecting
    * - :ref:`kappa6c <geometry.kappa6c>`
      - mu, komega, kappa, kphi, nu, delta
-     - 12
+     - 14
      - bisecting_vertical
    * - :ref:`zaxis <geometry.zaxis>`
      - alpha, Z, delta, gamma
@@ -174,7 +174,49 @@ Available geometries at a glance
    * - :ref:`s2d2 <geometry.s2d2>`
      - mu, Z, nu, delta
      - 2
-     - mu_fixed
+     - fixed_mu
+
+Register a custom YAML geometry
+-------------------------------
+
+Since ``ad_hoc_diffractometer`` 0.10.0 (issue
+`#267 <https://github.com/prjemian/ad_hoc_diffractometer/issues/267>`_),
+geometries are described in declarative YAML files.  You can extend the
+``ad_hoc`` solver with your own geometry by registering a YAML file
+**before** creating the diffractometer.  The
+:class:`~hklpy2_solvers.ad_hoc_solver.AdHocSolver` discovers geometries
+dynamically from the library's registry, so no wrapper change is
+required.
+
+.. code-block:: python
+
+   import ad_hoc_diffractometer as ahd
+   import hklpy2
+
+   # Register a YAML geometry from disk under the name 'mybeamline'.
+   ahd.register_geometry_file("/path/to/mybeamline.yml", name="mybeamline")
+
+   # Or load and inspect without registering:
+   geom = ahd.load_geometry_file("/path/to/mybeamline.yml")
+
+   # The new geometry is now discoverable through the ad_hoc solver.
+   diff = hklpy2.creator(
+       solver="ad_hoc",
+       geometry="mybeamline",
+       name="mybeamline",
+   )
+
+The ``name`` argument is optional; when omitted, the geometry is
+registered under the ``name:`` field declared inside the YAML file.
+See the
+`ad_hoc_diffractometer schema
+<https://prjemian.github.io/ad_hoc_diffractometer/latest/howtos/declarative_yaml.html>`_
+for the YAML format.
+
+Third-party packages can alternatively contribute geometries via the
+``"ad_hoc_diffractometer.geometries"`` entry-point group; those are
+discovered automatically the first time
+:func:`ad_hoc_diffractometer.list_geometries` is called.
 
 .. seealso::
 

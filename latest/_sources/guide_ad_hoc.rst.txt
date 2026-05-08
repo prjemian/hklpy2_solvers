@@ -10,7 +10,7 @@ positions.  It assumes you have already :ref:`installed <install>` the
 package.
 
 The ``ad_hoc`` solver wraps the `ad_hoc_diffractometer
-<https://github.com/prjemian/ad_hoc_diffractometer>`_ library.  This library
+<https://github.com/bcda-aps/ad_hoc_diffractometer>`_ library.  This library
 provides 10 diffractometer geometries ranging from Eulerian four-circle to
 six-circle, kappa, and surface configurations.  See :ref:`geometries.ad_hoc` for
 the full list.
@@ -180,7 +180,7 @@ Register a custom YAML geometry
 -------------------------------
 
 Since ``ad_hoc_diffractometer`` 0.10.0 (issue
-`#267 <https://github.com/prjemian/ad_hoc_diffractometer/issues/267>`_),
+`#267 <https://github.com/bcda-aps/ad_hoc_diffractometer/issues/267>`_),
 geometries are described in declarative YAML files.  You can extend the
 ``ad_hoc`` solver with your own geometry by registering a YAML file
 **before** creating the diffractometer.  The

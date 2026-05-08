@@ -217,11 +217,11 @@ user's perspective the mode list is not extensible.
 
 :class:`~hklpy2_solvers.ad_hoc_solver.AdHocSolver`
 
-Wraps `ad_hoc_diffractometer <https://github.com/prjemian/ad_hoc_diffractometer>`_
+Wraps `ad_hoc_diffractometer <https://github.com/bcda-aps/ad_hoc_diffractometer>`_
 (Jemian 2026).
 
 The ``ad_hoc`` solver discovers geometries dynamically from the
-`ad_hoc_diffractometer <https://github.com/prjemian/ad_hoc_diffractometer>`_
+`ad_hoc_diffractometer <https://github.com/bcda-aps/ad_hoc_diffractometer>`_
 library.  All geometries registered in the
 library's geometry registry (including via entry points) are
 automatically available.  The pseudo axes are always ``h``, ``k``, ``l``.
@@ -900,7 +900,7 @@ Extensibility
 ~~~~~~~~~~~~~
 
 The ``ad_hoc`` solver discovers geometries dynamically from the
-`ad_hoc_diffractometer <https://github.com/prjemian/ad_hoc_diffractometer>`_
+`ad_hoc_diffractometer <https://github.com/bcda-aps/ad_hoc_diffractometer>`_
 library's registry.  New geometries added to
 the library (including via entry points) are automatically available
 without changes to the solver code.

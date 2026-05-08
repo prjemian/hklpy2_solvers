@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="_static/documentation_options.js?v=4621528c"></script>
+    <script src="_static/documentation_options.js?v=abd9f31c"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -434,7 +434,7 @@
 solver, orient a crystalline sample, and compute reciprocal-space
 positions.  It assumes you have already <a class="reference internal" href="install.html#install"><span class="std std-ref">installed</span></a> the
 package.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver wraps the <a class="reference external" href="https://github.com/prjemian/ad_hoc_diffractometer">ad_hoc_diffractometer</a> library.  This library
+<p>The <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver wraps the <a class="reference external" href="https://github.com/bcda-aps/ad_hoc_diffractometer">ad_hoc_diffractometer</a> library.  This library
 provides 10 diffractometer geometries ranging from Eulerian four-circle to
 six-circle, kappa, and surface configurations.  See <a class="reference internal" href="geometries.html#geometries-ad-hoc"><span class="std std-ref">ad_hoc solver</span></a> for
 the full list.</p>
@@ -603,7 +603,7 @@ positions.</p>
 <section id="register-a-custom-yaml-geometry">
 <h2>Register a custom YAML geometry<a class="headerlink" href="#register-a-custom-yaml-geometry" title="Link to this heading">#</a></h2>
 <p>Since <code class="docutils literal notranslate"><span class="pre">ad_hoc_diffractometer</span></code> 0.10.0 (issue
-<a class="reference external" href="https://github.com/prjemian/ad_hoc_diffractometer/issues/267">#267</a>),
+<a class="reference external" href="https://github.com/bcda-aps/ad_hoc_diffractometer/issues/267">#267</a>),
 geometries are described in declarative YAML files.  You can extend the
 <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver with your own geometry by registering a YAML file
 <strong>before</strong> creating the diffractometer.  The

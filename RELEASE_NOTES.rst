@@ -36,6 +36,11 @@ describe future plans.
     * Refresh ``ad_hoc`` geometry mode tables for ``ad_hoc_diffractometer`` v0.10.0.  :issue:`51`
     * Update ``ad_hoc_diffractometer`` documentation URLs to ``bcda-aps.github.io``.  :issue:`53`
 
+    Maintenance
+    ~~~~~~~~~~~
+
+    * Consolidate content on README and home pages.  :issue:`54`
+
 0.3.0
 ######
 

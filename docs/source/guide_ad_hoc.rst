@@ -9,11 +9,11 @@ solver, orient a crystalline sample, and compute reciprocal-space
 positions.  It assumes you have already :ref:`installed <install>` the
 package.
 
-The ``ad_hoc`` solver wraps the
-`ad_hoc_diffractometer <https://github.com/prjemian/ad_hoc_diffractometer>`_
-library and provides 10 diffractometer geometries ranging from
-four-circle to six-circle and kappa configurations.  See
-:ref:`geometries.ad_hoc` for the full list.
+The ``ad_hoc`` solver wraps the `ad_hoc_diffractometer
+<https://github.com/prjemian/ad_hoc_diffractometer>`_ library.  This library
+provides 10 diffractometer geometries ranging from Eulerian four-circle to
+six-circle, kappa, and surface configurations.  See :ref:`geometries.ad_hoc` for
+the full list.
 
 Create a diffractometer
 -----------------------

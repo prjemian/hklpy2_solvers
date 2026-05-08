@@ -9,11 +9,11 @@ solver, orient a crystalline sample, and compute reciprocal-space
 positions.  It assumes you have already :ref:`installed <install>` the
 package.
 
-The ``diffcalc`` solver wraps
-`diffcalc-core <https://github.com/DiamondLightSource/diffcalc-core>`_
-(You 1999) and provides a single six-circle geometry,
-:ref:`diffcalc_4S_2D <geometry.diffcalc_4S_2D>`, with 23 operating
-modes.
+The ``diffcalc`` solver wraps `diffcalc-core
+<https://github.com/DiamondLightSource/diffcalc-core>`_.  This library provides a single
+six-circle geometry, :ref:`diffcalc_4S_2D <geometry.diffcalc_4S_2D>` (the
+``psic`` geometry described by You 1999),
+with 23 operating modes.
 
 Create a diffractometer
 -----------------------

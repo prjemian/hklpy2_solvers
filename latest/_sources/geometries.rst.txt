@@ -10,205 +10,7 @@ the solver when it is instantiated by hklpy2.
 
 .. contents:: On this page
    :local:
-   :depth: 2
-
-.. _geometry.diffcalc_4S_2D:
-
-``diffcalc`` solver
--------------------
-
-:class:`~hklpy2_solvers.diffcalc_solver.DiffcalcSolver`
-
-Wraps `diffcalc-core <https://github.com/DiamondLightSource/diffcalc-core>`_
-(You 1999).
-See the `diffcalc-core documentation <https://diffcalc-core.readthedocs.io/>`_
-for full details of the underlying library.
-
-diffcalc_4S_2D
-~~~~~~~~~~~~~~
-
-H. You, *J. Appl. Cryst.* **32**, 614 (1999) six-circle geometry.
-
-.. list-table:: ``diffcalc_4S_2D`` geometry
-   :header-rows: 1
-   :widths: 20 80
-
-   * - Property
-     - Value
-   * - Geometry name
-     - ``diffcalc_4S_2D``
-   * - Real axes
-     - ``mu``, ``delta``, ``nu``, ``eta``, ``chi``, ``phi``
-   * - Pseudo axes
-     - ``h``, ``k``, ``l``
-   * - Default mode
-     - ``4S+2D bisect_eta_fixed nu_fixed``
-
-Operating modes
-^^^^^^^^^^^^^^^
-
-The diffcalc solver selects three diffractometer constraints to fix for
-each operating mode.  This geometry has no extra parameters
-(``extras`` is always ``{}``).  The axes computed by ``forward()``
-(``writable``) are all real axes not listed as fixed constraints; the
-remaining axes are held constant (``axes_c``, derived by hklpy2).
-
-.. list-table::
-   :header-rows: 1
-   :widths: 35 30 20 15
-
-   * - Mode name
-     - Fixed constraints
-     - writable(s)
-     - extra(s)
-   * - ``4S+2D mu_fixed a_eq_b delta_fixed``
-     - delta=0, a_eq_b, mu=0
-     - nu, eta, chi, phi
-     -
-   * - ``4S+2D mu_fixed a_eq_b nu_fixed``
-     - nu=0, a_eq_b, mu=0
-     - delta, eta, chi, phi
-     -
-   * - ``4S+2D eta_fixed a_eq_b delta_fixed``
-     - delta=0, a_eq_b, eta=0
-     - mu, nu, chi, phi
-     -
-   * - ``4S+2D phi_fixed psi_fixed nu_fixed``
-     - nu=0, psi=0, phi=0
-     - mu, delta, eta, chi
-     -
-   * - ``4S+2D chi_phi_fixed delta_fixed``
-     - delta=0, chi=0, phi=0
-     - mu, nu, eta
-     -
-   * - ``4S+2D mu_eta_fixed delta_fixed``
-     - delta=0, mu=0, eta=0
-     - nu, chi, phi
-     -
-   * - ``4S+2D mu_phi_fixed delta_fixed``
-     - delta=0, mu=0, phi=0
-     - nu, eta, chi
-     -
-   * - ``4S+2D mu_chi_fixed nu_fixed``
-     - nu=0, mu=0, chi=0
-     - delta, eta, phi
-     -
-   * - ``4S+2D eta_phi_fixed nu_fixed``
-     - nu=0, eta=0, phi=0
-     - mu, delta, chi
-     -
-   * - ``4S+2D eta_chi_fixed nu_fixed``
-     - nu=0, eta=0, chi=0
-     - mu, delta, phi
-     -
-   * - ``4S+2D bisect_mu_fixed delta_fixed``
-     - delta=0, bisect, mu=0
-     - nu, eta, chi, phi
-     -
-   * - ``4S+2D bisect_eta_fixed nu_fixed``
-     - nu=0, bisect, eta=0
-     - mu, delta, chi, phi
-     -
-   * - ``4S+2D bisect_omega_fixed nu_fixed``
-     - nu=0, bisect, omega=0
-     - mu, delta, eta, chi, phi
-     -
-   * - ``4S+2D chi_phi_fixed a_eq_b``
-     - a_eq_b, chi=0, phi=0
-     - mu, delta, nu, eta
-     -
-   * - ``4S+2D chi_eta_fixed a_eq_b``
-     - a_eq_b, chi=0, eta=0
-     - mu, delta, nu, phi
-     -
-   * - ``4S+2D chi_mu_fixed a_eq_b``
-     - a_eq_b, chi=0, mu=0
-     - delta, nu, eta, phi
-     -
-   * - ``4S+2D mu_eta_fixed a_eq_b``
-     - a_eq_b, mu=0, eta=0
-     - delta, nu, chi, phi
-     -
-   * - ``4S+2D mu_phi_fixed a_eq_b``
-     - a_eq_b, mu=0, phi=0
-     - delta, nu, eta, chi
-     -
-   * - ``4S+2D eta_phi_fixed a_eq_b``
-     - a_eq_b, eta=0, phi=0
-     - mu, delta, nu, chi
-     -
-   * - ``4S+2D eta_chi_phi_fixed``
-     - eta=0, chi=0, phi=0
-     - mu, delta, nu
-     -
-   * - ``4S+2D mu_chi_phi_fixed``
-     - mu=0, chi=0, phi=0
-     - delta, nu, eta
-     -
-   * - ``4S+2D mu_eta_phi_fixed``
-     - mu=0, eta=0, phi=0
-     - delta, nu, chi
-     -
-   * - ``4S+2D mu_eta_chi_fixed``
-     - mu=0, eta=0, chi=0
-     - delta, nu, phi
-     -
-
-Default mode
-^^^^^^^^^^^^
-
-The default mode is ``4S+2D bisect_eta_fixed nu_fixed`` (bisect,
-eta=0, nu=0).  This is equivalent to ``bisecting_vertical`` in E6C
-terminology: scattering stays in the vertical plane with the sample
-angle bisecting the detector angle (``eta = delta/2``).
-
-.. note:: **Bisector modes**
-
-   Following You (1999) Figure 1 (see also
-   `diffcalc-core docs <https://diffcalc-core.readthedocs.io>`_),
-   ``nu`` rotates about the vertical axis and swings the detector
-   **horizontally**; ``delta`` rotates about the horizontal axis and swings
-   the detector **vertically**.
-
-   The ``bisect`` constraint implements ``eta = delta/2`` (vertical
-   bisector).  ``4S+2D bisect_eta_fixed nu_fixed`` (bisect + eta=0 +
-   nu=0) is equivalent to a ``bisecting_vertical`` mode: scattering
-   stays in the vertical plane with the sample bisecting the detector
-   angle.  ``4S+2D bisect_mu_fixed delta_fixed`` (bisect + mu=0 +
-   delta=0) is the horizontal counterpart.
-
-   In the mode name the *bisected sample axis* is stated; the
-   corresponding *detector axis* is implied by the bisect constraint
-   (``delta``).
-
-Mode naming convention
-^^^^^^^^^^^^^^^^^^^^^^
-
-All mode names follow the pattern ``4S+2D <constraints>``, where ``4S+2D``
-identifies the You (1999) geometry and the suffix encodes the three fixed
-constraints:
-
-- ``<axis>_fixed`` or ``<ax1>_<ax2>_fixed`` — motor axis (or axes) fixed at
-  zero.
-- ``a_eq_b`` — reference-vector constraint: azimuthal reference equals
-  scattering vector direction.  **Caution:** singular when the scattering
-  vector is parallel to the reference vector; avoid as a default.
-- ``bisect`` — bisector condition: ``eta = delta/2``.  The bisected sample
-  axis (e.g. ``eta``) is named; the detector axis (``delta``) is implied.
-- ``psi_fixed``, ``omega_fixed`` — azimuthal or omega angle fixed at zero.
-
-Extensibility
-^^^^^^^^^^^^^
-
-The available constraint names are fixed by diffcalc-core and cannot be
-changed without modifying that library.  Each constraint name has specific
-mathematical implementation inside diffcalc-core's solver — the name is merely
-a handle for the underlying algebra that reduces the degrees of freedom during
-position calculation.  A new constraint (e.g. ``mu = nu/2``) would require
-new code in diffcalc-core, not just a new entry in ``_MODES``.  From the
-user's perspective the mode list is not extensible.
-
-----
+   :depth: 1
 
 .. _geometries.ad_hoc:
 
@@ -904,3 +706,203 @@ The ``ad_hoc`` solver discovers geometries dynamically from the
 library's registry.  New geometries added to
 the library (including via entry points) are automatically available
 without changes to the solver code.
+
+----
+
+
+
+.. _geometry.diffcalc_4S_2D:
+
+``diffcalc`` solver
+-------------------
+
+:class:`~hklpy2_solvers.diffcalc_solver.DiffcalcSolver`
+
+Wraps `diffcalc-core <https://github.com/DiamondLightSource/diffcalc-core>`_
+(You 1999).
+See the `diffcalc-core documentation <https://diffcalc-core.readthedocs.io/>`_
+for full details of the underlying library.
+
+diffcalc_4S_2D
+~~~~~~~~~~~~~~
+
+H. You, *J. Appl. Cryst.* **32**, 614 (1999) six-circle geometry.
+
+.. list-table:: ``diffcalc_4S_2D`` geometry
+   :header-rows: 1
+   :widths: 20 80
+
+   * - Property
+     - Value
+   * - Geometry name
+     - ``diffcalc_4S_2D``
+   * - Real axes
+     - ``mu``, ``delta``, ``nu``, ``eta``, ``chi``, ``phi``
+   * - Pseudo axes
+     - ``h``, ``k``, ``l``
+   * - Default mode
+     - ``4S+2D bisect_eta_fixed nu_fixed``
+
+Operating modes
+^^^^^^^^^^^^^^^
+
+The diffcalc solver selects three diffractometer constraints to fix for
+each operating mode.  This geometry has no extra parameters
+(``extras`` is always ``{}``).  The axes computed by ``forward()``
+(``writable``) are all real axes not listed as fixed constraints; the
+remaining axes are held constant (``axes_c``, derived by hklpy2).
+
+.. list-table::
+   :header-rows: 1
+   :widths: 35 30 20 15
+
+   * - Mode name
+     - Fixed constraints
+     - writable(s)
+     - extra(s)
+   * - ``4S+2D mu_fixed a_eq_b delta_fixed``
+     - delta=0, a_eq_b, mu=0
+     - nu, eta, chi, phi
+     -
+   * - ``4S+2D mu_fixed a_eq_b nu_fixed``
+     - nu=0, a_eq_b, mu=0
+     - delta, eta, chi, phi
+     -
+   * - ``4S+2D eta_fixed a_eq_b delta_fixed``
+     - delta=0, a_eq_b, eta=0
+     - mu, nu, chi, phi
+     -
+   * - ``4S+2D phi_fixed psi_fixed nu_fixed``
+     - nu=0, psi=0, phi=0
+     - mu, delta, eta, chi
+     -
+   * - ``4S+2D chi_phi_fixed delta_fixed``
+     - delta=0, chi=0, phi=0
+     - mu, nu, eta
+     -
+   * - ``4S+2D mu_eta_fixed delta_fixed``
+     - delta=0, mu=0, eta=0
+     - nu, chi, phi
+     -
+   * - ``4S+2D mu_phi_fixed delta_fixed``
+     - delta=0, mu=0, phi=0
+     - nu, eta, chi
+     -
+   * - ``4S+2D mu_chi_fixed nu_fixed``
+     - nu=0, mu=0, chi=0
+     - delta, eta, phi
+     -
+   * - ``4S+2D eta_phi_fixed nu_fixed``
+     - nu=0, eta=0, phi=0
+     - mu, delta, chi
+     -
+   * - ``4S+2D eta_chi_fixed nu_fixed``
+     - nu=0, eta=0, chi=0
+     - mu, delta, phi
+     -
+   * - ``4S+2D bisect_mu_fixed delta_fixed``
+     - delta=0, bisect, mu=0
+     - nu, eta, chi, phi
+     -
+   * - ``4S+2D bisect_eta_fixed nu_fixed``
+     - nu=0, bisect, eta=0
+     - mu, delta, chi, phi
+     -
+   * - ``4S+2D bisect_omega_fixed nu_fixed``
+     - nu=0, bisect, omega=0
+     - mu, delta, eta, chi, phi
+     -
+   * - ``4S+2D chi_phi_fixed a_eq_b``
+     - a_eq_b, chi=0, phi=0
+     - mu, delta, nu, eta
+     -
+   * - ``4S+2D chi_eta_fixed a_eq_b``
+     - a_eq_b, chi=0, eta=0
+     - mu, delta, nu, phi
+     -
+   * - ``4S+2D chi_mu_fixed a_eq_b``
+     - a_eq_b, chi=0, mu=0
+     - delta, nu, eta, phi
+     -
+   * - ``4S+2D mu_eta_fixed a_eq_b``
+     - a_eq_b, mu=0, eta=0
+     - delta, nu, chi, phi
+     -
+   * - ``4S+2D mu_phi_fixed a_eq_b``
+     - a_eq_b, mu=0, phi=0
+     - delta, nu, eta, chi
+     -
+   * - ``4S+2D eta_phi_fixed a_eq_b``
+     - a_eq_b, eta=0, phi=0
+     - mu, delta, nu, chi
+     -
+   * - ``4S+2D eta_chi_phi_fixed``
+     - eta=0, chi=0, phi=0
+     - mu, delta, nu
+     -
+   * - ``4S+2D mu_chi_phi_fixed``
+     - mu=0, chi=0, phi=0
+     - delta, nu, eta
+     -
+   * - ``4S+2D mu_eta_phi_fixed``
+     - mu=0, eta=0, phi=0
+     - delta, nu, chi
+     -
+   * - ``4S+2D mu_eta_chi_fixed``
+     - mu=0, eta=0, chi=0
+     - delta, nu, phi
+     -
+
+Default mode
+^^^^^^^^^^^^
+
+The default mode is ``4S+2D bisect_eta_fixed nu_fixed`` (bisect,
+eta=0, nu=0).  This is equivalent to ``bisecting_vertical`` in E6C
+terminology: scattering stays in the vertical plane with the sample
+angle bisecting the detector angle (``eta = delta/2``).
+
+.. note:: **Bisector modes**
+
+   Following You (1999) Figure 1 (see also
+   `diffcalc-core docs <https://diffcalc-core.readthedocs.io>`_),
+   ``nu`` rotates about the vertical axis and swings the detector
+   **horizontally**; ``delta`` rotates about the horizontal axis and swings
+   the detector **vertically**.
+
+   The ``bisect`` constraint implements ``eta = delta/2`` (vertical
+   bisector).  ``4S+2D bisect_eta_fixed nu_fixed`` (bisect + eta=0 +
+   nu=0) is equivalent to a ``bisecting_vertical`` mode: scattering
+   stays in the vertical plane with the sample bisecting the detector
+   angle.  ``4S+2D bisect_mu_fixed delta_fixed`` (bisect + mu=0 +
+   delta=0) is the horizontal counterpart.
+
+   In the mode name the *bisected sample axis* is stated; the
+   corresponding *detector axis* is implied by the bisect constraint
+   (``delta``).
+
+Mode naming convention
+^^^^^^^^^^^^^^^^^^^^^^
+
+All mode names follow the pattern ``4S+2D <constraints>``, where ``4S+2D``
+identifies the You (1999) geometry and the suffix encodes the three fixed
+constraints:
+
+- ``<axis>_fixed`` or ``<ax1>_<ax2>_fixed`` — motor axis (or axes) fixed at
+  zero.
+- ``a_eq_b`` — reference-vector constraint: azimuthal reference equals
+  scattering vector direction.  **Caution:** singular when the scattering
+  vector is parallel to the reference vector; avoid as a default.
+- ``bisect`` — bisector condition: ``eta = delta/2``.  The bisected sample
+  axis (e.g. ``eta``) is named; the detector axis (``delta``) is implied.
+- ``psi_fixed``, ``omega_fixed`` — azimuthal or omega angle fixed at zero.
+
+Extensibility
+^^^^^^^^^^^^^
+
+The available constraint names are fixed by diffcalc-core and cannot be
+changed without modifying that library.  Each constraint name has specific
+mathematical implementation inside diffcalc-core's solver — the name is merely
+a handle for the underlying algebra that reduces the degrees of freedom during
+position calculation.  A new constraint (e.g. ``mu = nu/2``) would require
+new code in diffcalc-core, not just a new entry in ``_MODES``.  From the
+user's perspective the mode list is not extensible.

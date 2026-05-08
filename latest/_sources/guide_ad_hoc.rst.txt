@@ -210,7 +210,7 @@ The ``name`` argument is optional; when omitted, the geometry is
 registered under the ``name:`` field declared inside the YAML file.
 See the
 `ad_hoc_diffractometer schema
-<https://prjemian.github.io/ad_hoc_diffractometer/latest/howtos/declarative_yaml.html>`_
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/reference/declarative_geometry_schema.html>`_
 for the YAML format.
 
 Third-party packages can alternatively contribute geometries via the

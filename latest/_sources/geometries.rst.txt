@@ -235,7 +235,7 @@ Busing & Levy (1967) four-circle Eulerian diffractometer
 (vertical scattering plane, transverse ttheta, synchrotron).
 
 See `ad_hoc_diffractometer fourcv
-<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/fourcv.html>`_.
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/fourcv.html>`_.
 
 .. list-table:: ``fourcv`` geometry
    :header-rows: 1
@@ -294,7 +294,7 @@ Busing & Levy (1967) four-circle Eulerian diffractometer
 (horizontal scattering plane, vertical ttheta, laboratory).
 
 See `ad_hoc_diffractometer fourch
-<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/fourch.html>`_.
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/fourch.html>`_.
 
 .. list-table:: ``fourch`` geometry
    :header-rows: 1
@@ -353,7 +353,7 @@ You (1999) 4S+2D six-circle diffractometer
 (transverse detector, vertical scattering plane, synchrotron).
 
 See `ad_hoc_diffractometer psic
-<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/psic.html>`_.
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/psic.html>`_.
 
 .. list-table:: ``psic`` geometry
    :header-rows: 1
@@ -483,7 +483,7 @@ sixc
 Lohmeier & Vlieg (1993) six-circle surface diffractometer.
 
 See `ad_hoc_diffractometer sixc
-<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/sixc.html>`_.
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/sixc.html>`_.
 
 .. list-table:: ``sixc`` geometry
    :header-rows: 1
@@ -541,7 +541,7 @@ fivec
 Five-circle geometry (four-circle with additional mu tilt).
 
 See `ad_hoc_diffractometer fivec
-<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/fivec.html>`_.
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/fivec.html>`_.
 
 .. list-table:: ``fivec`` geometry
    :header-rows: 1
@@ -595,7 +595,7 @@ kappa4cv
 Kappa four-circle vertical-scattering geometry.
 
 See `ad_hoc_diffractometer kappa4cv
-<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/kappa4cv.html>`_.
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/kappa4cv.html>`_.
 
 .. list-table:: ``kappa4cv`` geometry
    :header-rows: 1
@@ -657,7 +657,7 @@ kappa4ch
 Kappa four-circle horizontal-scattering geometry.
 
 See `ad_hoc_diffractometer kappa4ch
-<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/kappa4ch.html>`_.
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/kappa4ch.html>`_.
 
 .. list-table:: ``kappa4ch`` geometry
    :header-rows: 1
@@ -716,7 +716,7 @@ Kappa six-circle geometry (psic-style outer axes, transverse detector,
 synchrotron).
 
 See `ad_hoc_diffractometer kappa6c
-<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/kappa6c.html>`_.
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/kappa6c.html>`_.
 
 .. list-table:: ``kappa6c`` geometry
    :header-rows: 1
@@ -807,7 +807,7 @@ Z-axis four-circle surface diffraction geometry
 (Bloch 1985).
 
 See `ad_hoc_diffractometer zaxis
-<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/zaxis.html>`_.
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/zaxis.html>`_.
 
 .. list-table:: ``zaxis`` geometry
    :header-rows: 1
@@ -850,7 +850,7 @@ Two-sample / two-detector surface diffraction geometry
 (Evans-Lutterodt & Tang 1995).
 
 See `ad_hoc_diffractometer s2d2
-<https://prjemian.github.io/ad_hoc_diffractometer/latest/geometries/s2d2.html>`_.
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/s2d2.html>`_.
 
 .. list-table:: ``s2d2`` geometry
    :header-rows: 1

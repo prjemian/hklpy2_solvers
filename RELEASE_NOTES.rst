@@ -29,6 +29,11 @@ describe future plans.
 
     Expected release: tba
 
+    Fixes
+    ~~~~~
+
+    * Honour ``r1`` / ``r2`` arguments in ``AdHocSolver.calculate_UB``.  :issue:`56`
+
 0.3.1
 ######
 

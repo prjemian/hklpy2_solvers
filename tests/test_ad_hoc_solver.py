@@ -7,6 +7,7 @@ import re
 from contextlib import nullcontext as does_not_raise
 
 import pytest
+from hklpy2.exceptions import SolverError
 
 from hklpy2_solvers.ad_hoc_solver import DEFAULT_GEOMETRY, PSEUDO_AXES, AdHocSolver
 
@@ -460,6 +461,120 @@ def test_calculate_ub_no_lattice(parms, context):
     solver.addReflection(FOURCV_R2)
     with context:
         solver.calculate_UB(FOURCV_R1, FOURCV_R2)
+
+
+# Distinct reflections used to verify that ``calculate_UB`` honours its
+# arguments rather than reaching into the solver's existing reflection
+# state.  ``DISTRACTOR_R1`` / ``DISTRACTOR_R2`` are well-separated in
+# reciprocal space from ``FOURCV_R1`` / ``FOURCV_R2`` so the resulting
+# UBs are visibly different.
+DISTRACTOR_R1 = {
+    "name": "distractor1",
+    "pseudos": {"h": 1.0, "k": 1.0, "l": 0.0},
+    "reals": {"omega": THETA_100, "chi": 0, "phi": 45, "ttheta": TTH_100},
+    "wavelength": WAVELENGTH,
+}
+DISTRACTOR_R2 = {
+    "name": "distractor2",
+    "pseudos": {"h": 0.0, "k": 0.0, "l": 1.0},
+    "reals": {"omega": THETA_100, "chi": 90, "phi": 0, "ttheta": TTH_100},
+    "wavelength": WAVELENGTH,
+}
+# Two pseudos-collinear reflections (both along h) -- the underlying
+# ``ub_from_two_reflections_bl1967`` rejects these, surfacing as a
+# ``SolverError`` from ``calculate_UB``.  Used to cover the
+# ValueError -> SolverError translation branch.
+COLINEAR_R1 = {
+    "name": "col1",
+    "pseudos": {"h": 1.0, "k": 0.0, "l": 0.0},
+    "reals": {"omega": THETA_100, "chi": 0, "phi": 0, "ttheta": TTH_100},
+    "wavelength": WAVELENGTH,
+}
+COLINEAR_R2 = {
+    "name": "col2",
+    "pseudos": {"h": 2.0, "k": 0.0, "l": 0.0},
+    "reals": {"omega": 2 * THETA_100, "chi": 0, "phi": 0, "ttheta": 2 * TTH_100},
+    "wavelength": WAVELENGTH,
+}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                preload=[DISTRACTOR_R1, DISTRACTOR_R2],
+                r1=FOURCV_R1,
+                r2=FOURCV_R2,
+                expected_or1="r1",
+                expected_or2="r2",
+            ),
+            does_not_raise(),
+            id="calculate_UB honours r1/r2 over stale preloaded reflections",
+        ),
+        pytest.param(
+            dict(
+                preload=[],
+                r1=FOURCV_R1,
+                r2=FOURCV_R2,
+                expected_or1="r1",
+                expected_or2="r2",
+            ),
+            does_not_raise(),
+            id="calculate_UB honours r1/r2 with no preloaded reflections",
+        ),
+        pytest.param(
+            dict(
+                preload=[FOURCV_R1, FOURCV_R2, DISTRACTOR_R1, DISTRACTOR_R2],
+                r1=DISTRACTOR_R1,
+                r2=DISTRACTOR_R2,
+                expected_or1="distractor1",
+                expected_or2="distractor2",
+            ),
+            does_not_raise(),
+            id="calculate_UB picks named pair from a longer preloaded list",
+        ),
+        pytest.param(
+            dict(
+                preload=[],
+                r1=COLINEAR_R1,
+                r2=COLINEAR_R2,
+                expected_or1=None,
+                expected_or2=None,
+            ),
+            pytest.raises(SolverError),
+            id="calculate_UB translates ValueError to SolverError on colinear pair",
+        ),
+    ],
+)
+def test_calculate_ub_honours_arguments(parms, context):
+    """``calculate_UB(r1, r2)`` MUST honour its arguments.
+
+    Regression for :issue:`56`: the previous implementation ignored
+    ``r1`` and ``r2`` and computed UB from whatever reflections were
+    designated as ``or0``/``or1`` on the underlying ad_hoc sample.
+    The current implementation clears the solver's reflection state
+    and inserts exactly the two reflections the caller named, so the
+    AHD ``or1``/``or2`` slots end up naming ``r1`` and ``r2``.
+    """
+    solver = AdHocSolver("fourcv")
+    solver.lattice = dict(SI_LATTICE)
+    for refl in parms["preload"]:
+        solver.addReflection(refl)
+    with context:
+        ub = solver.calculate_UB(parms["r1"], parms["r2"])
+        # UB is a 3x3 matrix.
+        assert len(ub) == 3
+        assert all(len(row) == 3 for row in ub)
+        # The AHD orienting-reflection slots now name r1/r2.
+        refls = solver._geom.sample.reflections
+        assert refls._or1_name == parms["expected_or1"]
+        assert refls._or2_name == parms["expected_or2"]
+        # And only those two reflections remain on the solver side.
+        assert list(refls._data.keys()) == [
+            parms["expected_or1"],
+            parms["expected_or2"],
+        ]
 
 
 @pytest.mark.parametrize(
@@ -1418,8 +1533,11 @@ def test_refine_lattice_success(parms, context):
     }
     solver.addReflection(r1)
     solver.addReflection(r2)
-    solver.addReflection(r3)
     solver.calculate_UB(r1, r2)
+    # ``calculate_UB`` clears any extra reflections (it now honours its
+    # own r1/r2 arguments by resetting the solver's reflection list).
+    # Re-add r3 so ``refineLattice`` sees the 3 reflections it needs.
+    solver.addReflection(r3)
 
     with context:
         result = solver.refineLattice([r1, r2, r3])

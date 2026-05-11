@@ -179,11 +179,31 @@ class AdHocSolver(SolverBase):
         self._geom.wavelength = wl
 
     def calculate_UB(self, r1: ReflectionDict, r2: ReflectionDict) -> Matrix3x3:
-        """Calculate the UB matrix using two reflections (Busing & Levy)."""
+        """Calculate the UB matrix using two reflections (Busing & Levy).
+
+        The ``r1`` and ``r2`` arguments are the contractual source of
+        truth: any prior reflections held by the underlying
+        ``ad_hoc_diffractometer`` sample are cleared and the two named
+        reflections are inserted (so ``setor0`` / ``setor1`` are
+        correctly designated) before UB is computed.  This mirrors
+        :meth:`hklpy2.backends.hkl_soleil.HklSolver.calculate_UB` and
+        avoids depending on whatever sync state ``Core.update_solver``
+        happens to have left behind (see :issue:`56` and upstream
+        ``bluesky/hklpy2`` issue #397).
+        """
         if not self._lattice:
             raise SolverError("Lattice must be set before calculating UB.")
 
-        ahd.ub_from_two_reflections_bl1967(self._geom.sample)
+        # Honour the caller-supplied reflections, regardless of any
+        # stale solver-side state.
+        self.removeAllReflections()
+        self.addReflection(r1)
+        self.addReflection(r2)
+
+        try:
+            ahd.ub_from_two_reflections_bl1967(self._geom.sample)
+        except ValueError as exc:
+            raise SolverError(str(exc)) from exc
         return self._geom.sample.UB.tolist()
 
     @property

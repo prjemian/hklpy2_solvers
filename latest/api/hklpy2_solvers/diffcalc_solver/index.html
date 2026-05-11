@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=a76afa69"></script>
+    <script src="../../../_static/documentation_options.js?v=fed29017"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -514,13 +514,9 @@ by the current mode.  hklpy2’s <code class="docutils literal notranslate"><spa
 <dd><p>Calculate the UB matrix using two reflections (Busing &amp; Levy).</p>
 <p>The <code class="docutils literal notranslate"><span class="pre">r1</span></code> and <code class="docutils literal notranslate"><span class="pre">r2</span></code> arguments are the contractual source of
 truth: any reflections previously held by the underlying
-<code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> <code class="docutils literal notranslate"><span class="pre">UBCalculation</span></code> are cleared and the two named
-reflections are inserted before UB is computed.  This mirrors
-<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver.calculate_UB" title="(in hklpy2 v0.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hklpy2.backends.hkl_soleil.HklSolver.calculate_UB()</span></code></a> and
-<a class="reference internal" href="../ad_hoc_solver/index.html#hklpy2_solvers.ad_hoc_solver.AdHocSolver.calculate_UB" title="hklpy2_solvers.ad_hoc_solver.AdHocSolver.calculate_UB"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hklpy2_solvers.ad_hoc_solver.AdHocSolver.calculate_UB()</span></code></a>,
-and avoids depending on whatever sync state
-<code class="docutils literal notranslate"><span class="pre">Core.update_solver</span></code> happens to have left behind (see
-<span class="issue">58</span> and upstream <code class="docutils literal notranslate"><span class="pre">bluesky/hklpy2</span></code> issue #397).</p>
+<code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> <code class="xref py py-class docutils literal notranslate"><span class="pre">UBCalculation</span></code> are
+cleared and the two named reflections are inserted before UB
+is computed.  See <span class="issue">58</span>.</p>
 </dd></dl>
 
 <dl class="py property">
@@ -619,8 +615,7 @@ input and is otherwise a no-op.</p>
 <p class="admonition-title">Note</p>
 <p><code class="docutils literal notranslate"><span class="pre">set_reals</span></code> is not yet part of
 <a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/base/index.html#hklpy2.backends.base.SolverBase" title="(in hklpy2 v0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverBase</span></code></a>; it was introduced via
-the hklpy2 presets feature and is currently only defined on
-<code class="docutils literal notranslate"><span class="pre">HklSolver</span></code>.  Tracked upstream as
+the hklpy2 presets feature.  Tracked upstream as
 <a class="reference external" href="https://github.com/bluesky/hklpy2/issues/347">bluesky/hklpy2#347</a>.</p>
 </div>
 </dd></dl>

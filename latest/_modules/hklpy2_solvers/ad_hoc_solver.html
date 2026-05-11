@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=a76afa69"></script>
+    <script src="../../_static/documentation_options.js?v=fed29017"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -584,11 +584,7 @@
 <span class="sd">        truth: any prior reflections held by the underlying</span>
 <span class="sd">        ``ad_hoc_diffractometer`` sample are cleared and the two named</span>
 <span class="sd">        reflections are inserted (so ``setor0`` / ``setor1`` are</span>
-<span class="sd">        correctly designated) before UB is computed.  This mirrors</span>
-<span class="sd">        :meth:`hklpy2.backends.hkl_soleil.HklSolver.calculate_UB` and</span>
-<span class="sd">        avoids depending on whatever sync state ``Core.update_solver``</span>
-<span class="sd">        happens to have left behind (see :issue:`56` and upstream</span>
-<span class="sd">        ``bluesky/hklpy2`` issue #397).</span>
+<span class="sd">        correctly designated) before UB is computed.  See :issue:`56`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="s2">&quot;Lattice must be set before calculating UB.&quot;</span><span class="p">)</span>
@@ -836,9 +832,10 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the crystalline sample, pushing lattice and reflections.</span>
 
-<span class="sd">        Overrides :class:`~hklpy2.backends.base.SolverBase` to mirror the</span>
-<span class="sd">        pattern used by ``DiffcalcSolver``: after storing the dict, the</span>
-<span class="sd">        lattice is pushed and all reflections are re-added.</span>
+<span class="sd">        Overrides :class:`~hklpy2.backends.base.SolverBase` so that, after</span>
+<span class="sd">        storing the dict, the lattice is pushed into</span>
+<span class="sd">        ``ad_hoc_diffractometer`` immediately and the reflections are</span>
+<span class="sd">        re-added in declared order.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply dictionary, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>

@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../../_static/documentation_options.js?v=a76afa69"></script>
+    <script src="../../../_static/documentation_options.js?v=fed29017"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -518,11 +518,7 @@ by the current mode.</p>
 truth: any prior reflections held by the underlying
 <code class="docutils literal notranslate"><span class="pre">ad_hoc_diffractometer</span></code> sample are cleared and the two named
 reflections are inserted (so <code class="docutils literal notranslate"><span class="pre">setor0</span></code> / <code class="docutils literal notranslate"><span class="pre">setor1</span></code> are
-correctly designated) before UB is computed.  This mirrors
-<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/backends/hkl_soleil/index.html#hklpy2.backends.hkl_soleil.HklSolver.calculate_UB" title="(in hklpy2 v0.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hklpy2.backends.hkl_soleil.HklSolver.calculate_UB()</span></code></a> and
-avoids depending on whatever sync state <code class="docutils literal notranslate"><span class="pre">Core.update_solver</span></code>
-happens to have left behind (see <span class="issue">56</span> and upstream
-<code class="docutils literal notranslate"><span class="pre">bluesky/hklpy2</span></code> issue #397).</p>
+correctly designated) before UB is computed.  See <span class="issue">56</span>.</p>
 </dd></dl>
 
 <dl class="py property">

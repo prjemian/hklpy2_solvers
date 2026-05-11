@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=a76afa69"></script>
+    <script src="../../_static/documentation_options.js?v=fed29017"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -643,13 +643,9 @@
 
 <span class="sd">        The ``r1`` and ``r2`` arguments are the contractual source of</span>
 <span class="sd">        truth: any reflections previously held by the underlying</span>
-<span class="sd">        ``diffcalc`` ``UBCalculation`` are cleared and the two named</span>
-<span class="sd">        reflections are inserted before UB is computed.  This mirrors</span>
-<span class="sd">        :meth:`hklpy2.backends.hkl_soleil.HklSolver.calculate_UB` and</span>
-<span class="sd">        :meth:`hklpy2_solvers.ad_hoc_solver.AdHocSolver.calculate_UB`,</span>
-<span class="sd">        and avoids depending on whatever sync state</span>
-<span class="sd">        ``Core.update_solver`` happens to have left behind (see</span>
-<span class="sd">        :issue:`58` and upstream ``bluesky/hklpy2`` issue #397).</span>
+<span class="sd">        ``diffcalc`` :class:`~diffcalc.ub.calc.UBCalculation` are</span>
+<span class="sd">        cleared and the two named reflections are inserted before UB</span>
+<span class="sd">        is computed.  See :issue:`58`.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Ensure lattice is set</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">crystal</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -810,18 +806,19 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">dict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the crystalline sample, pushing lattice and reflections into diffcalc.</span>
 
-<span class="sd">        Overrides :class:`~hklpy2.backends.base.SolverBase` to mirror the</span>
-<span class="sd">        pattern used by ``HklSolver``: after storing the dict, the lattice is</span>
-<span class="sd">        immediately pushed into :attr:`_ubcalc` and all reflections are</span>
-<span class="sd">        re-added in ``order`` sequence.  This ensures that</span>
-<span class="sd">        :meth:`calculate_UB` can find a crystal when called by</span>
-<span class="sd">        ``hklpy2.Core.calc_UB()`` (fixes :issue:`25`).</span>
+<span class="sd">        Overrides :class:`~hklpy2.backends.base.SolverBase` so that, after</span>
+<span class="sd">        storing the dict, the lattice is immediately pushed into</span>
+<span class="sd">        :attr:`_ubcalc` and all reflections are re-added in ``order``</span>
+<span class="sd">        sequence.  This ensures that :meth:`calculate_UB` can find a</span>
+<span class="sd">        crystal when called by ``hklpy2.Core.calc_UB()`` (fixes</span>
+<span class="sd">        :issue:`25`).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Must supply dictionary, received </span><span class="si">{</span><span class="n">value</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span> <span class="o">=</span> <span class="n">value</span>
 
-        <span class="c1"># Push lattice into diffcalc immediately (mirrors HklSolver behaviour).</span>
+        <span class="c1"># Push lattice into diffcalc immediately so that ``calculate_UB``</span>
+        <span class="c1"># has a crystal to work with.</span>
         <span class="k">if</span> <span class="s2">&quot;lattice&quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s2">&quot;lattice&quot;</span><span class="p">]</span>
 
@@ -891,8 +888,7 @@
 <span class="sd">        .. note::</span>
 <span class="sd">            ``set_reals`` is not yet part of</span>
 <span class="sd">            :class:`~hklpy2.backends.base.SolverBase`; it was introduced via</span>
-<span class="sd">            the hklpy2 presets feature and is currently only defined on</span>
-<span class="sd">            ``HklSolver``.  Tracked upstream as</span>
+<span class="sd">            the hklpy2 presets feature.  Tracked upstream as</span>
 <span class="sd">            `bluesky/hklpy2#347 &lt;https://github.com/bluesky/hklpy2/issues/347&gt;`_.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">reals</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>

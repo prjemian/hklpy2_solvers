@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=741f4b0f"></script>
+    <script src="../../_static/documentation_options.js?v=a76afa69"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -639,12 +639,32 @@
 <div class="viewcode-block" id="DiffcalcSolver.calculate_UB">
 <a class="viewcode-back" href="../../api/hklpy2_solvers/diffcalc_solver/index.html#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.calculate_UB">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_UB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r1</span><span class="p">:</span> <span class="n">ReflectionDict</span><span class="p">,</span> <span class="n">r2</span><span class="p">:</span> <span class="n">ReflectionDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the UB matrix using two reflections (Busing &amp; Levy).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the UB matrix using two reflections (Busing &amp; Levy).</span>
+
+<span class="sd">        The ``r1`` and ``r2`` arguments are the contractual source of</span>
+<span class="sd">        truth: any reflections previously held by the underlying</span>
+<span class="sd">        ``diffcalc`` ``UBCalculation`` are cleared and the two named</span>
+<span class="sd">        reflections are inserted before UB is computed.  This mirrors</span>
+<span class="sd">        :meth:`hklpy2.backends.hkl_soleil.HklSolver.calculate_UB` and</span>
+<span class="sd">        :meth:`hklpy2_solvers.ad_hoc_solver.AdHocSolver.calculate_UB`,</span>
+<span class="sd">        and avoids depending on whatever sync state</span>
+<span class="sd">        ``Core.update_solver`` happens to have left behind (see</span>
+<span class="sd">        :issue:`58` and upstream ``bluesky/hklpy2`` issue #397).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Ensure lattice is set</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">crystal</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="s2">&quot;Lattice must be set before calculating UB.&quot;</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">calc_ub</span><span class="p">()</span>
+        <span class="c1"># Honour the caller-supplied reflections, regardless of any</span>
+        <span class="c1"># stale solver-side state.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeAllReflections</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addReflection</span><span class="p">(</span><span class="n">r1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addReflection</span><span class="p">(</span><span class="n">r2</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">calc_ub</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">DiffcalcException</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_hklcalc</span><span class="p">()</span>
 
         <span class="n">ub</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">UB</span>

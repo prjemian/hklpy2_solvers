@@ -185,11 +185,7 @@ class AdHocSolver(SolverBase):
         truth: any prior reflections held by the underlying
         ``ad_hoc_diffractometer`` sample are cleared and the two named
         reflections are inserted (so ``setor0`` / ``setor1`` are
-        correctly designated) before UB is computed.  This mirrors
-        :meth:`hklpy2.backends.hkl_soleil.HklSolver.calculate_UB` and
-        avoids depending on whatever sync state ``Core.update_solver``
-        happens to have left behind (see :issue:`56` and upstream
-        ``bluesky/hklpy2`` issue #397).
+        correctly designated) before UB is computed.  See :issue:`56`.
         """
         if not self._lattice:
             raise SolverError("Lattice must be set before calculating UB.")
@@ -427,9 +423,10 @@ class AdHocSolver(SolverBase):
     def sample(self, value: dict) -> None:
         """Set the crystalline sample, pushing lattice and reflections.
 
-        Overrides :class:`~hklpy2.backends.base.SolverBase` to mirror the
-        pattern used by ``DiffcalcSolver``: after storing the dict, the
-        lattice is pushed and all reflections are re-added.
+        Overrides :class:`~hklpy2.backends.base.SolverBase` so that, after
+        storing the dict, the lattice is pushed into
+        ``ad_hoc_diffractometer`` immediately and the reflections are
+        re-added in declared order.
         """
         if not isinstance(value, dict):
             raise TypeError(f"Must supply dictionary, received {value!r}")

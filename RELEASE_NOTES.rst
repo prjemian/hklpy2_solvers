@@ -35,6 +35,11 @@ describe future plans.
     * Honour ``r1`` / ``r2`` arguments in ``AdHocSolver.calculate_UB``.  :issue:`56`
     * Honour ``r1`` / ``r2`` arguments in ``DiffcalcSolver.calculate_UB``.  :issue:`58`
 
+    Maintenance
+    ~~~~~~~~~~~
+
+    * Remove cross-references between solver implementations.  :issue:`60`
+
 0.3.1
 ######
 

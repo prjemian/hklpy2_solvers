@@ -244,13 +244,9 @@ class DiffcalcSolver(SolverBase):
 
         The ``r1`` and ``r2`` arguments are the contractual source of
         truth: any reflections previously held by the underlying
-        ``diffcalc`` ``UBCalculation`` are cleared and the two named
-        reflections are inserted before UB is computed.  This mirrors
-        :meth:`hklpy2.backends.hkl_soleil.HklSolver.calculate_UB` and
-        :meth:`hklpy2_solvers.ad_hoc_solver.AdHocSolver.calculate_UB`,
-        and avoids depending on whatever sync state
-        ``Core.update_solver`` happens to have left behind (see
-        :issue:`58` and upstream ``bluesky/hklpy2`` issue #397).
+        ``diffcalc`` :class:`~diffcalc.ub.calc.UBCalculation` are
+        cleared and the two named reflections are inserted before UB
+        is computed.  See :issue:`58`.
         """
         # Ensure lattice is set
         if self._ubcalc.crystal is None:
@@ -401,18 +397,19 @@ class DiffcalcSolver(SolverBase):
     def sample(self, value: dict) -> None:
         """Set the crystalline sample, pushing lattice and reflections into diffcalc.
 
-        Overrides :class:`~hklpy2.backends.base.SolverBase` to mirror the
-        pattern used by ``HklSolver``: after storing the dict, the lattice is
-        immediately pushed into :attr:`_ubcalc` and all reflections are
-        re-added in ``order`` sequence.  This ensures that
-        :meth:`calculate_UB` can find a crystal when called by
-        ``hklpy2.Core.calc_UB()`` (fixes :issue:`25`).
+        Overrides :class:`~hklpy2.backends.base.SolverBase` so that, after
+        storing the dict, the lattice is immediately pushed into
+        :attr:`_ubcalc` and all reflections are re-added in ``order``
+        sequence.  This ensures that :meth:`calculate_UB` can find a
+        crystal when called by ``hklpy2.Core.calc_UB()`` (fixes
+        :issue:`25`).
         """
         if not isinstance(value, dict):
             raise TypeError(f"Must supply dictionary, received {value!r}")
         self._sample = value
 
-        # Push lattice into diffcalc immediately (mirrors HklSolver behaviour).
+        # Push lattice into diffcalc immediately so that ``calculate_UB``
+        # has a crystal to work with.
         if "lattice" in value:
             self.lattice = value["lattice"]
 
@@ -480,8 +477,7 @@ class DiffcalcSolver(SolverBase):
         .. note::
             ``set_reals`` is not yet part of
             :class:`~hklpy2.backends.base.SolverBase`; it was introduced via
-            the hklpy2 presets feature and is currently only defined on
-            ``HklSolver``.  Tracked upstream as
+            the hklpy2 presets feature.  Tracked upstream as
             `bluesky/hklpy2#347 <https://github.com/bluesky/hklpy2/issues/347>`_.
         """
         if not isinstance(reals, dict):

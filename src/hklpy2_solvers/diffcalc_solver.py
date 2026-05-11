@@ -240,12 +240,32 @@ class DiffcalcSolver(SolverBase):
         self._wavelength = wl
 
     def calculate_UB(self, r1: ReflectionDict, r2: ReflectionDict) -> Matrix3x3:
-        """Calculate the UB matrix using two reflections (Busing & Levy)."""
+        """Calculate the UB matrix using two reflections (Busing & Levy).
+
+        The ``r1`` and ``r2`` arguments are the contractual source of
+        truth: any reflections previously held by the underlying
+        ``diffcalc`` ``UBCalculation`` are cleared and the two named
+        reflections are inserted before UB is computed.  This mirrors
+        :meth:`hklpy2.backends.hkl_soleil.HklSolver.calculate_UB` and
+        :meth:`hklpy2_solvers.ad_hoc_solver.AdHocSolver.calculate_UB`,
+        and avoids depending on whatever sync state
+        ``Core.update_solver`` happens to have left behind (see
+        :issue:`58` and upstream ``bluesky/hklpy2`` issue #397).
+        """
         # Ensure lattice is set
         if self._ubcalc.crystal is None:
             raise SolverError("Lattice must be set before calculating UB.")
 
-        self._ubcalc.calc_ub()
+        # Honour the caller-supplied reflections, regardless of any
+        # stale solver-side state.
+        self.removeAllReflections()
+        self.addReflection(r1)
+        self.addReflection(r2)
+
+        try:
+            self._ubcalc.calc_ub()
+        except DiffcalcException as exc:
+            raise SolverError(str(exc)) from exc
         self._rebuild_hklcalc()
 
         ub = self._ubcalc.UB

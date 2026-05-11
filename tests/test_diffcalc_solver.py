@@ -7,6 +7,7 @@ import re
 from contextlib import nullcontext as does_not_raise
 
 import pytest
+from hklpy2.exceptions import SolverError
 
 from hklpy2_solvers.diffcalc_solver import _MODES, GEOMETRY_NAME, PSEUDO_AXES, REAL_AXES, DiffcalcSolver
 
@@ -262,6 +263,120 @@ def test_calculate_ub_no_lattice(parms, context):
     solver.addReflection(r1)
     with context:
         solver.calculate_UB(r1, r1)
+
+
+# Reflection definitions used by the "honour r1/r2" regression test.
+# ``HKL_R1`` / ``HKL_R2`` are a sensible orienting pair for cubic Si.
+# ``DISTRACTOR_R1`` / ``DISTRACTOR_R2`` are a different orienting pair.
+# ``COLINEAR_R1`` / ``COLINEAR_R2`` are pseudo-collinear (both pure h),
+# so the underlying ``calc_ub`` rejects them, exercising the
+# ``DiffcalcException -> SolverError`` translation branch.
+HKL_R1 = {
+    "name": "r1",
+    "pseudos": {"h": 1.0, "k": 0.0, "l": 0.0},
+    "reals": {"mu": 0, "delta": TTH_100, "nu": 0, "eta": THETA_100, "chi": 0, "phi": 0},
+    "wavelength": WAVELENGTH,
+}
+HKL_R2 = {
+    "name": "r2",
+    "pseudos": {"h": 0.0, "k": 1.0, "l": 0.0},
+    "reals": {"mu": 0, "delta": TTH_100, "nu": 0, "eta": THETA_100, "chi": 0, "phi": 90},
+    "wavelength": WAVELENGTH,
+}
+DISTRACTOR_R1 = {
+    "name": "distractor1",
+    "pseudos": {"h": 1.0, "k": 1.0, "l": 0.0},
+    "reals": {"mu": 0, "delta": TTH_100, "nu": 0, "eta": THETA_100, "chi": 0, "phi": 45},
+    "wavelength": WAVELENGTH,
+}
+DISTRACTOR_R2 = {
+    "name": "distractor2",
+    "pseudos": {"h": 0.0, "k": 0.0, "l": 1.0},
+    "reals": {"mu": 0, "delta": TTH_100, "nu": 0, "eta": THETA_100, "chi": 90, "phi": 0},
+    "wavelength": WAVELENGTH,
+}
+COLINEAR_R1 = {
+    "name": "col1",
+    "pseudos": {"h": 1.0, "k": 0.0, "l": 0.0},
+    "reals": {"mu": 0, "delta": TTH_100, "nu": 0, "eta": THETA_100, "chi": 0, "phi": 0},
+    "wavelength": WAVELENGTH,
+}
+COLINEAR_R2 = {
+    "name": "col2",
+    "pseudos": {"h": 2.0, "k": 0.0, "l": 0.0},
+    "reals": {"mu": 0, "delta": 2 * TTH_100, "nu": 0, "eta": 2 * THETA_100, "chi": 0, "phi": 0},
+    "wavelength": WAVELENGTH,
+}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                preload=[DISTRACTOR_R1, DISTRACTOR_R2],
+                r1=HKL_R1,
+                r2=HKL_R2,
+                expected_names=["r1", "r2"],
+            ),
+            does_not_raise(),
+            id="calculate_UB honours r1/r2 over stale preloaded reflections",
+        ),
+        pytest.param(
+            dict(
+                preload=[],
+                r1=HKL_R1,
+                r2=HKL_R2,
+                expected_names=["r1", "r2"],
+            ),
+            does_not_raise(),
+            id="calculate_UB honours r1/r2 with no preloaded reflections",
+        ),
+        pytest.param(
+            dict(
+                preload=[HKL_R1, HKL_R2, DISTRACTOR_R1, DISTRACTOR_R2],
+                r1=DISTRACTOR_R1,
+                r2=DISTRACTOR_R2,
+                expected_names=["distractor1", "distractor2"],
+            ),
+            does_not_raise(),
+            id="calculate_UB picks named pair from a longer preloaded list",
+        ),
+        pytest.param(
+            dict(
+                preload=[],
+                r1=COLINEAR_R1,
+                r2=COLINEAR_R2,
+                expected_names=None,
+            ),
+            pytest.raises(SolverError),
+            id="calculate_UB translates DiffcalcException to SolverError on colinear pair",
+        ),
+    ],
+)
+def test_calculate_ub_honours_arguments(parms, context):
+    """``calculate_UB(r1, r2)`` MUST honour its arguments.
+
+    Regression for :issue:`58`: the previous implementation called
+    ``self._ubcalc.calc_ub()`` with no arguments, which uses whatever
+    reflections happen to be held by the underlying diffcalc
+    ``UBCalculation`` (in practice: the first two by index).  The
+    current implementation clears the solver's reflection state and
+    inserts exactly the two reflections the caller named before
+    computing UB.
+    """
+    solver = DiffcalcSolver()
+    solver.lattice = dict(SI_LATTICE)
+    for refl in parms["preload"]:
+        solver.addReflection(refl)
+    with context:
+        ub = solver.calculate_UB(parms["r1"], parms["r2"])
+        # UB is a 3x3 matrix.
+        assert len(ub) == 3
+        assert all(len(row) == 3 for row in ub)
+        # Only the two named reflections remain on the solver side.
+        assert [r["name"] for r in solver._reflections] == parms["expected_names"]
+        assert solver._ubcalc.get_number_reflections() == 2
 
 
 @pytest.mark.parametrize(
@@ -718,6 +833,7 @@ def test_refine_lattice_success(parms, context):
     # (1,0,0) and (0,1,0) work fine with this mode.
     # (1,1,0) also works. All are in-plane with chi=phi=mu=0.
     hkl_list = [(1, 0, 0), (0, 1, 0), (1, 1, 0)]
+    refls = []
     for h, k, l in hkl_list:  # noqa: E741
         solutions = helper.forward({"h": float(h), "k": float(k), "l": float(l)})
         reals = solutions[0]
@@ -728,8 +844,13 @@ def test_refine_lattice_success(parms, context):
             "wavelength": wl,
         }
         solver.addReflection(refl)
+        refls.append(refl)
 
-    solver.calculate_UB(solver._reflections[0], solver._reflections[1])
+    # ``calculate_UB`` now clears the solver's reflections (it honours
+    # its r1/r2 arguments).  Re-add the third reflection so that
+    # ``refineLattice`` sees the >=3 reflections it requires.
+    solver.calculate_UB(refls[0], refls[1])
+    solver.addReflection(refls[2])
 
     with context:
         result = solver.refineLattice(solver._reflections)

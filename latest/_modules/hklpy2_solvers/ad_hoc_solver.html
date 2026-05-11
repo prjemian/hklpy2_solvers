@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="../../_static/documentation_options.js?v=ab10258f"></script>
+    <script src="../../_static/documentation_options.js?v=741f4b0f"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -578,11 +578,31 @@
 <div class="viewcode-block" id="AdHocSolver.calculate_UB">
 <a class="viewcode-back" href="../../api/hklpy2_solvers/ad_hoc_solver/index.html#hklpy2_solvers.ad_hoc_solver.AdHocSolver.calculate_UB">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_UB</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">r1</span><span class="p">:</span> <span class="n">ReflectionDict</span><span class="p">,</span> <span class="n">r2</span><span class="p">:</span> <span class="n">ReflectionDict</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix3x3</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the UB matrix using two reflections (Busing &amp; Levy).&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the UB matrix using two reflections (Busing &amp; Levy).</span>
+
+<span class="sd">        The ``r1`` and ``r2`` arguments are the contractual source of</span>
+<span class="sd">        truth: any prior reflections held by the underlying</span>
+<span class="sd">        ``ad_hoc_diffractometer`` sample are cleared and the two named</span>
+<span class="sd">        reflections are inserted (so ``setor0`` / ``setor1`` are</span>
+<span class="sd">        correctly designated) before UB is computed.  This mirrors</span>
+<span class="sd">        :meth:`hklpy2.backends.hkl_soleil.HklSolver.calculate_UB` and</span>
+<span class="sd">        avoids depending on whatever sync state ``Core.update_solver``</span>
+<span class="sd">        happens to have left behind (see :issue:`56` and upstream</span>
+<span class="sd">        ``bluesky/hklpy2`` issue #397).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="s2">&quot;Lattice must be set before calculating UB.&quot;</span><span class="p">)</span>
 
-        <span class="n">ahd</span><span class="o">.</span><span class="n">ub_from_two_reflections_bl1967</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span>
+        <span class="c1"># Honour the caller-supplied reflections, regardless of any</span>
+        <span class="c1"># stale solver-side state.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">removeAllReflections</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addReflection</span><span class="p">(</span><span class="n">r1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">addReflection</span><span class="p">(</span><span class="n">r2</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">ahd</span><span class="o">.</span><span class="n">ub_from_two_reflections_bl1967</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">UB</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span></div>
 
 

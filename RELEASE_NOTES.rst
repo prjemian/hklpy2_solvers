@@ -33,6 +33,7 @@ describe future plans.
     ~~~~~~~~~~~~
 
     * Add horizontal four-circle cross-validation group against ``hkl_soleil``.  :issue:`67`
+    * Add horizontal kappa cross-validation group against ``hkl_soleil``.  :issue:`75`
     * Add vertical four-circle cross-validation suite against ``hkl_soleil``.  :issue:`50`
     * Add vertical kappa four-circle cross-validation group against ``hkl_soleil``.  :issue:`66`
 

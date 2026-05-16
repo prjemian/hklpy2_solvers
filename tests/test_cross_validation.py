@@ -26,12 +26,33 @@ Groups currently covered:
   participate by pinning ``mu`` / detector-2 to zero in their
   ``bissector_vertical`` / ``bisecting_vertical`` modes.  The
   ``kappa`` axis is constrained to ``[-100, 100] deg`` to match
-  physical kappa-arm ranges.  A kappa-horizontal group is deferred:
-  K6C ``bissector_horizontal`` bootstrap is delicate and warrants
-  its own PR; see :issue:`75`.
+  physical kappa-arm ranges.
+* **kappa bisecting, horizontal plane** (PR3b, :issue:`75`): same
+  axis convention as the vertical kappa group, but the scattering
+  plane is rotated 90 deg about the beam.  Reference
+  ``hkl_soleil/K6C bissector_horizontal`` - libhkl ships ``K4CV``
+  but not ``K4CH``, so the only available libhkl kappa-horizontal
+  peer is the 6-circle ``K6C`` in its ``bissector_horizontal``
+  mode.  Peers: ``ad_hoc/kappa4ch bisecting`` (4-axis kappa
+  horizontal) and ``ad_hoc/kappa6c bisecting_horizontal``.  The
+  K6C-horizontal bootstrap requires overspecifying both
+  ``mu = tth/2`` and ``delta = tth`` (alongside the renamed
+  ``ttheta``) because libhkl rejects the naive recipes with a
+  degenerate U matrix or ``NoForwardSolutions``.
 
 Later PRs add six-circle and beyond (:issue:`64`), and a dedicated CI
 workflow (:issue:`65`).
+
+Known asymmetric corrections (handled in follow-up PRs):
+
+* :issue:`72` (corrected): ``E4CH`` is **not** an alias of ``E4CV``;
+  it is the canonical horizontal 4-circle eulerian reference.  The
+  current ``HORIZONTAL_GROUP`` in PR2 uses ``E6C bissector_horizontal``
+  as reference; corrective PR :issue:`78` will demote ``E6C`` to peer
+  and add ``E4CH bissector`` as the reference.
+* :issue:`74` (corrected): ``ad_hoc/kappa4ch`` is **not** an alias of
+  ``kappa4cv``; it is the horizontal kappa 4-circle peer included in
+  the new kappa-horizontal group here.
 
 The module skips silently when libhkl is not importable via
 ``gobject-introspection`` (e.g. on default GitHub-hosted runners that
@@ -52,7 +73,7 @@ pytest.importorskip("tests._hkl_library_probe")
 
 import hklpy2  # noqa: E402  (import after probe so skips fire first)
 from ad_hoc_diffractometer import Lattice as _AdHocLattice  # noqa: E402
-from hklpy2.exceptions import SolverError  # noqa: E402
+from hklpy2.exceptions import NoForwardSolutions, SolverError  # noqa: E402
 
 pytestmark = pytest.mark.cross_validation
 
@@ -235,6 +256,50 @@ KAPPA_VERTICAL_GROUP = {
     ),
 }
 
+# Kappa bisecting cross-validation group, HORIZONTAL plane.
+#
+# Reference: ``hkl_soleil/K6C bissector_horizontal``.  Note: libhkl
+# ships ``K4CV`` but **not** ``K4CH``, so the only available libhkl
+# kappa-horizontal peer is the 6-circle ``K6C`` in its
+# ``bissector_horizontal`` mode.  Peers: ``ad_hoc/kappa4ch
+# bisecting`` (4-axis kappa horizontal) and
+# ``ad_hoc/kappa6c bisecting_horizontal``.  ``diffcalc`` has no
+# kappa-axis geometry.
+#
+# ``reals=`` lists preserve each solver's canonical axis order; only
+# axis-name renames are applied:
+#
+# * ``K6C``: ``delta -> ttheta`` (in horizontal mode libhkl writes
+#   ``mu`` and ``gamma`` as the writable bisecting axes; ``komega``,
+#   ``kappa``, ``kphi`` are also writable but the mode pins them in
+#   a way that requires overspecifying ``mu = tth/2`` *and*
+#   ``delta = tth`` in the bootstrap to avoid a degenerate U matrix).
+# * ``kappa4ch``: identity (canonical already uses ``ttheta``; no
+#   ``mu`` axis - 4-axis kappa device).
+# * ``kappa6c``: ``delta -> ttheta`` (same pattern as ``K6C`` but
+#   ``ad_hoc``'s ``bisecting_horizontal`` mode declines some
+#   asymmetric reflections; see :issue:`77`).
+KAPPA_HORIZONTAL_GROUP = {
+    "k6c": dict(
+        solver="hkl_soleil",
+        geometry="K6C",
+        reals=["mu", "komega", "kappa", "kphi", "ttheta", "delta"],
+        mode="bissector_horizontal",
+    ),
+    "kappa4ch": dict(
+        solver="ad_hoc",
+        geometry="kappa4ch",
+        reals=["komega", "kappa", "kphi", "ttheta"],
+        mode="bisecting",
+    ),
+    "kappa6c": dict(
+        solver="ad_hoc",
+        geometry="kappa6c",
+        reals=["mu", "komega", "kappa", "kphi", "ttheta", "delta"],
+        mode="bisecting_horizontal",
+    ),
+}
+
 # Cross-validation groups.  Each group maps to its peer dict and the
 # name of the reference entry within that dict; the per-group bootstrap
 # recipe is selected by ``BOOTSTRAP_BY_GROUP`` below.
@@ -242,6 +307,7 @@ GROUPS = {
     "vertical": dict(entries=VERTICAL_GROUP, reference="e4cv"),
     "horizontal": dict(entries=HORIZONTAL_GROUP, reference="e6c"),
     "kappa_vertical": dict(entries=KAPPA_VERTICAL_GROUP, reference="k4cv"),
+    "kappa_horizontal": dict(entries=KAPPA_HORIZONTAL_GROUP, reference="k6c"),
 }
 
 # Known cross-solver |2theta| discrepancies tracked in their own issues.
@@ -264,6 +330,8 @@ KNOWN_TTH_DISAGREEMENTS = {
     ("horizontal", "diffcalc", "triclinic", (0, 0, 6)): "issue #68",
     ("kappa_vertical", "kappa4cv", "triclinic", (0, 0, 6)): "issue #68",
     ("kappa_vertical", "kappa6c", "triclinic", (0, 0, 6)): "issue #68",
+    ("kappa_horizontal", "kappa4ch", "triclinic", (0, 0, 6)): "issue #68",
+    ("kappa_horizontal", "kappa6c", "triclinic", (0, 0, 6)): "issue #68",
 }
 
 # Known forward-solution gaps: parameter cases where ``forward()`` itself
@@ -274,6 +342,11 @@ KNOWN_TTH_DISAGREEMENTS = {
 KNOWN_FORWARD_GAPS = {
     # https://github.com/prjemian/hklpy2_solvers/issues/71
     ("horizontal", "psic", "sapphire", (0, 1, 2)): "issue #71",
+    # https://github.com/prjemian/hklpy2_solvers/issues/77
+    ("kappa_horizontal", "kappa6c", "cubic", (1, 1, 0)): "issue #77",
+    ("kappa_horizontal", "kappa6c", "sapphire", (0, 0, 6)): "issue #77",
+    ("kappa_horizontal", "kappa6c", "sapphire", (1, 1, 0)): "issue #77",
+    ("kappa_horizontal", "kappa6c", "triclinic", (1, 1, 0)): "issue #77",
 }
 
 # Per-axis angle comparisons across solvers are deferred: bisecting-mode
@@ -420,10 +493,59 @@ def _rough_kappa_vertical_positions(geometry, tth1, tth2):
     return p1, p2
 
 
+def _rough_kappa_horizontal_positions(geometry, tth1, tth2):
+    """Geometry-appropriate rough motor settings for horizontal-kappa bootstrap.
+
+    The horizontal scattering plane is rotated 90 deg about the beam
+    relative to the vertical kappa group.  After axis renaming in
+    ``KAPPA_HORIZONTAL_GROUP``, the bisecting condition reads
+    ``mu = ttheta / 2`` (6-axis kappa peers ``K6C``, ``kappa6c``) or
+    ``komega = ttheta / 2`` (4-axis kappa peer ``kappa4ch``, which
+    has no ``mu`` axis).  This helper dispatches on ``mu`` presence
+    in ``real_axis_names``.
+
+    libhkl's ``K6C bissector_horizontal`` mode requires
+    **overspecifying** the bootstrap: it rejects the naive
+    ``mu = tth/2`` recipe with a degenerate U matrix and rejects the
+    ``komega = tth/2`` recipe with ``NoForwardSolutions``.  Writing
+    both ``mu = tth/2`` (the user-facing primary) and the backend
+    detector ``delta = tth`` simultaneously breaks the degeneracy
+    and libhkl's solver then picks the canonical ``mu`` / ``gamma``
+    branch.  ``ad_hoc/kappa6c`` accepts the same overspecified
+    bootstrap without complaint.
+
+    Each writable bootstrap angle EXCEPT ``kappa`` is nudged off the
+    exact bisecting solution by a deterministic random offset
+    bounded by ``BOOTSTRAP_NUDGE_DEG``; ``kappa`` is held at 0 for
+    the same reason as in the vertical-kappa helper (a small
+    ``kappa`` nudge perturbs the bootstrap UB enough that
+    post-refine ``forward()`` may require ``|kappa| > 100 deg`` and
+    exceed the physical kappa-arm range).
+    """
+    p0 = {axis: 0.0 for axis in geometry.real_axis_names}
+    p1 = dict(p0)
+    p2 = dict(p0)
+    d1_tth, d1_om, d2_tth, d2_om, d2_kphi = _nudges(seed_offset=3, count=5)
+    has_mu = "mu" in geometry.real_axis_names
+    primary = "mu" if has_mu else "komega"
+    p1.update(ttheta=tth1 + d1_tth)
+    p1[primary] = tth1 / 2 + d1_om
+    p2.update(ttheta=tth2 + d2_tth, kphi=90 + d2_kphi)
+    p2[primary] = tth2 / 2 + d2_om
+    if "delta" in geometry.real_axis_names:
+        # libhkl K6C bissector_horizontal needs both mu and delta
+        # set to break a degenerate U matrix; ad_hoc kappa6c accepts
+        # the same overspecification harmlessly.
+        p1["delta"] = tth1 + d1_tth
+        p2["delta"] = tth2 + d2_tth
+    return p1, p2
+
+
 BOOTSTRAP_BY_GROUP = {
     "vertical": _rough_vertical_positions,
     "horizontal": _rough_horizontal_positions,
     "kappa_vertical": _rough_kappa_vertical_positions,
+    "kappa_horizontal": _rough_kappa_horizontal_positions,
 }
 
 
@@ -476,14 +598,25 @@ def _build_simulator(group_name, entry_info, sample_dict):
     # Refine: replace each reflection with the angles ``forward()`` picks
     # at the rough UB, then recompute.  Skip the refine step when
     # ``forward()`` returns the same position as the rough estimate,
-    # since hklpy2 rejects duplicate reflections.
-    f1 = sim.forward(*HKL_BOOTSTRAP_1)
-    f2 = sim.forward(*HKL_BOOTSTRAP_2)
+    # since hklpy2 rejects duplicate reflections.  Catch
+    # ``NoForwardSolutions`` per-reflection: some peers (e.g.
+    # ``ad_hoc/kappa6c bisecting_horizontal`` per :issue:`77`) decline
+    # certain bootstrap reflections, in which case we keep the rough
+    # UB seeded from the un-refined positions and let the per-case
+    # forward-gap xfails handle the downstream test failures.
+    try:
+        f1 = sim.forward(*HKL_BOOTSTRAP_1)
+    except NoForwardSolutions:
+        f1 = None
+    try:
+        f2 = sim.forward(*HKL_BOOTSTRAP_2)
+    except NoForwardSolutions:
+        f2 = None
     refined = False
-    if not _same_position(p1, f1):
+    if f1 is not None and not _same_position(p1, f1):
         r1 = sim.add_reflection(HKL_BOOTSTRAP_1, f1, name="r1", replace=True)
         refined = True
-    if not _same_position(p2, f2):
+    if f2 is not None and not _same_position(p2, f2):
         r2 = sim.add_reflection(HKL_BOOTSTRAP_2, f2, name="r2", replace=True)
         refined = True
     if refined:

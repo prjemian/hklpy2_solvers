@@ -89,4 +89,8 @@ jobs:
           "
 
       - name: Run cross-validation suite
-        run: pytest tests/test_cross_validation.py -m cross_validation -v --no-cov
+        # pytest-cov is intentionally NOT installed in this env -
+        # coverage gating belongs in ``ci.yml``, not here - so the
+        # ``--no-cov`` flag the original spec called for is omitted
+        # (pytest would otherwise reject it as an unknown argument).
+        run: pytest tests/test_cross_validation.py -m cross_validation -v

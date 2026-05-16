@@ -317,8 +317,8 @@ KAPPA_HORIZONTAL_GROUP = {
 # name of the reference entry within that dict; the per-group bootstrap
 # recipe is selected by ``BOOTSTRAP_BY_GROUP`` below.
 GROUPS = {
-    "vertical": dict(entries=EULER_VERTICAL_GROUP, reference="e4cv"),
-    "horizontal": dict(entries=EULER_HORIZONTAL_GROUP, reference="e4ch"),
+    "euler_vertical": dict(entries=EULER_VERTICAL_GROUP, reference="e4cv"),
+    "euler_horizontal": dict(entries=EULER_HORIZONTAL_GROUP, reference="e4ch"),
     "kappa_vertical": dict(entries=KAPPA_VERTICAL_GROUP, reference="k4cv"),
     "kappa_horizontal": dict(entries=KAPPA_HORIZONTAL_GROUP, reference="k6c"),
 }
@@ -334,13 +334,13 @@ GROUPS = {
 # xfailed.
 KNOWN_TTH_DISAGREEMENTS = {
     # https://github.com/prjemian/hklpy2_solvers/issues/68
-    ("vertical", "fourcv", "triclinic", (0, 0, 6)): "issue #68",
-    ("vertical", "psic", "triclinic", (0, 0, 6)): "issue #68",
-    ("vertical", "fivec", "triclinic", (0, 0, 6)): "issue #68",
-    ("vertical", "diffcalc", "triclinic", (0, 0, 6)): "issue #68",
-    ("horizontal", "fourch", "triclinic", (0, 0, 6)): "issue #68",
-    ("horizontal", "psic", "triclinic", (0, 0, 6)): "issue #68",
-    ("horizontal", "diffcalc", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "fourcv", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "psic", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "fivec", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "diffcalc", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_horizontal", "fourch", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_horizontal", "psic", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_horizontal", "diffcalc", "triclinic", (0, 0, 6)): "issue #68",
     ("kappa_vertical", "kappa4cv", "triclinic", (0, 0, 6)): "issue #68",
     ("kappa_vertical", "kappa6c", "triclinic", (0, 0, 6)): "issue #68",
     ("kappa_horizontal", "kappa4ch", "triclinic", (0, 0, 6)): "issue #68",
@@ -354,7 +354,7 @@ KNOWN_TTH_DISAGREEMENTS = {
 # and a future fix surfaces as ``XPASS``.
 KNOWN_FORWARD_GAPS = {
     # https://github.com/prjemian/hklpy2_solvers/issues/71
-    ("horizontal", "psic", "sapphire", (0, 1, 2)): "issue #71",
+    ("euler_horizontal", "psic", "sapphire", (0, 1, 2)): "issue #71",
     # https://github.com/prjemian/hklpy2_solvers/issues/77
     ("kappa_horizontal", "kappa6c", "cubic", (1, 1, 0)): "issue #77",
     ("kappa_horizontal", "kappa6c", "sapphire", (0, 0, 6)): "issue #77",
@@ -555,8 +555,8 @@ def _rough_kappa_horizontal_positions(geometry, tth1, tth2):
 
 
 BOOTSTRAP_BY_GROUP = {
-    "vertical": _rough_vertical_positions,
-    "horizontal": _rough_horizontal_positions,
+    "euler_vertical": _rough_vertical_positions,
+    "euler_horizontal": _rough_horizontal_positions,
     "kappa_vertical": _rough_kappa_vertical_positions,
     "kappa_horizontal": _rough_kappa_horizontal_positions,
 }
@@ -735,9 +735,9 @@ def _make_param(group_name, entry, sample, hkl, *, apply_tth_xfail=False):
     [_make_param(g, e, s, h) for (g, e, s, h) in _round_trip_cases()]
     + [
         pytest.param(
-            dict(group="vertical", entry="fourcv", sample="cubic", hkl=(100, 0, 0)),
+            dict(group="euler_vertical", entry="fourcv", sample="cubic", hkl=(100, 0, 0)),
             pytest.raises(SolverError, match="cannot be reached"),
-            id="unreachable-vertical-fourcv-cubic-100_0_0",
+            id="unreachable-euler_vertical-fourcv-cubic-100_0_0",
         ),
     ],
 )
@@ -763,7 +763,7 @@ def test_forward_inverse_roundtrip(parms, context, simulators):
     [_make_param(g, e, s, h, apply_tth_xfail=True) for (g, e, s, h) in _peer_cases()]
     + [
         pytest.param(
-            dict(group="vertical", entry="NOT_A_PEER", sample="cubic", hkl=(0, 0, 6)),
+            dict(group="euler_vertical", entry="NOT_A_PEER", sample="cubic", hkl=(0, 0, 6)),
             pytest.raises(KeyError, match=re.escape("NOT_A_PEER")),
             id="missing-peer-entry-raises",
         ),

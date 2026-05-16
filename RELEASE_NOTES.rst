@@ -32,6 +32,7 @@ describe future plans.
     New Features
     ~~~~~~~~~~~~
 
+    * Add horizontal four-circle cross-validation group against ``hkl_soleil``.  :issue:`67`
     * Add vertical four-circle cross-validation suite against ``hkl_soleil``.  :issue:`50`
 
     Fixes

@@ -14,11 +14,12 @@ Groups currently covered:
 
 * **vertical four-circle bisecting** (PR1): scattering plane contains
   the ``omega``/``ttheta`` axes; reference ``hkl_soleil/E4CV``.
-* **horizontal four-circle bisecting** (PR2, :issue:`67`): scattering
-  plane rotated 90 deg about the beam; reference ``hkl_soleil/E6C``
-  in ``bissector_horizontal`` mode (libhkl's ``E4CH`` is structurally
-  a vertical-style ``bissector`` and provides no independent signal;
-  see :issue:`72`).
+* **horizontal four-circle bisecting** (PR2, :issue:`67`, reference
+  corrected by :issue:`78`): scattering plane rotated 90 deg about
+  the beam; reference ``hkl_soleil/E4CH bissector`` (the canonical
+  4-circle horizontal eulerian, analog of ``E4CV`` in the vertical
+  group).  ``E6C bissector_horizontal`` participates as the
+  6-circle horizontal peer.
 * **kappa four-circle bisecting, vertical plane** (PR3, :issue:`66`):
   kappa-axis goniometer with ``(komega, kappa, kphi)`` replacing the
   eulerian ``(omega, chi, phi)`` triad; reference
@@ -43,16 +44,19 @@ Groups currently covered:
 Later PRs add six-circle and beyond (:issue:`64`), and a dedicated CI
 workflow (:issue:`65`).
 
-Known asymmetric corrections (handled in follow-up PRs):
+Earlier issues now closed as not-a-bug after re-investigation:
 
-* :issue:`72` (corrected): ``E4CH`` is **not** an alias of ``E4CV``;
-  it is the canonical horizontal 4-circle eulerian reference.  The
-  current ``HORIZONTAL_GROUP`` in PR2 uses ``E6C bissector_horizontal``
-  as reference; corrective PR :issue:`78` will demote ``E6C`` to peer
-  and add ``E4CH bissector`` as the reference.
-* :issue:`74` (corrected): ``ad_hoc/kappa4ch`` is **not** an alias of
-  ``kappa4cv``; it is the horizontal kappa 4-circle peer included in
-  the new kappa-horizontal group here.
+* :issue:`72`: ``E4CH`` is **not** an alias of ``E4CV``; the
+  apparent parity was an artifact of testing only symmetric
+  reflections.  ``E4CH`` is the canonical 4-circle horizontal
+  eulerian reference per hkl_soleil naming and is now used as
+  such in ``EULER_HORIZONTAL_GROUP`` (see :issue:`78`).  The genuinely
+  missing libhkl geometry is ``K4CH``, noted upstream as a
+  feature request.
+* :issue:`74`: ``ad_hoc/kappa4ch`` is **not** an alias of
+  ``kappa4cv``; PR3b's inclusion of ``kappa4ch`` in the
+  kappa-horizontal group with sapphire ``(0, 1, 2)`` empirically
+  refutes the alias claim.
 
 The module skips silently when libhkl is not importable via
 ``gobject-introspection`` (e.g. on default GitHub-hosted runners that
@@ -113,12 +117,12 @@ TTH_ATOL_DEG = 0.01
 HKL_ATOL = 0.001
 """Tolerance for forward/inverse round-trip on (h, k, l)."""
 
-# Vertical four-circle bisecting cross-validation group.
+# Eulerian vertical four-circle bisecting cross-validation group.
 #
 # Each entry is a peer to ``hkl_soleil/E4CV``: same scattering plane
 # (vertical), same bisecting condition (``omega = ttheta / 2``), same
 # physical observable for any ``(h, k, l)``.
-VERTICAL_GROUP = {
+EULER_VERTICAL_GROUP = {
     "e4cv": dict(
         solver="hkl_soleil",
         geometry="E4CV",
@@ -157,29 +161,38 @@ VERTICAL_GROUP = {
     ),
 }
 
-# Horizontal four-circle bisecting cross-validation group.
+# Eulerian horizontal four-circle bisecting cross-validation group.
 #
-# Each entry is a peer to ``hkl_soleil/E6C`` in ``bissector_horizontal``
-# mode: scattering plane rotated 90 deg about the beam, same bisecting
-# condition (``omega = ttheta / 2`` where ``omega`` is the user-facing
-# name for whichever backend axis is the primary sample rotation in
-# that mode), same physical observable for any ``(h, k, l)``.
+# Reference: ``hkl_soleil/E4CH bissector`` - per hkl_soleil naming,
+# ``E4CH`` is Eulerian 4-circle horizontal-scattering-plane, the
+# canonical 4-circle horizontal reference (analog of ``E4CV`` as the
+# vertical reference in PR1).  ``E6C bissector_horizontal`` is the
+# Eulerian 6-circle horizontal peer; PR2 incorrectly used it as the
+# reference, corrected here per :issue:`78`.
+#
+# Each peer encodes the same physical scattering condition:
+# scattering plane rotated 90 deg about the beam, bisecting condition
+# ``omega = ttheta / 2`` (where ``omega`` is the user-facing name for
+# whichever backend axis is the primary sample rotation in that mode),
+# same physical observable for any ``(h, k, l)``.
 #
 # ``reals=`` lists preserve each solver's canonical axis order; only
 # axis-name renames are applied.  The renames bind user-facing
 # ``omega`` to the backend axis that actually moves in horizontal
-# bisecting (``mu`` for ``E6C``/``psic``, ``eta`` for ``diffcalc``,
-# identity for ``fourch``), and bind user-facing ``ttheta`` to the
-# backend detector axis (``gamma`` for ``E6C``, ``nu`` for
-# ``psic``/``diffcalc``, identity for ``fourch``).  The remaining
-# backend axes (``omega`` on ``E6C``, ``mu``/``delta`` on
-# ``diffcalc``) are pinned to 0 by the mode and renamed to inert
+# bisecting (identity for ``E4CH`` / ``fourch``, ``mu`` for ``E6C`` /
+# ``psic``, ``eta`` for ``diffcalc``), and bind user-facing ``ttheta``
+# to the backend detector axis (``tth`` for ``E4CH``, identity for
+# ``fourch``, ``gamma`` for ``E6C``, ``nu`` for ``psic`` / ``diffcalc``).
+# The remaining backend axes (``omega`` on ``E6C``, ``mu`` / ``delta``
+# on ``diffcalc``) are pinned to 0 by the mode and renamed to inert
 # placeholders.
-#
-# ``hkl_soleil/E4CH`` is omitted: its ``bissector`` mode is
-# structurally vertical-style (2theta on ``tth``, ``omega = tth / 2``)
-# and provides no independent signal vs. the PR1 ``e4cv`` entry.
-HORIZONTAL_GROUP = {
+EULER_HORIZONTAL_GROUP = {
+    "e4ch": dict(
+        solver="hkl_soleil",
+        geometry="E4CH",
+        reals=["omega", "chi", "phi", "ttheta"],
+        mode="bissector",
+    ),
     "e6c": dict(
         solver="hkl_soleil",
         geometry="E6C",
@@ -304,8 +317,8 @@ KAPPA_HORIZONTAL_GROUP = {
 # name of the reference entry within that dict; the per-group bootstrap
 # recipe is selected by ``BOOTSTRAP_BY_GROUP`` below.
 GROUPS = {
-    "vertical": dict(entries=VERTICAL_GROUP, reference="e4cv"),
-    "horizontal": dict(entries=HORIZONTAL_GROUP, reference="e6c"),
+    "euler_vertical": dict(entries=EULER_VERTICAL_GROUP, reference="e4cv"),
+    "euler_horizontal": dict(entries=EULER_HORIZONTAL_GROUP, reference="e4ch"),
     "kappa_vertical": dict(entries=KAPPA_VERTICAL_GROUP, reference="k4cv"),
     "kappa_horizontal": dict(entries=KAPPA_HORIZONTAL_GROUP, reference="k6c"),
 }
@@ -321,13 +334,13 @@ GROUPS = {
 # xfailed.
 KNOWN_TTH_DISAGREEMENTS = {
     # https://github.com/prjemian/hklpy2_solvers/issues/68
-    ("vertical", "fourcv", "triclinic", (0, 0, 6)): "issue #68",
-    ("vertical", "psic", "triclinic", (0, 0, 6)): "issue #68",
-    ("vertical", "fivec", "triclinic", (0, 0, 6)): "issue #68",
-    ("vertical", "diffcalc", "triclinic", (0, 0, 6)): "issue #68",
-    ("horizontal", "fourch", "triclinic", (0, 0, 6)): "issue #68",
-    ("horizontal", "psic", "triclinic", (0, 0, 6)): "issue #68",
-    ("horizontal", "diffcalc", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "fourcv", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "psic", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "fivec", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "diffcalc", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_horizontal", "fourch", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_horizontal", "psic", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_horizontal", "diffcalc", "triclinic", (0, 0, 6)): "issue #68",
     ("kappa_vertical", "kappa4cv", "triclinic", (0, 0, 6)): "issue #68",
     ("kappa_vertical", "kappa6c", "triclinic", (0, 0, 6)): "issue #68",
     ("kappa_horizontal", "kappa4ch", "triclinic", (0, 0, 6)): "issue #68",
@@ -341,7 +354,7 @@ KNOWN_TTH_DISAGREEMENTS = {
 # and a future fix surfaces as ``XPASS``.
 KNOWN_FORWARD_GAPS = {
     # https://github.com/prjemian/hklpy2_solvers/issues/71
-    ("horizontal", "psic", "sapphire", (0, 1, 2)): "issue #71",
+    ("euler_horizontal", "psic", "sapphire", (0, 1, 2)): "issue #71",
     # https://github.com/prjemian/hklpy2_solvers/issues/77
     ("kappa_horizontal", "kappa6c", "cubic", (1, 1, 0)): "issue #77",
     ("kappa_horizontal", "kappa6c", "sapphire", (0, 0, 6)): "issue #77",
@@ -433,7 +446,7 @@ def _rough_horizontal_positions(geometry, tth1, tth2):
 
     The horizontal scattering plane is rotated 90 deg about the beam
     relative to the vertical bootstrap.  After axis renaming in
-    ``HORIZONTAL_GROUP`` (primary backend axis -> ``omega``, detector
+    ``EULER_HORIZONTAL_GROUP`` (primary backend axis -> ``omega``, detector
     backend axis -> ``ttheta``), the bisecting condition reads
     ``omega = ttheta / 2`` in user-facing names just like the vertical
     case.  ``(1, 1, 0)`` is brought into the horizontal Q-plane by
@@ -542,8 +555,8 @@ def _rough_kappa_horizontal_positions(geometry, tth1, tth2):
 
 
 BOOTSTRAP_BY_GROUP = {
-    "vertical": _rough_vertical_positions,
-    "horizontal": _rough_horizontal_positions,
+    "euler_vertical": _rough_vertical_positions,
+    "euler_horizontal": _rough_horizontal_positions,
     "kappa_vertical": _rough_kappa_vertical_positions,
     "kappa_horizontal": _rough_kappa_horizontal_positions,
 }
@@ -722,9 +735,9 @@ def _make_param(group_name, entry, sample, hkl, *, apply_tth_xfail=False):
     [_make_param(g, e, s, h) for (g, e, s, h) in _round_trip_cases()]
     + [
         pytest.param(
-            dict(group="vertical", entry="fourcv", sample="cubic", hkl=(100, 0, 0)),
+            dict(group="euler_vertical", entry="fourcv", sample="cubic", hkl=(100, 0, 0)),
             pytest.raises(SolverError, match="cannot be reached"),
-            id="unreachable-vertical-fourcv-cubic-100_0_0",
+            id="unreachable-euler_vertical-fourcv-cubic-100_0_0",
         ),
     ],
 )
@@ -750,7 +763,7 @@ def test_forward_inverse_roundtrip(parms, context, simulators):
     [_make_param(g, e, s, h, apply_tth_xfail=True) for (g, e, s, h) in _peer_cases()]
     + [
         pytest.param(
-            dict(group="vertical", entry="NOT_A_PEER", sample="cubic", hkl=(0, 0, 6)),
+            dict(group="euler_vertical", entry="NOT_A_PEER", sample="cubic", hkl=(0, 0, 6)),
             pytest.raises(KeyError, match=re.escape("NOT_A_PEER")),
             id="missing-peer-entry-raises",
         ),

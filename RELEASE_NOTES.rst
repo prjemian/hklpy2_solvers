@@ -29,6 +29,11 @@ describe future plans.
 
     Expected release: tba
 
+    New Features
+    ~~~~~~~~~~~~
+
+    * Add vertical four-circle cross-validation suite against ``hkl_soleil``.  :issue:`50`
+
     Fixes
     ~~~~~
 

@@ -32,6 +32,7 @@ describe future plans.
     New Features
     ~~~~~~~~~~~~
 
+    * Add ``cross-validation.yml`` workflow running libhkl-backed tests via conda-forge.  :issue:`65`
     * Add horizontal four-circle cross-validation group against ``hkl_soleil``.  :issue:`67`
     * Add horizontal kappa cross-validation group against ``hkl_soleil``.  :issue:`75`
     * Add vertical four-circle cross-validation suite against ``hkl_soleil``.  :issue:`50`

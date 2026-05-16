@@ -59,8 +59,6 @@ jobs:
           create-args: >-
             python=3.12
             hklpy2
-            ad_hoc_diffractometer
-            diffcalc-core
             numpy
             pytest
           condarc: |
@@ -69,10 +67,15 @@ jobs:
             channel_priority: strict
           cache-environment: true
 
+      - name: Install pip-only dependencies
+        # ad_hoc_diffractometer and diffcalc-core are not packaged
+        # on conda-forge; install them from PyPI into the conda env.
+        run: pip install ad_hoc_diffractometer diffcalc-core
+
       - name: Install hklpy2_solvers (editable, no deps)
         # Use --no-deps because all runtime deps are already provided
-        # by conda-forge above; pip would otherwise attempt to
-        # reinstall over the conda env.
+        # above; pip would otherwise attempt to reinstall over the
+        # conda env.
         run: pip install --no-deps -e .
 
       - name: Confirm libhkl loads via gobject-introspection

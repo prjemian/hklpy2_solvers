@@ -79,6 +79,11 @@ jobs:
         # conda env.
         run: pip install --no-deps -e .
 
+      - name: Record installed package versions (debug)
+        run: |
+          micromamba list -n cross-validation || true
+          pip list
+
       - name: Confirm libhkl loads via gobject-introspection
         run: |
           python -c "

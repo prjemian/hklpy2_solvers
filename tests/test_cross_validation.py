@@ -362,6 +362,21 @@ KNOWN_FORWARD_GAPS = {
     ("kappa_horizontal", "kappa6c", "triclinic", (1, 1, 0)): "issue #77",
 }
 
+# CI-environment-dependent forward gaps: cases that pass locally on
+# the maintainer's conda env but fail on the conda-forge env used by
+# the dedicated ``cross-validation.yml`` workflow.  Marked
+# ``xfail(strict=False)`` so the case xfails when it fails (CI) and
+# passes silently when it passes (local) - distinct from the
+# strict-xfails in ``KNOWN_FORWARD_GAPS`` because the failure mode
+# depends on the package-version stack, not on the suite's own
+# logic.  Investigation tracked in the issue listed for each case.
+CI_ENV_DEPENDENT_GAPS = {
+    # https://github.com/prjemian/hklpy2_solvers/issues/83
+    ("kappa_horizontal", "k6c", "triclinic", (0, 0, 6)): "issue #83",
+    ("kappa_horizontal", "k6c", "triclinic", (1, 1, 0)): "issue #83",
+    ("kappa_horizontal", "kappa4ch", "triclinic", (1, 1, 0)): "issue #83",
+}
+
 # Per-axis angle comparisons across solvers are deferred: bisecting-mode
 # branch selection (libhkl picks ``omega ~ 180 - omega`` relative to
 # ad_hoc/diffcalc) and mode-specific axis distributions mean a
@@ -697,7 +712,13 @@ def _make_param(group_name, entry, sample, hkl, *, apply_tth_xfail=False):
 
     * ``KNOWN_FORWARD_GAPS`` always applies (``forward()`` raises on
       this peer for this reflection; tracked in its own issue), so
-      both round-trip and cross-solver tests must xfail.
+      both round-trip and cross-solver tests must strict-xfail.
+    * ``CI_ENV_DEPENDENT_GAPS`` applies when the case is known to
+      fail only under specific package-version stacks (e.g.
+      conda-forge libhkl).  Non-strict so the case xfails when it
+      fails and passes silently when it passes - the suite tolerates
+      both behaviours until the underlying version-sensitivity is
+      resolved.
     * ``KNOWN_TTH_DISAGREEMENTS`` applies only when ``apply_tth_xfail``
       is True (cross-solver comparison only; round-trip still passes).
     """
@@ -708,6 +729,13 @@ def _make_param(group_name, entry, sample, hkl, *, apply_tth_xfail=False):
             pytest.mark.xfail(
                 strict=True,
                 reason=f"known forward-solution gap ({KNOWN_FORWARD_GAPS[key]})",
+            ),
+        )
+    elif key in CI_ENV_DEPENDENT_GAPS:
+        marks = (
+            pytest.mark.xfail(
+                strict=False,
+                reason=f"CI-env-dependent forward gap ({CI_ENV_DEPENDENT_GAPS[key]})",
             ),
         )
     elif apply_tth_xfail and key in KNOWN_TTH_DISAGREEMENTS:

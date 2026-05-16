@@ -1,0 +1,88 @@
+name: Cross-validation
+
+# Dedicated workflow for the libhkl-backed cross-validation suite.
+# The default ``ci.yml`` installs only pip dependencies; ``hklpy2``
+# does not bring ``libhkl`` over pip (conda-forge only), so cross-
+# validation tests skip silently in that workflow.  This workflow
+# installs the conda-forge ``hklpy2`` (which pulls ``libhkl`` and
+# ``gobject-introspection``) and runs the marker-filtered suite.
+#
+# Failures here do not block ``ci.yml`` because this is a separate
+# workflow.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/hklpy2_solvers/**"
+      - "tests/test_cross_validation.py"
+      - "tests/_hkl_library_probe.py"
+      - "tests/__init__.py"
+      - "pyproject.toml"
+      - ".github/workflows/cross-validation.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/hklpy2_solvers/**"
+      - "tests/test_cross_validation.py"
+      - "tests/_hkl_library_probe.py"
+      - "tests/__init__.py"
+      - "pyproject.toml"
+      - ".github/workflows/cross-validation.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cross-validation:
+    name: Run cross-validation with conda-forge libhkl
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        # micromamba activates the named environment automatically
+        # when ``shell: bash -l {0}`` is used.
+        shell: bash -l {0}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # full history so hatch-vcs can stamp a version
+
+      - name: Set up micromamba environment
+        uses: mamba-org/setup-micromamba@v2
+        with:
+          environment-name: cross-validation
+          create-args: >-
+            python=3.12
+            hklpy2
+            ad_hoc_diffractometer
+            diffcalc-core
+            numpy
+            pytest
+          condarc: |
+            channels:
+              - conda-forge
+            channel_priority: strict
+          cache-environment: true
+
+      - name: Install hklpy2_solvers (editable, no deps)
+        # Use --no-deps because all runtime deps are already provided
+        # by conda-forge above; pip would otherwise attempt to
+        # reinstall over the conda env.
+        run: pip install --no-deps -e .
+
+      - name: Confirm libhkl loads via gobject-introspection
+        run: |
+          python -c "
+          import gi
+          gi.require_version('Hkl', '5.0')
+          from gi.repository import Hkl
+          print(f'libhkl loaded; Hkl module: {Hkl}')
+          "
+
+      - name: Run cross-validation suite
+        run: pytest tests/test_cross_validation.py -m cross_validation -v --no-cov

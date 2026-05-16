@@ -159,9 +159,7 @@ def _bragg_two_theta(geometry, h, k, l):  # noqa: E741 - ``l`` is the canonical 
     (``|sin theta| > 1``).
     """
     lat = geometry.sample.lattice
-    bmat = _AdHocLattice(
-        a=lat.a, b=lat.b, c=lat.c, alpha=lat.alpha, beta=lat.beta, gamma=lat.gamma
-    ).B
+    bmat = _AdHocLattice(a=lat.a, b=lat.b, c=lat.c, alpha=lat.alpha, beta=lat.beta, gamma=lat.gamma).B
     q_vec = bmat @ np.array([h, k, l], dtype=float)
     q_mag = np.linalg.norm(q_vec)
     d_spacing = 2.0 * math.pi / q_mag
@@ -193,9 +191,7 @@ def _same_position(pos_a, pos_b, atol=1e-6):
     a = dict(pos_a) if not isinstance(pos_a, dict) else pos_a
     b = dict(pos_b._asdict()) if hasattr(pos_b, "_asdict") else dict(pos_b)
     keys = set(a) | set(b)
-    return all(
-        abs(float(a.get(k, 0.0)) - float(b.get(k, 0.0))) <= atol for k in keys
-    )
+    return all(abs(float(a.get(k, 0.0)) - float(b.get(k, 0.0))) <= atol for k in keys)
 
 
 def _build_simulator(entry_info, sample_dict):
@@ -235,9 +231,7 @@ def _build_simulator(entry_info, sample_dict):
 
 def _as_dict(position):
     """Return ``position`` as a plain ``dict`` of ``float`` values."""
-    raw = (
-        dict(position._asdict()) if hasattr(position, "_asdict") else dict(position)
-    )
+    raw = dict(position._asdict()) if hasattr(position, "_asdict") else dict(position)
     return {k: float(v) for k, v in raw.items()}
 
 
@@ -293,10 +287,7 @@ def _make_param(entry, sample, hkl, *, apply_tth_xfail=False):
             marks = (
                 pytest.mark.xfail(
                     strict=True,
-                    reason=(
-                        "known cross-solver |2theta| disagreement "
-                        f"({KNOWN_TTH_DISAGREEMENTS[key]})"
-                    ),
+                    reason=(f"known cross-solver |2theta| disagreement ({KNOWN_TTH_DISAGREEMENTS[key]})"),
                 ),
             )
     return pytest.param(
@@ -336,8 +327,7 @@ def test_forward_inverse_roundtrip(parms, context, simulators):
         back = _as_dict(sim.inverse(_as_dict(sol)))
         for axis, expected in zip("hkl", parms["hkl"]):
             assert abs(back[axis] - expected) <= HKL_ATOL, (
-                f"round-trip mismatch on {axis}: "
-                f"expected {expected}, got {back[axis]}"
+                f"round-trip mismatch on {axis}: expected {expected}, got {back[axis]}"
             )
 
 

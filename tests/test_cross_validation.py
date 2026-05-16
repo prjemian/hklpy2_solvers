@@ -17,10 +17,21 @@ Groups currently covered:
 * **horizontal four-circle bisecting** (PR2, :issue:`67`): scattering
   plane rotated 90 deg about the beam; reference ``hkl_soleil/E6C``
   in ``bissector_horizontal`` mode (libhkl's ``E4CH`` is structurally
-  a vertical-style ``bissector`` and provides no independent signal).
+  a vertical-style ``bissector`` and provides no independent signal;
+  see :issue:`72`).
+* **kappa four-circle bisecting, vertical plane** (PR3, :issue:`66`):
+  kappa-axis goniometer with ``(komega, kappa, kphi)`` replacing the
+  eulerian ``(omega, chi, phi)`` triad; reference
+  ``hkl_soleil/K4CV``.  Six-circle kappa peers (``K6C``, ``kappa6c``)
+  participate by pinning ``mu`` / detector-2 to zero in their
+  ``bissector_vertical`` / ``bisecting_vertical`` modes.  The
+  ``kappa`` axis is constrained to ``[-100, 100] deg`` to match
+  physical kappa-arm ranges.  A kappa-horizontal group is deferred:
+  K6C ``bissector_horizontal`` bootstrap is delicate and warrants
+  its own PR; see :issue:`75`.
 
-Later PRs add kappa (:issue:`66`), six-circle and beyond (:issue:`64`),
-and a dedicated CI workflow (:issue:`65`).
+Later PRs add six-circle and beyond (:issue:`64`), and a dedicated CI
+workflow (:issue:`65`).
 
 The module skips silently when libhkl is not importable via
 ``gobject-introspection`` (e.g. on default GitHub-hosted runners that
@@ -174,12 +185,63 @@ HORIZONTAL_GROUP = {
     ),
 }
 
+# Kappa four-circle bisecting cross-validation group, VERTICAL plane.
+#
+# Each entry is a peer to ``hkl_soleil/K4CV``: kappa-axis goniometer
+# where ``(komega, kappa, kphi)`` replaces the eulerian
+# ``(omega, chi, phi)`` triad.  The bisecting condition in kappa
+# coordinates reads ``komega = ttheta / 2`` (analog of
+# ``omega = ttheta / 2`` in the eulerian groups), and the second
+# reflection ``(1, 1, 0)`` is brought into the bisecting plane by a
+# 90 deg ``kphi`` rotation (analog of ``phi = 90``).
+#
+# ``reals=`` lists preserve each solver's canonical axis order; only
+# axis-name renames are applied:
+#
+# * ``K4CV``: ``tth -> ttheta`` (identity otherwise).
+# * ``K6C``: ``delta -> ttheta`` (mu / gamma pinned to 0 by
+#   ``bissector_vertical`` mode; left as backend names).
+# * ``kappa4cv``: identity (canonical already uses ``ttheta``).
+# * ``kappa6c``: ``delta -> ttheta`` (mu / nu pinned to 0 by
+#   ``bisecting_vertical`` mode; left as backend names).
+#
+# ``ad_hoc/kappa4ch`` belongs in the horizontal kappa group, not
+# here.  ``diffcalc`` has no kappa-axis geometry, so it does not
+# participate in either kappa group.
+KAPPA_VERTICAL_GROUP = {
+    "k4cv": dict(
+        solver="hkl_soleil",
+        geometry="K4CV",
+        reals=["komega", "kappa", "kphi", "ttheta"],
+        mode="bissector",
+    ),
+    "k6c": dict(
+        solver="hkl_soleil",
+        geometry="K6C",
+        reals=["mu", "komega", "kappa", "kphi", "gamma", "ttheta"],
+        mode="bissector_vertical",
+    ),
+    "kappa4cv": dict(
+        solver="ad_hoc",
+        geometry="kappa4cv",
+        reals=["komega", "kappa", "kphi", "ttheta"],
+        mode="bisecting",
+    ),
+    "kappa6c": dict(
+        solver="ad_hoc",
+        geometry="kappa6c",
+        reals=["mu", "komega", "kappa", "kphi", "nu", "ttheta"],
+        mode="bisecting_vertical",
+    ),
+}
+
 # Cross-validation groups.  Each group maps to its peer dict and the
 # name of the reference entry within that dict; the per-group bootstrap
 # recipe is selected by ``BOOTSTRAP_BY_GROUP`` below.
 GROUPS = {
     "vertical": dict(entries=VERTICAL_GROUP, reference="e4cv"),
     "horizontal": dict(entries=HORIZONTAL_GROUP, reference="e6c"),
+    "kappa_vertical": dict(entries=KAPPA_VERTICAL_GROUP, reference="k4cv"),
 }
 
 # Known cross-solver |2theta| discrepancies tracked in their own issues.
@@ -200,6 +262,8 @@ KNOWN_TTH_DISAGREEMENTS = {
     ("horizontal", "fourch", "triclinic", (0, 0, 6)): "issue #68",
     ("horizontal", "psic", "triclinic", (0, 0, 6)): "issue #68",
     ("horizontal", "diffcalc", "triclinic", (0, 0, 6)): "issue #68",
+    ("kappa_vertical", "kappa4cv", "triclinic", (0, 0, 6)): "issue #68",
+    ("kappa_vertical", "kappa6c", "triclinic", (0, 0, 6)): "issue #68",
 }
 
 # Known forward-solution gaps: parameter cases where ``forward()`` itself
@@ -321,9 +385,45 @@ def _rough_horizontal_positions(geometry, tth1, tth2):
     return p1, p2
 
 
+def _rough_kappa_vertical_positions(geometry, tth1, tth2):
+    """Geometry-appropriate rough motor settings for vertical-kappa bootstrap.
+
+    Kappa goniometers use ``(komega, kappa, kphi)`` instead of the
+    eulerian ``(omega, chi, phi)`` triad.  The bisecting condition in
+    kappa coordinates is ``komega = ttheta / 2`` with ``kappa = 0``
+    reducing the kappa goniometer to a pure four-circle in this
+    submanifold; ``(1, 1, 0)`` is brought into the bisecting plane by
+    ``kphi = 90`` (analog of ``phi = 90``).  Each writable bootstrap
+    angle EXCEPT ``kappa`` is nudged off the exact bisecting solution
+    by a deterministic random offset bounded by
+    ``BOOTSTRAP_NUDGE_DEG`` so the two reflections used for
+    ``calc_UB`` are linearly independent.  ``kappa`` is held at 0 so
+    that the bootstrap UB stays in the four-circle submanifold; this
+    matters for triclinic samples where a small ``kappa`` nudge
+    perturbs the UB enough that the post-bootstrap forward solution
+    for ``(1, 1, 0)`` would require ``|kappa| > 100 deg`` and exceed
+    the physical kappa-arm range.  Six-circle kappa peers leave the
+    pinned axes (``mu``, second-detector) at zero so the
+    ``bissector_vertical`` / ``bisecting_vertical`` mode constraint
+    is satisfied at bootstrap.
+    """
+    p0 = {axis: 0.0 for axis in geometry.real_axis_names}
+    p1 = dict(p0)
+    p2 = dict(p0)
+    d1_tth, d1_om, d2_tth, d2_om, d2_kphi = _nudges(seed_offset=2, count=5)
+    p1.update(ttheta=tth1 + d1_tth, komega=tth1 / 2 + d1_om)
+    p2.update(
+        ttheta=tth2 + d2_tth,
+        komega=tth2 / 2 + d2_om,
+        kphi=90 + d2_kphi,
+    )
+    return p1, p2
+
+
 BOOTSTRAP_BY_GROUP = {
     "vertical": _rough_vertical_positions,
     "horizontal": _rough_horizontal_positions,
+    "kappa_vertical": _rough_kappa_vertical_positions,
 }
 
 
@@ -346,8 +446,24 @@ def _build_simulator(group_name, entry_info, sample_dict):
     sim = hklpy2.creator(**kwargs)
     sim.core.mode = mode
     sim.add_sample(**sample_dict)
-    sim.core.constraints["chi"].limits = -100, 100
-    sim.core.constraints["phi"].limits = -120, 120
+    # Per-axis constraint widening.  PR1/PR2 chose ``chi: [-100, 100]``
+    # / ``phi: [-120, 120]`` deliberately - libhkl's ``bissector`` mode
+    # picks different solution branches at wider ranges, so the
+    # eulerian groups must keep those bounds.  Kappa peers use
+    # ``(komega, kappa, kphi)`` instead; ``kappa`` is constrained to
+    # ``[-100, 100] deg`` to match the physical range of typical
+    # kappa-arm goniometers.  Apply each only if the axis exists on
+    # this solver.
+    _CONSTRAINTS = {
+        "chi": (-100, 100),
+        "phi": (-120, 120),
+        "kappa": (-100, 100),
+        "kphi": (-180, 180),
+        "komega": (-180, 180),
+    }
+    for axis_name, limits in _CONSTRAINTS.items():
+        if axis_name in sim.core.constraints:
+            sim.core.constraints[axis_name].limits = limits
 
     tth1 = _bragg_two_theta(sim, *HKL_BOOTSTRAP_1)
     tth2 = _bragg_two_theta(sim, *HKL_BOOTSTRAP_2)

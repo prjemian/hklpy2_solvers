@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="_static/documentation_options.js?v=3fd36a7a"></script>
+    <script src="_static/documentation_options.js?v=d7b63b19"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -497,7 +497,23 @@ bisector: <code class="docutils literal notranslate"><span class="pre">eta</span
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This returns a list of motor-position solutions for the given <code class="docutils literal notranslate"><span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code>.</p>
+<p>This returns a single chosen motor-position solution for the given
+<code class="docutils literal notranslate"><span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code> (an <code class="docutils literal notranslate"><span class="pre">Hklpy2DiffractometerRealPos</span></code>).  The underlying
+solver’s <code class="docutils literal notranslate"><span class="pre">forward()</span></code> may return multiple solutions; the
+diffractometer picks one according to the policy assigned to
+<code class="docutils literal notranslate"><span class="pre">psic._forward_solution</span></code> (defaults to
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/utils/index.html#hklpy2.utils.pick_first_solution" title="(in hklpy2 v0.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">hklpy2.utils.pick_first_solution()</span></code></a>).  The complete list of
+solutions can be returned from <code class="docutils literal notranslate"><span class="pre">psic.core.forward((4,</span> <span class="pre">0,</span> <span class="pre">0))</span></code>.
+See the upstream hklpy2 guide <a class="reference external" href="https://blueskyproject.io/hklpy2/guides/how_forward_solution.html">How to Choose the Default forward()
+Solution</a>
+for details.</p>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>The two call shapes differ: <code class="docutils literal notranslate"><span class="pre">psic.forward(4,</span> <span class="pre">0,</span> <span class="pre">0)</span></code> takes
+<code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code> as separate positional arguments, while
+<code class="docutils literal notranslate"><span class="pre">psic.core.forward((4,</span> <span class="pre">0,</span> <span class="pre">0))</span></code> takes a <strong>single</strong> sequence
+(tuple / list / ndarray) or dict (e.g. <code class="docutils literal notranslate"><span class="pre">{&quot;h&quot;:</span> <span class="pre">4,</span> <span class="pre">&quot;k&quot;:</span> <span class="pre">0,</span> <span class="pre">&quot;l&quot;:</span> <span class="pre">0}</span></code>).</p>
+</div>
 </section>
 <section id="compute-h-k-l-from-motor-positions-inverse">
 <h2>Compute (h, k, l) from motor positions (inverse)<a class="headerlink" href="#compute-h-k-l-from-motor-positions-inverse" title="Link to this heading">#</a></h2>

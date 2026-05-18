@@ -47,6 +47,7 @@ describe future plans.
     Fixes
     ~~~~~
 
+    * Accept scalar default ``n_hat`` from ``hklpy2`` Core in ``AdHocSolver`` extras setter.  :issue:`81`
     * Clarify guide wording: diffractometer ``forward()`` returns a single chosen solution.  :issue:`87`
     * Correct ``ad_hoc`` and ``diffcalc`` guides to use current hklpy2 API.  :issue:`86`
     * Correct horizontal eulerian cross-validation reference to ``E4CH``.  :issue:`78`

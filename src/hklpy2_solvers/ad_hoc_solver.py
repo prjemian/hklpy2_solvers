@@ -299,13 +299,20 @@ class AdHocSolver(SolverBase):
         if mode_obj is None:  # pragma: no cover - mode setter guarantees object
             return
 
-        # Surface-normal vector.
+        # Surface-normal vector.  ``hklpy2.Core`` defaults vector extras
+        # to the scalar ``0`` during ``update_solver()`` (see
+        # :issue:`81`); treat any non-iterable value as "unset" so the
+        # adapter can be constructed via ``hklpy2.creator`` for modes
+        # that expose ``n_hat`` (e.g. ``zaxis``).
         if "n_hat" in values:
             v = values["n_hat"]
             if v is None:
                 self._geom.surface_normal = None
             else:
-                self._geom.surface_normal = tuple(float(x) for x in v)
+                try:
+                    self._geom.surface_normal = tuple(float(x) for x in v)
+                except TypeError:
+                    self._geom.surface_normal = None
 
         # Reference-constraint scalar (psi / alpha_i / beta_out).
         rc = getattr(mode_obj, "reference_constraint", None)

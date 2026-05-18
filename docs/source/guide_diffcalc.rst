@@ -36,8 +36,8 @@ Set the crystal lattice
 
 .. code-block:: python
 
-   psic.sample.lattice = hklpy2.SI_LATTICE_PARAMETERS
-   psic.wavelength.set(1.54)
+   psic.add_sample(name="silicon", a=hklpy2.SI_LATTICE_PARAMETER)
+   psic.beam.wavelength.put(1.54)
 
 Add orientation reflections
 ---------------------------
@@ -74,7 +74,7 @@ bisector: ``eta = delta/2``, eta=0, nu=0).  To change it:
 
 .. code-block:: python
 
-   psic.solver.mode = "4S+2D eta_chi_phi_fixed"
+   psic.core.mode = "4S+2D mu_chi_phi_fixed"
 
 See :ref:`geometry.diffcalc_4S_2D` for the full list of 23 modes.
 
@@ -92,10 +92,12 @@ Compute (h, k, l) from motor positions (inverse)
 
 .. code-block:: python
 
-   psic.inverse()
+   psic.inverse(psic.real_position)
 
-This returns the current ``(h, k, l)`` values from the current motor
-positions.
+This returns the ``(h, k, l)`` values computed from the supplied
+motor positions.  ``psic.real_position`` is the current readout of
+all real axes; pass a different set of values to compute ``(h, k, l)``
+at a hypothetical position instead.
 
 Available geometries at a glance
 ---------------------------------

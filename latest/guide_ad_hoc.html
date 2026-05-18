@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="_static/documentation_options.js?v=3d541ebc"></script>
+    <script src="_static/documentation_options.js?v=3fd36a7a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -472,8 +472,8 @@ the full list.</p>
 </section>
 <section id="set-the-crystal-lattice">
 <h2>Set the crystal lattice<a class="headerlink" href="#set-the-crystal-lattice" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">SI_LATTICE_PARAMETERS</span>
-<span class="n">fourc</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;silicon&quot;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">SI_LATTICE_PARAMETER</span><span class="p">)</span>
+<span class="n">fourc</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -485,13 +485,13 @@ the full list.</p>
 <span class="n">theta</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">asin</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="mf">5.431</span><span class="p">)))</span>
 <span class="n">tth</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">theta</span>
 
-<span class="n">r1</span> <span class="o">=</span> <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">(</span>
+<span class="n">r1</span> <span class="o">=</span> <span class="n">fourc</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">(</span>
     <span class="n">pseudos</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
     <span class="n">reals</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="n">theta</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;ttheta&quot;</span><span class="p">:</span> <span class="n">tth</span><span class="p">},</span>
     <span class="n">wavelength</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
     <span class="n">name</span><span class="o">=</span><span class="s2">&quot;r1&quot;</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="n">r2</span> <span class="o">=</span> <span class="n">fourc</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">(</span>
+<span class="n">r2</span> <span class="o">=</span> <span class="n">fourc</span><span class="o">.</span><span class="n">add_reflection</span><span class="p">(</span>
     <span class="n">pseudos</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;h&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;l&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
     <span class="n">reals</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="n">theta</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span> <span class="s2">&quot;ttheta&quot;</span><span class="p">:</span> <span class="n">tth</span><span class="p">},</span>
     <span class="n">wavelength</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
@@ -509,7 +509,7 @@ the full list.</p>
 <section id="choose-an-operating-mode">
 <h2>Choose an operating mode<a class="headerlink" href="#choose-an-operating-mode" title="Link to this heading">#</a></h2>
 <p>The default mode for <code class="docutils literal notranslate"><span class="pre">fourcv</span></code> is <code class="docutils literal notranslate"><span class="pre">bisecting</span></code>.  To change it:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;fixed_phi&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;fixed_phi&quot;</span>
 </pre></div>
 </div>
 <p>See <a class="reference internal" href="geometries.html#geometries-ad-hoc"><span class="std std-ref">ad_hoc solver</span></a> for the full mode tables for each geometry.</p>
@@ -523,11 +523,13 @@ the full list.</p>
 </section>
 <section id="compute-h-k-l-from-motor-positions-inverse">
 <h2>Compute (h, k, l) from motor positions (inverse)<a class="headerlink" href="#compute-h-k-l-from-motor-positions-inverse" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fourc</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">fourc</span><span class="o">.</span><span class="n">real_position</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This returns the current <code class="docutils literal notranslate"><span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code> values from the current motor
-positions.</p>
+<p>This returns the <code class="docutils literal notranslate"><span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code> values computed from the supplied
+motor positions.  <code class="docutils literal notranslate"><span class="pre">fourc.real_position</span></code> is the current readout of
+all real axes; pass a different set of values to compute <code class="docutils literal notranslate"><span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code>
+at a hypothetical position instead.</p>
 </section>
 <section id="available-geometries-at-a-glance">
 <h2>Available geometries at a glance<a class="headerlink" href="#available-geometries-at-a-glance" title="Link to this heading">#</a></h2>

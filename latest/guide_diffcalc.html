@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=55c26ed414f5f8a31ebb" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=55c26ed414f5f8a31ebb" />
 
-    <script src="_static/documentation_options.js?v=3d541ebc"></script>
+    <script src="_static/documentation_options.js?v=3fd36a7a"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -454,8 +454,8 @@ with 23 operating modes.</p>
 </section>
 <section id="set-the-crystal-lattice">
 <h2>Set the crystal lattice<a class="headerlink" href="#set-the-crystal-lattice" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">sample</span><span class="o">.</span><span class="n">lattice</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">SI_LATTICE_PARAMETERS</span>
-<span class="n">psic</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mf">1.54</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">add_sample</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;silicon&quot;</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="n">hklpy2</span><span class="o">.</span><span class="n">SI_LATTICE_PARAMETER</span><span class="p">)</span>
+<span class="n">psic</span><span class="o">.</span><span class="n">beam</span><span class="o">.</span><span class="n">wavelength</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="mf">1.54</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -487,7 +487,7 @@ with 23 operating modes.</p>
 <h2>Choose an operating mode<a class="headerlink" href="#choose-an-operating-mode" title="Link to this heading">#</a></h2>
 <p>The default mode is <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_eta_fixed</span> <span class="pre">nu_fixed</span></code> (vertical
 bisector: <code class="docutils literal notranslate"><span class="pre">eta</span> <span class="pre">=</span> <span class="pre">delta/2</span></code>, eta=0, nu=0).  To change it:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;4S+2D eta_chi_phi_fixed&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;4S+2D mu_chi_phi_fixed&quot;</span>
 </pre></div>
 </div>
 <p>See <a class="reference internal" href="geometries.html#geometry-diffcalc-4s-2d"><span class="std std-ref">diffcalc solver</span></a> for the full list of 23 modes.</p>
@@ -501,11 +501,13 @@ bisector: <code class="docutils literal notranslate"><span class="pre">eta</span
 </section>
 <section id="compute-h-k-l-from-motor-positions-inverse">
 <h2>Compute (h, k, l) from motor positions (inverse)<a class="headerlink" href="#compute-h-k-l-from-motor-positions-inverse" title="Link to this heading">#</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">inverse</span><span class="p">()</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">inverse</span><span class="p">(</span><span class="n">psic</span><span class="o">.</span><span class="n">real_position</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This returns the current <code class="docutils literal notranslate"><span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code> values from the current motor
-positions.</p>
+<p>This returns the <code class="docutils literal notranslate"><span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code> values computed from the supplied
+motor positions.  <code class="docutils literal notranslate"><span class="pre">psic.real_position</span></code> is the current readout of
+all real axes; pass a different set of values to compute <code class="docutils literal notranslate"><span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code>
+at a hypothetical position instead.</p>
 </section>
 <section id="available-geometries-at-a-glance">
 <h2>Available geometries at a glance<a class="headerlink" href="#available-geometries-at-a-glance" title="Link to this heading">#</a></h2>

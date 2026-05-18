@@ -59,8 +59,8 @@ Set the crystal lattice
 
 .. code-block:: python
 
-   fourc.sample.lattice = hklpy2.SI_LATTICE_PARAMETERS
-   fourc.wavelength.set(1.0)
+   fourc.add_sample(name="silicon", a=hklpy2.SI_LATTICE_PARAMETER)
+   fourc.beam.wavelength.put(1.0)
 
 Add orientation reflections
 ---------------------------
@@ -74,13 +74,13 @@ Provide two reflections measured at known motor positions:
    theta = math.degrees(math.asin(1.0 / (2 * 5.431)))
    tth = 2 * theta
 
-   r1 = fourc.sample.add_reflection(
+   r1 = fourc.add_reflection(
        pseudos={"h": 1, "k": 0, "l": 0},
        reals={"omega": theta, "chi": 0, "phi": 0, "ttheta": tth},
        wavelength=1.0,
        name="r1",
    )
-   r2 = fourc.sample.add_reflection(
+   r2 = fourc.add_reflection(
        pseudos={"h": 0, "k": 1, "l": 0},
        reals={"omega": theta, "chi": 0, "phi": 90, "ttheta": tth},
        wavelength=1.0,
@@ -101,7 +101,7 @@ The default mode for ``fourcv`` is ``bisecting``.  To change it:
 
 .. code-block:: python
 
-   fourc.solver.mode = "fixed_phi"
+   fourc.core.mode = "fixed_phi"
 
 See :ref:`geometries.ad_hoc` for the full mode tables for each geometry.
 
@@ -119,10 +119,12 @@ Compute (h, k, l) from motor positions (inverse)
 
 .. code-block:: python
 
-   fourc.inverse()
+   fourc.inverse(fourc.real_position)
 
-This returns the current ``(h, k, l)`` values from the current motor
-positions.
+This returns the ``(h, k, l)`` values computed from the supplied
+motor positions.  ``fourc.real_position`` is the current readout of
+all real axes; pass a different set of values to compute ``(h, k, l)``
+at a hypothetical position instead.
 
 Available geometries at a glance
 ---------------------------------

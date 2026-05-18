@@ -41,8 +41,22 @@ Groups currently covered:
   ``ttheta``) because libhkl rejects the naive recipes with a
   degenerate U matrix or ``NoForwardSolutions``.
 
-Later PRs add six-circle and beyond (:issue:`64`), and a dedicated CI
-workflow (:issue:`65`).
+* **six-circle bisecting peers** (PR4, :issue:`64`): adds entries that
+  fit naturally into the existing eulerian groups rather than forming
+  a new group dict.  ``ad_hoc/sixc bisecting_4c`` joins
+  ``EULER_VERTICAL_GROUP`` (``alpha`` / ``gamma`` pinned at 0,
+  ``delta`` renamed to ``ttheta``).  ``hkl_soleil/APS POLAR`` and
+  ``hkl_soleil/PETRA3 P09 EH2`` join ``EULER_HORIZONTAL_GROUP`` in
+  their ``4-circles bissecting horizontal`` modes.  libhkl 5.1.3
+  exposes **no** vertical-bisecting mode for either six-circle
+  beamline geometry, so they participate only in the horizontal
+  group.  The two geometries also disagree on which native axis is
+  the bisecting primary: per the hklpy2 docs' ``writable`` column,
+  POLAR uses native ``mu`` (the renaming binds ``mu -> omega``) and
+  P09 EH2 uses native ``omega`` (identity primary).  Detector axes
+  also differ (POLAR: ``gamma``; P09 EH2: ``delta``).
+
+The dedicated CI workflow lives in :issue:`65`.
 
 Earlier issues now closed as not-a-bug after re-investigation:
 
@@ -153,6 +167,16 @@ EULER_VERTICAL_GROUP = {
         reals=["mu", "omega", "chi", "phi", "ttheta"],
         mode="bisecting_4c",
     ),
+    "sixc": dict(
+        solver="ad_hoc",
+        geometry="sixc",
+        # backend canonical: alpha, omega, chi, phi, delta, gamma
+        # rename: delta -> ttheta (detector); alpha and gamma are the
+        # 5-/6-circle add-ons pinned at 0 by ``bisecting_4c`` and are
+        # left under their backend names.
+        reals=["alpha", "omega", "chi", "phi", "ttheta", "gamma"],
+        mode="bisecting_4c",
+    ),
     "diffcalc": dict(
         solver="diffcalc",
         geometry="diffcalc_4S_2D",
@@ -198,6 +222,31 @@ EULER_HORIZONTAL_GROUP = {
         geometry="E6C",
         reals=["omega", "eta", "chi", "phi", "ttheta", "delta"],
         mode="bissector_horizontal",
+    ),
+    "aps_polar": dict(
+        solver="hkl_soleil",
+        geometry="APS POLAR",
+        # backend canonical: tau, mu, chi, phi, gamma, delta
+        # mode writables (per hklpy2 docs): mu, chi, phi, gamma
+        # rename: mu -> omega (primary sample axis), gamma -> ttheta
+        # (in-plane detector); tau and delta are pinned at 0 by the
+        # mode and kept under their backend names.
+        reals=["tau", "omega", "chi", "phi", "ttheta", "delta"],
+        mode="4-circles bissecting horizontal",
+    ),
+    "p09_eh2": dict(
+        solver="hkl_soleil",
+        geometry="PETRA3 P09 EH2",
+        # backend canonical: mu, omega, chi, phi, delta, gamma
+        # mode writables (per hklpy2 docs): omega, chi, phi, delta
+        # rename: omega -> omega (identity primary), delta -> ttheta
+        # (in-plane detector); mu and gamma are pinned at 0 by the
+        # mode and kept under their backend names.  Note: although
+        # ``APS POLAR`` was derived from this geometry, the two
+        # disagree on which native axis is the bisecting primary
+        # (POLAR: ``mu``; P09 EH2: ``omega``).
+        reals=["mu", "omega", "chi", "phi", "ttheta", "gamma"],
+        mode="4-circles bissecting horizontal",
     ),
     "fourch": dict(
         solver="ad_hoc",
@@ -337,6 +386,7 @@ KNOWN_TTH_DISAGREEMENTS = {
     ("euler_vertical", "fourcv", "triclinic", (0, 0, 6)): "issue #68",
     ("euler_vertical", "psic", "triclinic", (0, 0, 6)): "issue #68",
     ("euler_vertical", "fivec", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "sixc", "triclinic", (0, 0, 6)): "issue #68",
     ("euler_vertical", "diffcalc", "triclinic", (0, 0, 6)): "issue #68",
     ("euler_horizontal", "fourch", "triclinic", (0, 0, 6)): "issue #68",
     ("euler_horizontal", "psic", "triclinic", (0, 0, 6)): "issue #68",

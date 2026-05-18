@@ -60,7 +60,6 @@ describe future plans.
     ~~~~~~~~~~~
 
     * Add focused key-package-version diagnostic step to ``cross-validation.yml``.  :issue:`83`
-    * Drop ``CI_ENV_DEPENDENT_GAPS`` xfails for K6C triclinic cross-validation cases.  :issue:`83`
     * Remove cross-references between solver implementations.  :issue:`60`
 
 0.3.1

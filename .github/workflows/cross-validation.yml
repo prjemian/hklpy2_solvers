@@ -58,12 +58,14 @@ jobs:
           environment-name: cross-validation
           # ``python=3.14`` pins the workflow to the same interpreter
           # series as the maintainer's local conda env (see
-          # :issue:`83`).  The K6C ``bissector_horizontal`` triclinic
-          # bootstrap fragility that was tracked in the same issue
-          # is now addressed in code by the retry loop in
-          # ``tests/test_cross_validation.py::_build_simulator``;
-          # the pin is retained as good hygiene (CI matches the
-          # maintainer's tested env on every key package).
+          # :issue:`83`).  Retained as good env hygiene; the K6C
+          # ``bissector_horizontal`` triclinic bootstrap fragility
+          # tracked in the same issue is mitigated in code by the
+          # retry loop in
+          # ``tests/test_cross_validation.py::_build_simulator``,
+          # but three cases still need ``CI_ENV_DEPENDENT_GAPS``
+          # xfails because no retry produces a UB the mode accepts
+          # in this env.
           create-args: >-
             python=3.14
             hklpy2

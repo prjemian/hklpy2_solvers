@@ -413,11 +413,27 @@ KNOWN_FORWARD_GAPS = {
 }
 
 # CI-environment-dependent forward gaps: cases that pass locally on
-# the maintainer's conda env but fail on a mismatched CI env.  Empty
-# after the bootstrap-retry hardening landed for :issue:`83`; kept
-# as a documented extension point if a future version-skew
-# regression surfaces.
-CI_ENV_DEPENDENT_GAPS: dict[tuple[str, str, str, tuple[int, int, int]], str] = {}
+# the maintainer's conda env but fail on the conda-forge env used by
+# the dedicated ``cross-validation.yml`` workflow.  Marked
+# ``xfail(strict=False)`` so the case xfails when it fails (CI) and
+# passes silently when it passes (local) - distinct from the
+# strict-xfails in ``KNOWN_FORWARD_GAPS`` because the failure mode
+# depends on the package-version stack, not on the suite's own
+# logic.
+#
+# The bootstrap-retry hardening in ``_build_simulator`` (see
+# :issue:`83` and :data:`BOOTSTRAP_RETRY_ATTEMPTS`) helps for cases
+# that fail at the float-determinism boundary, but does not resolve
+# these three: every retry attempt produces a UB that the K6C
+# ``bissector_horizontal`` mode rejects in the GitHub-Actions
+# environment.  The structural root cause is still unknown and
+# tracked in :issue:`83`.
+CI_ENV_DEPENDENT_GAPS = {
+    # https://github.com/prjemian/hklpy2_solvers/issues/83
+    ("kappa_horizontal", "k6c", "triclinic", (0, 0, 6)): "issue #83",
+    ("kappa_horizontal", "k6c", "triclinic", (1, 1, 0)): "issue #83",
+    ("kappa_horizontal", "kappa4ch", "triclinic", (1, 1, 0)): "issue #83",
+}
 
 # Per-axis angle comparisons across solvers are deferred: bisecting-mode
 # branch selection (libhkl picks ``omega ~ 180 - omega`` relative to
@@ -806,11 +822,10 @@ def _make_param(group_name, entry, sample, hkl, *, apply_tth_xfail=False):
       fail only under specific package-version stacks.  Non-strict so
       the case xfails when it fails and passes silently when it
       passes - the suite tolerates both behaviours until the
-      underlying version-sensitivity is resolved.  Currently empty
-      (the K6C-horizontal triclinic cases that used to live here
-      are addressed by the bootstrap-retry hardening in
-      :func:`_build_simulator`); retained as a documented
-      extension point.
+      underlying version-sensitivity is resolved.  The
+      bootstrap-retry hardening in :func:`_build_simulator` reduces
+      the false-positive surface area but does not resolve every
+      case (see :issue:`83`).
     * ``KNOWN_TTH_DISAGREEMENTS`` applies only when ``apply_tth_xfail``
       is True (cross-solver comparison only; round-trip still passes).
     """

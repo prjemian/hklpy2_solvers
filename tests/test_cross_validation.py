@@ -419,14 +419,15 @@ KNOWN_FORWARD_GAPS = {
 # passes silently when it passes (local) - distinct from the
 # strict-xfails in ``KNOWN_FORWARD_GAPS`` because the failure mode
 # depends on the package-version stack, not on the suite's own
-# logic.  Investigation tracked in the issue listed for each case.
+# logic.
 #
-# Note: a side-by-side env comparison (see :issue:`83` history) shows
-# CI and local now match on Python, hkl, hklpy2, and
-# ad-hoc-diffractometer; only ``numpy`` differs by a patch level
-# (CI 2.4.5 vs local 2.4.4).  The K6C ``bissector_horizontal``
-# triclinic bootstrap is suspected to be sensitive at that level
-# (BLAS / LAPACK build differences via numpy wheels).
+# The bootstrap-retry hardening in ``_build_simulator`` (see
+# :issue:`83` and :data:`BOOTSTRAP_RETRY_ATTEMPTS`) helps for cases
+# that fail at the float-determinism boundary, but does not resolve
+# these three: every retry attempt produces a UB that the K6C
+# ``bissector_horizontal`` mode rejects in the GitHub-Actions
+# environment.  The structural root cause is still unknown and
+# tracked in :issue:`83`.
 CI_ENV_DEPENDENT_GAPS = {
     # https://github.com/prjemian/hklpy2_solvers/issues/83
     ("kappa_horizontal", "k6c", "triclinic", (0, 0, 6)): "issue #83",
@@ -481,14 +482,36 @@ fixed seed so test runs are deterministic.
 BOOTSTRAP_RNG_SEED = 20260516
 """Fixed seed for the bootstrap-nudge RNG (test determinism)."""
 
+BOOTSTRAP_RETRY_ATTEMPTS = 8
+"""Maximum number of seed perturbations to try when the K6C-class
+``bissector_horizontal`` triclinic bootstrap produces a UB that
+``forward()`` cannot solve for the bootstrap reflections.
 
-def _nudges(seed_offset, count):
-    """Return ``count`` deterministic offsets in ``[-NUDGE, +NUDGE]`` degrees."""
-    rng = random.Random(BOOTSTRAP_RNG_SEED + seed_offset)
+The bootstrap recipe is empirically fragile at the float-determinism
+boundary on some platforms (see :issue:`83`).  Retrying with a
+perturbed nudge seed moves the bootstrap reflections off the
+fragile neighbourhood and typically yields a UB that the solver's
+own ``forward()`` accepts.  The retries are deterministic and
+solver-agnostic; the search terminates as soon as both bootstrap
+reflections forward successfully (or after this many attempts, in
+which case the un-refined rough UB is kept and any downstream
+``forward()`` failures fall through to existing xfail markers).
+"""
+
+
+def _nudges(seed_offset, count, *, extra_seed=0):
+    """Return ``count`` deterministic offsets in ``[-NUDGE, +NUDGE]`` degrees.
+
+    ``extra_seed`` is folded into the base seed (multiplied by a
+    large prime so retry seeds do not collide with neighbouring
+    ``seed_offset`` values) so callers can request a perturbed but
+    still-deterministic sequence; see :data:`BOOTSTRAP_RETRY_ATTEMPTS`.
+    """
+    rng = random.Random(BOOTSTRAP_RNG_SEED + seed_offset + extra_seed * 1009)
     return [rng.uniform(-BOOTSTRAP_NUDGE_DEG, BOOTSTRAP_NUDGE_DEG) for _ in range(count)]
 
 
-def _rough_vertical_positions(geometry, tth1, tth2):
+def _rough_vertical_positions(geometry, tth1, tth2, *, extra_seed=0):
     """Geometry-appropriate rough motor settings for vertical bootstrap.
 
     The vertical scattering plane contains the ``omega``/``ttheta``
@@ -497,12 +520,16 @@ def _rough_vertical_positions(geometry, tth1, tth2):
     exact bisecting solution by a deterministic random offset bounded
     by ``BOOTSTRAP_NUDGE_DEG`` so the two reflections used for
     ``calc_UB`` are linearly independent in the (chi, phi) plane.
+
+    ``extra_seed`` perturbs the nudge sequence so :func:`_build_simulator`
+    can retry with alternate offsets when ``forward()`` rejects the
+    rough UB (see :data:`BOOTSTRAP_RETRY_ATTEMPTS`).
     """
     p0 = {axis: 0.0 for axis in geometry.real_axis_names}
     p0.update(chi=10)
     p1 = dict(p0)
     p2 = dict(p0)
-    d1_tth, d1_om, d2_tth, d2_om, d2_chi, d2_phi = _nudges(seed_offset=0, count=6)
+    d1_tth, d1_om, d2_tth, d2_om, d2_chi, d2_phi = _nudges(seed_offset=0, count=6, extra_seed=extra_seed)
     p1.update(ttheta=tth1 + d1_tth, omega=tth1 / 2 + d1_om)
     p2.update(
         ttheta=tth2 + d2_tth,
@@ -513,7 +540,7 @@ def _rough_vertical_positions(geometry, tth1, tth2):
     return p1, p2
 
 
-def _rough_horizontal_positions(geometry, tth1, tth2):
+def _rough_horizontal_positions(geometry, tth1, tth2, *, extra_seed=0):
     """Geometry-appropriate rough motor settings for horizontal bootstrap.
 
     The horizontal scattering plane is rotated 90 deg about the beam
@@ -527,12 +554,13 @@ def _rough_horizontal_positions(geometry, tth1, tth2):
     offset bounded by ``BOOTSTRAP_NUDGE_DEG`` so the two reflections
     used for ``calc_UB`` are linearly independent.  All other (pinned
     or non-writable) axes are left at zero so the mode constraint is
-    satisfied at bootstrap.
+    satisfied at bootstrap.  ``extra_seed`` is forwarded to
+    :func:`_nudges` to support :func:`_build_simulator` retries.
     """
     p0 = {axis: 0.0 for axis in geometry.real_axis_names}
     p1 = dict(p0)
     p2 = dict(p0)
-    d1_tth, d1_om, d2_tth, d2_om, d2_chi, d2_phi = _nudges(seed_offset=1, count=6)
+    d1_tth, d1_om, d2_tth, d2_om, d2_chi, d2_phi = _nudges(seed_offset=1, count=6, extra_seed=extra_seed)
     p1.update(ttheta=tth1 + d1_tth, omega=tth1 / 2 + d1_om)
     p2.update(
         ttheta=tth2 + d2_tth,
@@ -543,7 +571,7 @@ def _rough_horizontal_positions(geometry, tth1, tth2):
     return p1, p2
 
 
-def _rough_kappa_vertical_positions(geometry, tth1, tth2):
+def _rough_kappa_vertical_positions(geometry, tth1, tth2, *, extra_seed=0):
     """Geometry-appropriate rough motor settings for vertical-kappa bootstrap.
 
     Kappa goniometers use ``(komega, kappa, kphi)`` instead of the
@@ -568,7 +596,7 @@ def _rough_kappa_vertical_positions(geometry, tth1, tth2):
     p0 = {axis: 0.0 for axis in geometry.real_axis_names}
     p1 = dict(p0)
     p2 = dict(p0)
-    d1_tth, d1_om, d2_tth, d2_om, d2_kphi = _nudges(seed_offset=2, count=5)
+    d1_tth, d1_om, d2_tth, d2_om, d2_kphi = _nudges(seed_offset=2, count=5, extra_seed=extra_seed)
     p1.update(ttheta=tth1 + d1_tth, komega=tth1 / 2 + d1_om)
     p2.update(
         ttheta=tth2 + d2_tth,
@@ -578,7 +606,7 @@ def _rough_kappa_vertical_positions(geometry, tth1, tth2):
     return p1, p2
 
 
-def _rough_kappa_horizontal_positions(geometry, tth1, tth2):
+def _rough_kappa_horizontal_positions(geometry, tth1, tth2, *, extra_seed=0):
     """Geometry-appropriate rough motor settings for horizontal-kappa bootstrap.
 
     The horizontal scattering plane is rotated 90 deg about the beam
@@ -610,7 +638,7 @@ def _rough_kappa_horizontal_positions(geometry, tth1, tth2):
     p0 = {axis: 0.0 for axis in geometry.real_axis_names}
     p1 = dict(p0)
     p2 = dict(p0)
-    d1_tth, d1_om, d2_tth, d2_om, d2_kphi = _nudges(seed_offset=3, count=5)
+    d1_tth, d1_om, d2_tth, d2_om, d2_kphi = _nudges(seed_offset=3, count=5, extra_seed=extra_seed)
     has_mu = "mu" in geometry.real_axis_names
     primary = "mu" if has_mu else "komega"
     p1.update(ttheta=tth1 + d1_tth)
@@ -647,6 +675,14 @@ def _build_simulator(group_name, entry_info, sample_dict):
 
     ``group_name`` selects the bootstrap recipe via
     ``BOOTSTRAP_BY_GROUP``.
+
+    The bootstrap is retried with perturbed nudge seeds when
+    ``forward()`` rejects the resulting rough UB for both bootstrap
+    reflections (see :data:`BOOTSTRAP_RETRY_ATTEMPTS` and :issue:`83`).
+    The retry loop is solver-agnostic and uses no solver-private
+    knowledge of UB basis conventions, so it is safe to apply
+    uniformly across ``hkl_soleil`` / ``ad_hoc`` / ``diffcalc``
+    backends.
     """
     kwargs = dict(entry_info)
     mode = kwargs.pop("mode")
@@ -675,28 +711,40 @@ def _build_simulator(group_name, entry_info, sample_dict):
     tth1 = _bragg_two_theta(sim, *HKL_BOOTSTRAP_1)
     tth2 = _bragg_two_theta(sim, *HKL_BOOTSTRAP_2)
     bootstrap = BOOTSTRAP_BY_GROUP[group_name]
-    p1, p2 = bootstrap(sim, tth1, tth2)
-    r1 = sim.add_reflection(HKL_BOOTSTRAP_1, p1, name="r1", replace=True)
-    r2 = sim.add_reflection(HKL_BOOTSTRAP_2, p2, name="r2", replace=True)
-    sim.core.calc_UB(r1, r2)
+
+    # Bootstrap with retry: the K6C ``bissector_horizontal`` triclinic
+    # path can yield a rough UB that ``forward()`` rejects on some
+    # platforms (:issue:`83`).  Try a sequence of deterministic
+    # nudge perturbations; accept the first attempt whose rough UB
+    # forwards both bootstrap reflections.  If no attempt succeeds,
+    # keep the last attempt's UB and let any downstream failures
+    # surface through existing xfail markers.
+    p1 = p2 = r1 = r2 = None
+    f1 = f2 = None
+    for attempt in range(BOOTSTRAP_RETRY_ATTEMPTS):
+        p1, p2 = bootstrap(sim, tth1, tth2, extra_seed=attempt)
+        r1 = sim.add_reflection(HKL_BOOTSTRAP_1, p1, name="r1", replace=True)
+        r2 = sim.add_reflection(HKL_BOOTSTRAP_2, p2, name="r2", replace=True)
+        sim.core.calc_UB(r1, r2)
+        try:
+            f1 = sim.forward(*HKL_BOOTSTRAP_1)
+        except NoForwardSolutions:
+            f1 = None
+        try:
+            f2 = sim.forward(*HKL_BOOTSTRAP_2)
+        except NoForwardSolutions:
+            f2 = None
+        if f1 is not None and f2 is not None:
+            break  # rough UB is viable; proceed to refine
 
     # Refine: replace each reflection with the angles ``forward()`` picks
     # at the rough UB, then recompute.  Skip the refine step when
     # ``forward()`` returns the same position as the rough estimate,
-    # since hklpy2 rejects duplicate reflections.  Catch
-    # ``NoForwardSolutions`` per-reflection: some peers (e.g.
-    # ``ad_hoc/kappa6c bisecting_horizontal`` per :issue:`77`) decline
-    # certain bootstrap reflections, in which case we keep the rough
-    # UB seeded from the un-refined positions and let the per-case
-    # forward-gap xfails handle the downstream test failures.
-    try:
-        f1 = sim.forward(*HKL_BOOTSTRAP_1)
-    except NoForwardSolutions:
-        f1 = None
-    try:
-        f2 = sim.forward(*HKL_BOOTSTRAP_2)
-    except NoForwardSolutions:
-        f2 = None
+    # since hklpy2 rejects duplicate reflections.  ``f1`` / ``f2``
+    # may still be ``None`` after the retry loop for solvers that
+    # genuinely cannot forward the bootstrap reflections at this
+    # geometry/mode (e.g. ``ad_hoc/kappa6c bisecting_horizontal``
+    # per :issue:`77`); those cases are tracked by ``KNOWN_FORWARD_GAPS``.
     refined = False
     if f1 is not None and not _same_position(p1, f1):
         r1 = sim.add_reflection(HKL_BOOTSTRAP_1, f1, name="r1", replace=True)
@@ -771,11 +819,13 @@ def _make_param(group_name, entry, sample, hkl, *, apply_tth_xfail=False):
       this peer for this reflection; tracked in its own issue), so
       both round-trip and cross-solver tests must strict-xfail.
     * ``CI_ENV_DEPENDENT_GAPS`` applies when the case is known to
-      fail only under specific package-version stacks (e.g.
-      conda-forge libhkl / numpy patch differences).  Non-strict so
+      fail only under specific package-version stacks.  Non-strict so
       the case xfails when it fails and passes silently when it
       passes - the suite tolerates both behaviours until the
-      underlying version-sensitivity is resolved.
+      underlying version-sensitivity is resolved.  The
+      bootstrap-retry hardening in :func:`_build_simulator` reduces
+      the false-positive surface area but does not resolve every
+      case (see :issue:`83`).
     * ``KNOWN_TTH_DISAGREEMENTS`` applies only when ``apply_tth_xfail``
       is True (cross-solver comparison only; round-trip still passes).
     """

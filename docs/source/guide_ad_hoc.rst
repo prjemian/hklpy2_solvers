@@ -112,7 +112,24 @@ Compute motor positions (forward)
 
    fourc.forward(1, 0, 0)
 
-This returns a list of motor-position solutions for the given ``(h, k, l)``.
+This returns a single chosen motor-position solution for the given
+``(h, k, l)`` (an ``Hklpy2DiffractometerRealPos``).  The underlying
+solver's ``forward()`` may return multiple solutions; the
+diffractometer picks one according to the policy assigned to
+``fourc._forward_solution`` (defaults to
+:func:`hklpy2.utils.pick_first_solution`).  The complete list of
+solutions can be returned from ``fourc.core.forward((1, 0, 0))``.
+See the upstream hklpy2 guide `How to Choose the Default forward()
+Solution
+<https://blueskyproject.io/hklpy2/guides/how_forward_solution.html>`_
+for details.
+
+.. tip::
+
+   The two call shapes differ: ``fourc.forward(1, 0, 0)`` takes
+   ``h``, ``k``, ``l`` as separate positional arguments, while
+   ``fourc.core.forward((1, 0, 0))`` takes a **single** sequence
+   (tuple / list / ndarray) or dict (e.g. ``{"h": 1, "k": 0, "l": 0}``).
 
 Compute (h, k, l) from motor positions (inverse)
 -------------------------------------------------

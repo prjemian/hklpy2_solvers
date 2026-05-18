@@ -403,7 +403,12 @@ KNOWN_TTH_DISAGREEMENTS = {
 # the cross-solver comparison tests so the gap is documented in code
 # and a future fix surfaces as ``XPASS``.
 KNOWN_FORWARD_GAPS = {
-    # https://github.com/prjemian/hklpy2_solvers/issues/71
+    # https://github.com/prjemian/hklpy2_solvers/issues/71 and upstream
+    # https://github.com/BCDA-APS/ad_hoc_diffractometer/issues/275 -
+    # ``psic bisecting_horizontal`` returns zero solutions for the
+    # asymmetric sapphire reflection ``(0, 1, 2)``; the broader
+    # asymmetric-reflection pattern is exercised by the dedicated
+    # test ``test_psic_bisecting_horizontal_asymmetric_pattern``.
     ("euler_horizontal", "psic", "sapphire", (0, 1, 2)): "issue #71",
     # https://github.com/prjemian/hklpy2_solvers/issues/77
     ("kappa_horizontal", "kappa6c", "cubic", (1, 1, 0)): "issue #77",
@@ -930,3 +935,98 @@ def test_two_theta_matches_reference(parms, context, simulators):
             f"ref={ref_tth:.6f}, peer={peer_tth:.6f}, "
             f"diff={abs(peer_tth - ref_tth):.6f} deg"
         )
+
+
+# ---------------------------------------------------------------------------
+# Issue #71 broader-pattern regression
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(hkl=(0, 0, 3)),
+            does_not_raise(),
+            id="symmetric-003-solves",
+        ),
+        pytest.param(
+            dict(hkl=(0, 0, 6)),
+            does_not_raise(),
+            id="symmetric-006-solves",
+        ),
+        pytest.param(
+            dict(hkl=(1, 1, 0)),
+            does_not_raise(),
+            id="symmetric-110-solves",
+        ),
+        pytest.param(
+            dict(hkl=(1, 1, 3)),
+            does_not_raise(),
+            id="symmetric-113-solves",
+        ),
+        pytest.param(
+            dict(hkl=(1, 1, 6)),
+            does_not_raise(),
+            id="symmetric-116-solves",
+        ),
+        pytest.param(
+            dict(hkl=(0, 1, 1)),
+            pytest.raises(NoForwardSolutions),
+            id="asymmetric-011-known-gap",
+        ),
+        pytest.param(
+            dict(hkl=(0, 1, 2)),
+            pytest.raises(NoForwardSolutions),
+            id="asymmetric-012-known-gap",
+        ),
+        pytest.param(
+            dict(hkl=(0, 2, 1)),
+            pytest.raises(NoForwardSolutions),
+            id="asymmetric-021-known-gap",
+        ),
+        pytest.param(
+            dict(hkl=(1, 0, 1)),
+            pytest.raises(NoForwardSolutions),
+            id="asymmetric-101-known-gap",
+        ),
+        pytest.param(
+            dict(hkl=(1, 0, 2)),
+            pytest.raises(NoForwardSolutions),
+            id="asymmetric-102-known-gap",
+        ),
+        pytest.param(
+            dict(hkl=(1, 0, 4)),
+            pytest.raises(NoForwardSolutions),
+            id="asymmetric-104-known-gap",
+        ),
+    ],
+)
+def test_psic_bisecting_horizontal_asymmetric_pattern(parms, context, simulators):
+    """Document the ``ad_hoc/psic bisecting_horizontal`` asymmetric-reflection gap.
+
+    Regression for :issue:`71` (and upstream
+    ``BCDA-APS/ad_hoc_diffractometer#275``): the
+    ``bisecting_horizontal`` mode on ``ad_hoc/psic`` cannot solve
+    sapphire reflections whose Miller indices have ``h`` or ``k``
+    nonzero with ``h != k``, while the three peers in
+    ``EULER_HORIZONTAL_GROUP`` (``hkl_soleil/E6C``,
+    ``ad_hoc/fourch``, ``diffcalc/diffcalc_4S_2D``) solve every
+    reflection in this scan to within ``0.001 deg``.
+
+    The ``context`` parameter encodes the expected behaviour:
+    symmetric reflections (``(0, 0, l)`` and ``(h, h, l)``) must
+    forward successfully (``does_not_raise()``); asymmetric ones
+    (``h`` or ``k`` nonzero, ``h != k``) must raise
+    :class:`hklpy2.exceptions.NoForwardSolutions`.
+
+    When the upstream fix lands, the asymmetric cases will return
+    solutions instead of raising and this test will surface those
+    as ``DID NOT RAISE`` failures — the intended signal to remove
+    the asymmetric cases (and the ``(0, 1, 2)`` entry from
+    ``KNOWN_FORWARD_GAPS``) and promote them to the cross-validation
+    matrix proper.
+    """
+    with context:
+        sim = simulators[("euler_horizontal", "psic", "sapphire")]
+        sim.forward(*parms["hkl"])

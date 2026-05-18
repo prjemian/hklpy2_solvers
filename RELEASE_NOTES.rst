@@ -43,6 +43,7 @@ describe future plans.
     ~~~~~~~~~~~~
 
     * Add guide-regression smoke test to catch API drift in how-to guides.  :issue:`88`
+    * Add regression test documenting ``ad_hoc/psic bisecting_horizontal`` asymmetric-reflection gap.  :issue:`71`
 
     Fixes
     ~~~~~

@@ -121,8 +121,12 @@ DEFAULT_REFLECTIONS = [HKL_BOOTSTRAP_1, HKL_BOOTSTRAP_2]
 """Reflections probed for every (group, sample) combination by default."""
 
 # Sample-specific extra reflections appended to ``DEFAULT_REFLECTIONS``.
+# ``(1, 1, 3)`` works on every group/entry cell for sapphire; ``(1, 1, 6)``
+# works on every cell except ``kappa_horizontal/kappa6c`` (see :issue:`77`).
+# Both expand the matrix's diagnostic coverage of the kappa6c failure
+# pattern without polluting other groups.
 EXTRA_REFLECTIONS_BY_SAMPLE = {
-    "sapphire": [(0, 1, 2)],
+    "sapphire": [(0, 1, 2), (1, 1, 3), (1, 1, 6)],
 }
 
 TTH_ATOL_DEG = 0.01
@@ -410,10 +414,22 @@ KNOWN_FORWARD_GAPS = {
     # asymmetric-reflection pattern is exercised by the dedicated
     # test ``test_psic_bisecting_horizontal_asymmetric_pattern``.
     ("euler_horizontal", "psic", "sapphire", (0, 1, 2)): "issue #71",
-    # https://github.com/prjemian/hklpy2_solvers/issues/77
+    # https://github.com/prjemian/hklpy2_solvers/issues/77 and upstream
+    # https://github.com/BCDA-APS/ad_hoc_diffractometer/issues/276 -
+    # ``kappa6c bisecting_horizontal`` declines many reflections that
+    # its two kappa-horizontal peers (``hkl_soleil/K6C`` and
+    # ``ad_hoc/kappa4ch``) solve; the broader sample-dependent
+    # failure pattern is exercised by the dedicated test
+    # ``test_kappa6c_bisecting_horizontal_reflection_pattern``.  When
+    # the upstream fix lands, these strict-xfails XPASS-fail on both
+    # ``test_forward_inverse_roundtrip`` and
+    # ``test_two_theta_matches_reference`` (8 hard failures total
+    # for the 4 cases here, plus ``DID NOT RAISE`` failures from the
+    # dedicated test).
     ("kappa_horizontal", "kappa6c", "cubic", (1, 1, 0)): "issue #77",
     ("kappa_horizontal", "kappa6c", "sapphire", (0, 0, 6)): "issue #77",
     ("kappa_horizontal", "kappa6c", "sapphire", (1, 1, 0)): "issue #77",
+    ("kappa_horizontal", "kappa6c", "sapphire", (1, 1, 6)): "issue #77",
     ("kappa_horizontal", "kappa6c", "triclinic", (1, 1, 0)): "issue #77",
 }
 
@@ -1029,4 +1045,146 @@ def test_psic_bisecting_horizontal_asymmetric_pattern(parms, context, simulators
     """
     with context:
         sim = simulators[("euler_horizontal", "psic", "sapphire")]
+        sim.forward(*parms["hkl"])
+
+
+# ---------------------------------------------------------------------------
+# Issue #77 broader-pattern regression
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        # cubic: pattern - (0,0,l) for l>=3 and (h,h,l) for h>=1 with
+        # l>=3 work; single-index and (h,h,0) / (h,h,1) fail.
+        pytest.param(
+            dict(sample="cubic", hkl=(0, 0, 3)),
+            does_not_raise(),
+            id="cubic-003-solves",
+        ),
+        pytest.param(
+            dict(sample="cubic", hkl=(0, 0, 6)),
+            does_not_raise(),
+            id="cubic-006-solves",
+        ),
+        pytest.param(
+            dict(sample="cubic", hkl=(1, 1, 3)),
+            does_not_raise(),
+            id="cubic-113-solves",
+        ),
+        pytest.param(
+            dict(sample="cubic", hkl=(1, 1, 6)),
+            does_not_raise(),
+            id="cubic-116-solves",
+        ),
+        pytest.param(
+            dict(sample="cubic", hkl=(0, 0, 1)),
+            pytest.raises(NoForwardSolutions),
+            id="cubic-001-known-gap",
+        ),
+        pytest.param(
+            dict(sample="cubic", hkl=(1, 0, 0)),
+            pytest.raises(NoForwardSolutions),
+            id="cubic-100-known-gap",
+        ),
+        pytest.param(
+            dict(sample="cubic", hkl=(1, 1, 0)),
+            pytest.raises(NoForwardSolutions),
+            id="cubic-110-known-gap",
+        ),
+        pytest.param(
+            dict(sample="cubic", hkl=(0, 1, 1)),
+            pytest.raises(NoForwardSolutions),
+            id="cubic-011-known-gap",
+        ),
+        # sapphire: largest failure set; fewer reflections solve at all.
+        pytest.param(
+            dict(sample="sapphire", hkl=(0, 1, 2)),
+            does_not_raise(),
+            id="sapphire-012-solves",
+        ),
+        pytest.param(
+            dict(sample="sapphire", hkl=(1, 1, 3)),
+            does_not_raise(),
+            id="sapphire-113-solves",
+        ),
+        pytest.param(
+            dict(sample="sapphire", hkl=(0, 0, 6)),
+            pytest.raises(NoForwardSolutions),
+            id="sapphire-006-known-gap",
+        ),
+        pytest.param(
+            dict(sample="sapphire", hkl=(1, 1, 0)),
+            pytest.raises(NoForwardSolutions),
+            id="sapphire-110-known-gap",
+        ),
+        pytest.param(
+            dict(sample="sapphire", hkl=(1, 1, 6)),
+            pytest.raises(NoForwardSolutions),
+            id="sapphire-116-known-gap",
+        ),
+        # triclinic: smallest failure set within the curated probes;
+        # (1,1,0) is the universal failure across all three samples.
+        pytest.param(
+            dict(sample="triclinic", hkl=(0, 0, 3)),
+            does_not_raise(),
+            id="triclinic-003-solves",
+        ),
+        pytest.param(
+            dict(sample="triclinic", hkl=(0, 0, 6)),
+            does_not_raise(),
+            id="triclinic-006-solves",
+        ),
+        pytest.param(
+            dict(sample="triclinic", hkl=(0, 1, 2)),
+            does_not_raise(),
+            id="triclinic-012-solves",
+        ),
+        pytest.param(
+            dict(sample="triclinic", hkl=(1, 0, 1)),
+            does_not_raise(),
+            id="triclinic-101-solves",
+        ),
+        pytest.param(
+            dict(sample="triclinic", hkl=(1, 1, 0)),
+            pytest.raises(NoForwardSolutions),
+            id="triclinic-110-known-gap",
+        ),
+    ],
+)
+def test_kappa6c_bisecting_horizontal_reflection_pattern(parms, context, simulators):
+    """Document the ``ad_hoc/kappa6c bisecting_horizontal`` reflection gap.
+
+    Regression for :issue:`77` (and upstream
+    ``BCDA-APS/ad_hoc_diffractometer#276``): the
+    ``bisecting_horizontal`` mode on ``ad_hoc/kappa6c`` declines
+    many reflections that its two kappa-horizontal peers
+    (``hkl_soleil/K6C bissector_horizontal`` and
+    ``ad_hoc/kappa4ch bisecting``) solve cleanly.
+
+    The failure pattern is sample-dependent (sapphire has the
+    largest failure set; triclinic the smallest within the curated
+    probes).  The universal failure across all three samples is
+    ``(1, 1, 0)``.  The mode constraints
+    (``BisectConstraint('mu', 'nu')``,
+    ``SampleConstraint('komega', 0.0)``,
+    ``DetectorConstraint('delta', 0.0)``) leave only
+    ``kappa``, ``kphi``, and ``nu`` writable — structurally
+    parallel to the ``psic bisecting_horizontal`` constraints
+    documented in :issue:`71`.
+
+    The ``context`` parameter encodes the expected behaviour:
+    ``does_not_raise()`` for reflections that the mode currently
+    solves, ``pytest.raises(NoForwardSolutions)`` for reflections
+    that currently fail.  When the upstream fix lands, the
+    ``known_gap`` cases will return solutions instead of raising
+    and this test will surface those as ``DID NOT RAISE`` failures
+    — the intended signal (combined with strict-XPASS failures
+    from the ``KNOWN_FORWARD_GAPS`` entries) to remove the marks
+    and promote the reflections to the cross-validation matrix
+    proper.
+    """
+    with context:
+        sim = simulators[("kappa_horizontal", "kappa6c", parms["sample"])]
         sim.forward(*parms["hkl"])

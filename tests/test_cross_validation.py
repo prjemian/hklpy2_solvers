@@ -420,6 +420,13 @@ KNOWN_FORWARD_GAPS = {
 # strict-xfails in ``KNOWN_FORWARD_GAPS`` because the failure mode
 # depends on the package-version stack, not on the suite's own
 # logic.  Investigation tracked in the issue listed for each case.
+#
+# Note: a side-by-side env comparison (see :issue:`83` history) shows
+# CI and local now match on Python, hkl, hklpy2, and
+# ad-hoc-diffractometer; only ``numpy`` differs by a patch level
+# (CI 2.4.5 vs local 2.4.4).  The K6C ``bissector_horizontal``
+# triclinic bootstrap is suspected to be sensitive at that level
+# (BLAS / LAPACK build differences via numpy wheels).
 CI_ENV_DEPENDENT_GAPS = {
     # https://github.com/prjemian/hklpy2_solvers/issues/83
     ("kappa_horizontal", "k6c", "triclinic", (0, 0, 6)): "issue #83",
@@ -765,10 +772,10 @@ def _make_param(group_name, entry, sample, hkl, *, apply_tth_xfail=False):
       both round-trip and cross-solver tests must strict-xfail.
     * ``CI_ENV_DEPENDENT_GAPS`` applies when the case is known to
       fail only under specific package-version stacks (e.g.
-      conda-forge libhkl).  Non-strict so the case xfails when it
-      fails and passes silently when it passes - the suite tolerates
-      both behaviours until the underlying version-sensitivity is
-      resolved.
+      conda-forge libhkl / numpy patch differences).  Non-strict so
+      the case xfails when it fails and passes silently when it
+      passes - the suite tolerates both behaviours until the
+      underlying version-sensitivity is resolved.
     * ``KNOWN_TTH_DISAGREEMENTS`` applies only when ``apply_tth_xfail``
       is True (cross-solver comparison only; round-trip still passes).
     """

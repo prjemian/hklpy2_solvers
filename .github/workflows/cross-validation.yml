@@ -56,8 +56,17 @@ jobs:
         uses: mamba-org/setup-micromamba@v3
         with:
           environment-name: cross-validation
+          # ``python=3.14`` pins the workflow to the same interpreter
+          # series as the maintainer's local conda env (see
+          # :issue:`83`).  Bringing CI to the same Python series
+          # eliminates one variable from the K6C ``bissector_horizontal``
+          # triclinic xfail diagnosis: with this pin CI and local
+          # match on Python, ``hkl``, ``hklpy2``, and
+          # ``ad-hoc-diffractometer``; only ``numpy`` still differs
+          # by a patch level (CI 2.4.5 vs local 2.4.4).  The xfails
+          # in ``CI_ENV_DEPENDENT_GAPS`` remain in place.
           create-args: >-
-            python=3.12
+            python=3.14
             hklpy2
             ad-hoc-diffractometer
             numpy
@@ -83,6 +92,15 @@ jobs:
         run: |
           micromamba list -n cross-validation || true
           pip list
+
+      - name: Key package versions (issue #83 diagnostic)
+        # Focused summary of the packages that drive cross-validation
+        # behaviour; full lists above are kept for forensics.
+        run: |
+          python --version
+          micromamba list -n cross-validation 2>/dev/null \
+            | awk '$1 ~ /^(hkl|hklpy2|ad-hoc-diffractometer|numpy|diffcalc-core|gobject-introspection)$/ \
+                   {printf "  %-30s %s\n", $1, $2}'
 
       - name: Confirm libhkl loads via gobject-introspection
         run: |

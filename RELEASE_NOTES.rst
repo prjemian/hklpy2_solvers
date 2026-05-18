@@ -42,6 +42,7 @@ describe future plans.
     Fixes
     ~~~~~
 
+    * Correct ``ad_hoc`` and ``diffcalc`` guides to use current hklpy2 API.  :issue:`86`
     * Correct horizontal eulerian cross-validation reference to ``E4CH``.  :issue:`78`
     * Honour ``r1`` / ``r2`` arguments in ``AdHocSolver.calculate_UB``.  :issue:`56`
     * Honour ``r1`` / ``r2`` arguments in ``DiffcalcSolver.calculate_UB``.  :issue:`58`

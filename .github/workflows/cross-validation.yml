@@ -58,12 +58,13 @@ jobs:
           environment-name: cross-validation
           # ``python=3.14`` pins the workflow to the same interpreter
           # series as the maintainer's local conda env (see
-          # :issue:`83`).  The three ``kappa_horizontal`` triclinic
-          # cases that previously failed only on CI track down to
-          # a Python-version sensitivity in the K6C bootstrap
-          # recipe: identical ``hkl``, ``hklpy2``, and
-          # ``ad-hoc-diffractometer`` versions; only Python differs
-          # (3.12 on CI vs 3.14 local).
+          # :issue:`83`).  Bringing CI to the same Python series
+          # eliminates one variable from the K6C ``bissector_horizontal``
+          # triclinic xfail diagnosis: with this pin CI and local
+          # match on Python, ``hkl``, ``hklpy2``, and
+          # ``ad-hoc-diffractometer``; only ``numpy`` still differs
+          # by a patch level (CI 2.4.5 vs local 2.4.4).  The xfails
+          # in ``CI_ENV_DEPENDENT_GAPS`` remain in place.
           create-args: >-
             python=3.14
             hklpy2

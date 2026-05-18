@@ -53,12 +53,12 @@ describe future plans.
     * Correct horizontal eulerian cross-validation reference to ``E4CH``.  :issue:`78`
     * Honour ``r1`` / ``r2`` arguments in ``AdHocSolver.calculate_UB``.  :issue:`56`
     * Honour ``r1`` / ``r2`` arguments in ``DiffcalcSolver.calculate_UB``.  :issue:`58`
-    * Pin ``python=3.14`` in ``cross-validation.yml`` to remove K6C triclinic version skew.  :issue:`83`
+    * Pin ``python=3.14`` in ``cross-validation.yml`` to narrow K6C triclinic env skew.  :issue:`83`
 
     Maintenance
     ~~~~~~~~~~~
 
-    * Drop ``CI_ENV_DEPENDENT_GAPS`` xfails for K6C triclinic cross-validation cases.  :issue:`83`
+    * Add focused key-package-version diagnostic step to ``cross-validation.yml``.  :issue:`83`
     * Remove cross-references between solver implementations.  :issue:`60`
 
 0.3.1

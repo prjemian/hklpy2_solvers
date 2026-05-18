@@ -1760,3 +1760,106 @@ def test_ub_setter_default_lattice(parms, context):
     with context:
         solver.UB = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
         assert solver._geom.sample.lattice is not None
+
+
+# ---------------------------------------------------------------------------
+# Regression tests for issue #81: scalar default extras from hklpy2 Core
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="fixed_psi",
+                values={"n_hat": 0},
+                expected_normal=None,
+            ),
+            does_not_raise(),
+            id="scalar 0 n_hat is normalised to None",
+        ),
+        pytest.param(
+            dict(
+                geometry="psic",
+                mode="fixed_alpha_i_vertical",
+                values={"n_hat": 0, "alpha_i": 0, "beta_out": 0},
+                expected_normal=None,
+            ),
+            does_not_raise(),
+            id="full scalar-default extras dict (Core push) accepted",
+        ),
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="fixed_psi",
+                values={"n_hat": (1, 0, 0)},
+                expected_normal=(1.0, 0.0, 0.0),
+            ),
+            does_not_raise(),
+            id="3-iterable n_hat still works after fix",
+        ),
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="fixed_psi",
+                values={"n_hat": None},
+                expected_normal=None,
+            ),
+            does_not_raise(),
+            id="None n_hat still clears surface_normal after fix",
+        ),
+    ],
+)
+def test_extras_n_hat_scalar_default(parms, context):
+    """``extras`` setter tolerates scalar ``n_hat`` from ``hklpy2.Core``.
+
+    Regression for :issue:`81`: ``hklpy2.ops.Core.update_solver()``
+    initialises every vector extra to scalar ``0`` (the module-level
+    ``DEFAULT_EXTRA_VALUE``).  The previous implementation iterated
+    ``n_hat`` unconditionally and raised ``TypeError`` for any
+    non-iterable input, breaking ``hklpy2.creator(solver='ad_hoc',
+    geometry='zaxis')``.  The fix normalises any non-iterable
+    ``n_hat`` value to ``None`` (treated as "no surface normal set").
+    """
+    with context:
+        solver = AdHocSolver(parms["geometry"])
+        solver.mode = parms["mode"]
+        solver.extras = parms["values"]
+        assert solver._geom.surface_normal == parms["expected_normal"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(geometry="zaxis"),
+            does_not_raise(),
+            id="hklpy2.creator builds ad_hoc/zaxis (default mode exposes n_hat)",
+        ),
+        pytest.param(
+            dict(geometry="s2d2"),
+            does_not_raise(),
+            id="hklpy2.creator builds ad_hoc/s2d2",
+        ),
+        pytest.param(
+            dict(geometry="fourcv"),
+            does_not_raise(),
+            id="hklpy2.creator builds ad_hoc/fourcv (no n_hat in default mode)",
+        ),
+    ],
+)
+def test_creator_end_to_end(parms, context):
+    """End-to-end smoke: ``hklpy2.creator`` instantiation for ad_hoc.
+
+    Regression for :issue:`81` (the ``zaxis`` case) and a guard that
+    the fix does not regress geometries whose default mode does not
+    expose ``n_hat``.
+    """
+    import hklpy2
+
+    with context:
+        sim = hklpy2.creator(solver="ad_hoc", geometry=parms["geometry"])
+        assert sim.core.solver.name == "ad_hoc"
+        assert sim.core.solver.geometry == parms["geometry"]

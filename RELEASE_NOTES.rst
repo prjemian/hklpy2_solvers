@@ -39,6 +39,11 @@ describe future plans.
     * Add vertical four-circle cross-validation suite against ``hkl_soleil``.  :issue:`50`
     * Add vertical kappa four-circle cross-validation group against ``hkl_soleil``.  :issue:`66`
 
+    Enhancements
+    ~~~~~~~~~~~~
+
+    * Add guide-regression smoke test to catch API drift in how-to guides.  :issue:`88`
+
     Fixes
     ~~~~~
 

@@ -80,8 +80,14 @@ jobs:
 
       - name: Install pip-only dependencies
         # diffcalc-core is not packaged on conda-forge; install it
-        # from PyPI into the conda env.
-        run: pip install diffcalc-core
+        # from PyPI into the conda env.  ``ad_hoc_diffractometer`` is
+        # bumped to the PyPI release because the conda-forge feedstock
+        # tracks releases asynchronously (see :issue:`99`); remove the
+        # explicit pin once the feedstock catches up to the
+        # ``pyproject.toml`` floor.
+        run: |
+          pip install diffcalc-core
+          pip install --upgrade "ad_hoc_diffractometer>=0.11.0"
 
       - name: Install hklpy2_solvers (editable, no deps)
         # Use --no-deps because all runtime deps are already provided

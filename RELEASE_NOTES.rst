@@ -66,6 +66,7 @@ describe future plans.
 
     * Add focused key-package-version diagnostic step to ``cross-validation.yml``.  :issue:`83`
     * Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.0``.  :issue:`99`
+    * Pip-upgrade ``ad_hoc_diffractometer`` in ``cross-validation.yml`` ahead of conda-forge.  :issue:`99`
     * Remove cross-references between solver implementations.  :issue:`60`
 
 0.3.1

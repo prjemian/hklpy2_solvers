@@ -57,12 +57,15 @@ describe future plans.
     * Honour ``r1`` / ``r2`` arguments in ``AdHocSolver.calculate_UB``.  :issue:`56`
     * Harden cross-validation bootstrap with deterministic retry on rough-UB ``forward()`` rejection.  :issue:`83`
     * Honour ``r1`` / ``r2`` arguments in ``DiffcalcSolver.calculate_UB``.  :issue:`58`
+    * Lift ``ad_hoc`` ``psic`` / ``kappa6c`` ``bisecting_horizontal`` known-gap markers.  :issue:`99`
     * Pin ``python=3.14`` in ``cross-validation.yml`` to narrow K6C triclinic env skew.  :issue:`83`
+    * Track ``ad_hoc`` kappa-vertical sapphire ``(0, 1, 2)`` regression as new known-gap.  :issue:`99`
 
     Maintenance
     ~~~~~~~~~~~
 
     * Add focused key-package-version diagnostic step to ``cross-validation.yml``.  :issue:`83`
+    * Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.0``.  :issue:`99`
     * Remove cross-references between solver implementations.  :issue:`60`
 
 0.3.1

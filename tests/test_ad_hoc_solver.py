@@ -897,8 +897,8 @@ def test_set_get_extras(parms, context):
             dict(
                 geometry="fourcv",
                 mode="double_diffraction",
-                extras={"h2": 0.0, "k2": 1.0, "l2": 0.0},
-                pseudos={"h": 1.0, "k": 0.0, "l": 0.0},
+                extras={"h2": 0.0, "k2": 1.0, "l2": 1.0},
+                pseudos={"h": 1.0, "k": 1.0, "l": 1.0},
             ),
             does_not_raise(),
             id="fourcv double_diffraction forward with h2/k2/l2",
@@ -907,8 +907,8 @@ def test_set_get_extras(parms, context):
             dict(
                 geometry="psic",
                 mode="double_diffraction_vertical",
-                extras={"h2": 0.0, "k2": 1.0, "l2": 0.0},
-                pseudos={"h": 1.0, "k": 0.0, "l": 0.0},
+                extras={"h2": 0.0, "k2": 1.0, "l2": 1.0},
+                pseudos={"h": 1.0, "k": 1.0, "l": 1.0},
             ),
             does_not_raise(),
             id="psic double_diffraction_vertical forward with h2/k2/l2",
@@ -919,12 +919,18 @@ def test_forward_with_extras(parms, context):
     """Forward calculation honours extras for implemented modes.
 
     .. note::
-        ``ad_hoc_diffractometer`` 0.8.0 marks the surface (``alpha_i``,
+        ``ad_hoc_diffractometer`` 0.11.0 marks the surface (``alpha_i``,
         ``beta_out``, ``alpha_eq_beta``) and ``fixed_psi_*`` modes as
         not yet implemented.  This test exercises the ``double_diffraction``
         family because it is implemented and uses extras (``h2``, ``k2``,
         ``l2``).  When upstream implements the surface modes, additional
         cases should be added here.
+
+        The ``hkl = (1, 1, 1)`` primary with ``(h2, k2, l2) = (0, 1, 1)``
+        secondary is chosen because it lies inside the Ewald sphere for
+        the Si lattice at ``WAVELENGTH = 1.0`` Å and yields multiple
+        valid forward solutions under the BL1967-aligned solver
+        (``ad_hoc_diffractometer >= 0.11.0``).
     """
     with context:
         solver = _make_solver_with_ub(parms["geometry"])

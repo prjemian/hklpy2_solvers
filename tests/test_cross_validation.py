@@ -449,6 +449,13 @@ CI_ENV_DEPENDENT_GAPS = {
     ("kappa_horizontal", "k6c", "triclinic", (0, 0, 6)): "issue #83",
     ("kappa_horizontal", "k6c", "triclinic", (1, 1, 0)): "issue #83",
     ("kappa_horizontal", "kappa4ch", "triclinic", (1, 1, 0)): "issue #83",
+    # https://github.com/prjemian/hklpy2_solvers/issues/99 — ``kappa6c
+    # bisecting_horizontal`` triclinic (1, 1, 0) now solves locally
+    # under ``ad_hoc_diffractometer >= 0.11.0`` but the conda-forge CI
+    # env hits the same K6C bootstrap fragility as the existing
+    # :issue:`83` entries; non-strict so the case xfails on CI and
+    # passes silently on local runs.
+    ("kappa_horizontal", "kappa6c", "triclinic", (1, 1, 0)): "issue #99",
 }
 
 # Per-axis angle comparisons across solvers are deferred: bisecting-mode

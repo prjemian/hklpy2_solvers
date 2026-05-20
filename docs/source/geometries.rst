@@ -741,7 +741,7 @@ H. You, *J. Appl. Cryst.* **32**, 614 (1999) six-circle geometry.
    * - Pseudo axes
      - ``h``, ``k``, ``l``
    * - Default mode
-     - ``4S+2D bisect_eta_fixed nu_fixed``
+     - ``bisect fixed_mu fixed_nu``
 
 Operating modes
 ^^^^^^^^^^^^^^^
@@ -760,95 +760,95 @@ remaining axes are held constant (``axes_c``, derived by hklpy2).
      - Fixed constraints
      - writable(s)
      - extra(s)
-   * - ``4S+2D mu_fixed a_eq_b delta_fixed``
+   * - ``a_eq_b fixed_delta fixed_mu``
      - delta=0, a_eq_b, mu=0
      - nu, eta, chi, phi
      -
-   * - ``4S+2D mu_fixed a_eq_b nu_fixed``
+   * - ``a_eq_b fixed_nu fixed_mu``
      - nu=0, a_eq_b, mu=0
      - delta, eta, chi, phi
      -
-   * - ``4S+2D eta_fixed a_eq_b delta_fixed``
+   * - ``a_eq_b fixed_delta fixed_eta``
      - delta=0, a_eq_b, eta=0
      - mu, nu, chi, phi
      -
-   * - ``4S+2D phi_fixed psi_fixed nu_fixed``
+   * - ``fixed_nu fixed_psi fixed_phi``
      - nu=0, psi=0, phi=0
      - mu, delta, eta, chi
      -
-   * - ``4S+2D chi_phi_fixed delta_fixed``
+   * - ``fixed_delta fixed_chi fixed_phi``
      - delta=0, chi=0, phi=0
      - mu, nu, eta
      -
-   * - ``4S+2D mu_eta_fixed delta_fixed``
+   * - ``fixed_delta fixed_mu fixed_eta``
      - delta=0, mu=0, eta=0
      - nu, chi, phi
      -
-   * - ``4S+2D mu_phi_fixed delta_fixed``
+   * - ``fixed_delta fixed_mu fixed_phi``
      - delta=0, mu=0, phi=0
      - nu, eta, chi
      -
-   * - ``4S+2D mu_chi_fixed nu_fixed``
+   * - ``fixed_nu fixed_mu fixed_chi``
      - nu=0, mu=0, chi=0
      - delta, eta, phi
      -
-   * - ``4S+2D eta_phi_fixed nu_fixed``
+   * - ``fixed_nu fixed_eta fixed_phi``
      - nu=0, eta=0, phi=0
      - mu, delta, chi
      -
-   * - ``4S+2D eta_chi_fixed nu_fixed``
+   * - ``fixed_nu fixed_eta fixed_chi``
      - nu=0, eta=0, chi=0
      - mu, delta, phi
      -
-   * - ``4S+2D bisect_mu_fixed delta_fixed``
-     - delta=0, bisect, mu=0
-     - nu, eta, chi, phi
+   * - ``bisect fixed_mu fixed_nu``
+     - bisect, mu=0, nu=0
+     - delta, eta, chi, phi
      -
-   * - ``4S+2D bisect_eta_fixed nu_fixed``
-     - nu=0, bisect, eta=0
-     - mu, delta, chi, phi
+   * - ``bisect fixed_eta fixed_delta``
+     - bisect, eta=0, delta=0
+     - mu, nu, chi, phi
      -
-   * - ``4S+2D bisect_omega_fixed nu_fixed``
-     - nu=0, bisect, omega=0
+   * - ``bisect fixed_omega fixed_nu``
+     - bisect, omega=0, nu=0
      - mu, delta, eta, chi, phi
      -
-   * - ``4S+2D chi_phi_fixed a_eq_b``
+   * - ``a_eq_b fixed_chi fixed_phi``
      - a_eq_b, chi=0, phi=0
      - mu, delta, nu, eta
      -
-   * - ``4S+2D chi_eta_fixed a_eq_b``
+   * - ``a_eq_b fixed_chi fixed_eta``
      - a_eq_b, chi=0, eta=0
      - mu, delta, nu, phi
      -
-   * - ``4S+2D chi_mu_fixed a_eq_b``
+   * - ``a_eq_b fixed_chi fixed_mu``
      - a_eq_b, chi=0, mu=0
      - delta, nu, eta, phi
      -
-   * - ``4S+2D mu_eta_fixed a_eq_b``
+   * - ``a_eq_b fixed_mu fixed_eta``
      - a_eq_b, mu=0, eta=0
      - delta, nu, chi, phi
      -
-   * - ``4S+2D mu_phi_fixed a_eq_b``
+   * - ``a_eq_b fixed_mu fixed_phi``
      - a_eq_b, mu=0, phi=0
      - delta, nu, eta, chi
      -
-   * - ``4S+2D eta_phi_fixed a_eq_b``
+   * - ``a_eq_b fixed_eta fixed_phi``
      - a_eq_b, eta=0, phi=0
      - mu, delta, nu, chi
      -
-   * - ``4S+2D eta_chi_phi_fixed``
+   * - ``fixed_eta fixed_chi fixed_phi``
      - eta=0, chi=0, phi=0
      - mu, delta, nu
      -
-   * - ``4S+2D mu_chi_phi_fixed``
+   * - ``fixed_mu fixed_chi fixed_phi``
      - mu=0, chi=0, phi=0
      - delta, nu, eta
      -
-   * - ``4S+2D mu_eta_phi_fixed``
+   * - ``fixed_mu fixed_eta fixed_phi``
      - mu=0, eta=0, phi=0
      - delta, nu, chi
      -
-   * - ``4S+2D mu_eta_chi_fixed``
+   * - ``fixed_mu fixed_eta fixed_chi``
      - mu=0, eta=0, chi=0
      - delta, nu, phi
      -
@@ -856,45 +856,77 @@ remaining axes are held constant (``axes_c``, derived by hklpy2).
 Default mode
 ^^^^^^^^^^^^
 
-The default mode is ``4S+2D bisect_eta_fixed nu_fixed`` (bisect,
-eta=0, nu=0).  This is equivalent to ``bisecting_vertical`` in E6C
-terminology: scattering stays in the vertical plane with the sample
-angle bisecting the detector angle (``eta = delta/2``).
+The default mode is ``bisect fixed_mu fixed_nu`` (canonical
+``bisecting_vertical``: ``bisect``, ``mu=0``, ``nu=0``).
+Equivalent to ``bisecting_vertical`` in E6C terminology: scattering
+stays in the vertical plane on the ``delta`` axis with the sample
+bisecting the scattering angle.
 
-.. note:: **Bisector modes**
+.. note:: **Bisecting modes**
 
    Following You (1999) Figure 1 (see also
    `diffcalc-core docs <https://diffcalc-core.readthedocs.io>`_),
-   ``nu`` rotates about the vertical axis and swings the detector
-   **horizontally**; ``delta`` rotates about the horizontal axis and swings
-   the detector **vertically**.
+   ``delta`` rotates about a horizontal axis and swings the detector
+   **vertically**; ``nu`` rotates about a vertical axis and swings the
+   detector **horizontally**.  ``mu`` is the horizontal-arm sample
+   axis (rotates about the vertical lab axis); ``eta`` rotates about a
+   horizontal axis.
 
-   The ``bisect`` constraint implements ``eta = delta/2`` (vertical
-   bisector).  ``4S+2D bisect_eta_fixed nu_fixed`` (bisect + eta=0 +
-   nu=0) is equivalent to a ``bisecting_vertical`` mode: scattering
-   stays in the vertical plane with the sample bisecting the detector
-   angle.  ``4S+2D bisect_mu_fixed delta_fixed`` (bisect + mu=0 +
-   delta=0) is the horizontal counterpart.
+   diffcalc's ``bisect`` constraint pairs with one sample axis at a
+   time (``mu``, ``eta``, or ``omega``) and pins the *other*
+   in-plane axes so that the active detector axis bisects with that
+   sample axis:
 
-   In the mode name the *bisected sample axis* is stated; the
-   corresponding *detector axis* is implied by the bisect constraint
-   (``delta``).
+   .. list-table::
+      :header-rows: 1
+      :widths: 30 20 25 25
+
+      * - Mode
+        - Family
+        - Pinned axes
+        - Active axes
+      * - ``bisect fixed_mu fixed_nu``
+        - bisecting vertical (≡ E6C ``bisecting_vertical``)
+        - ``mu=0``, ``nu=0``
+        - ``delta`` and ``eta`` acting as ttheta and ttheta/2,
+          respectively
+      * - ``bisect fixed_eta fixed_delta``
+        - bisecting horizontal (≡ E6C ``bisecting_horizontal``)
+        - ``eta=0``, ``delta=0``
+        - ``nu`` and ``mu`` acting as ttheta and ttheta/2,
+          respectively
+      * - ``bisect fixed_omega fixed_nu``
+        - bisecting vertical with ``omega``-tilt (general You case)
+        - ``omega=0``, ``nu=0``
+        - ``mu``, ``eta``, ``delta``
 
 Mode naming convention
 ^^^^^^^^^^^^^^^^^^^^^^
 
-All mode names follow the pattern ``4S+2D <constraints>``, where ``4S+2D``
-identifies the You (1999) geometry and the suffix encodes the three fixed
-constraints:
+Each mode name lists the three diffcalc constraints separated by
+spaces.  Token order is **keyword constraints first**
+(``a_eq_b``, ``bisect``, ``bin_eq_bout``), then ``fixed_<axis>``
+tokens.  For all-``fixed_*`` modes the conventional order is
+**detector → sample(s)**.
 
-- ``<axis>_fixed`` or ``<ax1>_<ax2>_fixed`` — motor axis (or axes) fixed at
-  zero.
+- ``fixed_<axis>`` — that axis or pseudo-angle is pinned at ``0``.
+  Applies to detector axes (``delta``, ``nu``), reference angles
+  (``psi``), and sample axes (``mu``, ``eta``, ``chi``, ``phi``,
+  ``omega``).
 - ``a_eq_b`` — reference-vector constraint: azimuthal reference equals
   scattering vector direction.  **Caution:** singular when the scattering
   vector is parallel to the reference vector; avoid as a default.
-- ``bisect`` — bisector condition: ``eta = delta/2``.  The bisected sample
-  axis (e.g. ``eta``) is named; the detector axis (``delta``) is implied.
-- ``psi_fixed``, ``omega_fixed`` — azimuthal or omega angle fixed at zero.
+- ``bin_eq_bout`` — reference constraint: incidence equals exit angle.
+- ``bisect`` — sample bisector condition (one of three diffcalc
+  variants, see "Bisector modes" above).
+
+For example, ``bisect fixed_mu fixed_nu`` encodes
+``{bisect: True, mu: 0, nu: 0}`` and ``a_eq_b fixed_delta fixed_mu``
+encodes ``{a_eq_b: True, delta: 0, mu: 0}``.  See the
+:ref:`guide_diffcalc` "Cross-reference to common conventions" section
+for a mapping between these names and the
+``bisecting_vertical`` / ``lifting_detector_<axis>`` / ``double_diffraction``
+vocabulary used by other solvers.
 
 Extensibility
 ^^^^^^^^^^^^^

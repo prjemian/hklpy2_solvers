@@ -38,6 +38,7 @@ describe future plans.
     * Add six-circle bisecting peers to cross-validation groups.  :issue:`64`
     * Add vertical four-circle cross-validation suite against ``hkl_soleil``.  :issue:`50`
     * Add vertical kappa four-circle cross-validation group against ``hkl_soleil``.  :issue:`66`
+    * Expand cross-validation sample set to all seven crystal systems.  :issue:`69`
 
     Enhancements
     ~~~~~~~~~~~~
@@ -59,7 +60,9 @@ describe future plans.
     * Honour ``r1`` / ``r2`` arguments in ``DiffcalcSolver.calculate_UB``.  :issue:`58`
     * Lift ``ad_hoc`` ``psic`` / ``kappa6c`` ``bisecting_horizontal`` known-gap markers.  :issue:`99`
     * Pin ``python=3.14`` in ``cross-validation.yml`` to narrow K6C triclinic env skew.  :issue:`83`
+    * Track ``ad_hoc`` horizontal-bisecting rhombohedral ``(1, 1, 0)`` gap as known-gap.  :issue:`69`
     * Track ``ad_hoc`` kappa-vertical sapphire ``(0, 1, 2)`` regression as new known-gap.  :issue:`99`
+    * Track libhkl rhombohedral ``(0, 0, 6)`` B-matrix disagreements as ``tth``-disagreement.  :issue:`68`
 
     Maintenance
     ~~~~~~~~~~~

@@ -100,8 +100,35 @@ pytestmark = pytest.mark.cross_validation
 # ---------------------------------------------------------------------------
 
 SAMPLES = {
+    # cubic — single-parameter, alpha = beta = gamma = 90 deg
     "cubic": dict(name="cubic", a=3.5),
+    # tetragonal — a = b, c distinct, alpha = beta = gamma = 90 deg
+    "tetragonal": dict(name="tetragonal", a=4.0, b=4.0, c=5.5, alpha=90, beta=90, gamma=90),
+    # orthorhombic — a, b, c distinct, alpha = beta = gamma = 90 deg
+    "orthorhombic": dict(name="orthorhombic", a=4.0, b=6.5, c=8.0, alpha=90, beta=90, gamma=90),
+    # hexagonal (sapphire setting) — a = b, gamma = 120 deg, alpha = beta = 90 deg
     "sapphire": dict(name="sapphire", a=4.758, c=12.991, gamma=120),
+    # trigonal (rhombohedral setting) — a = b = c, alpha = beta = gamma != 90 deg
+    "trigonal_rhombohedral": dict(
+        name="trigonal_rhombohedral",
+        a=7.0,
+        b=7.0,
+        c=7.0,
+        alpha=72,
+        beta=72,
+        gamma=72,
+    ),
+    # monoclinic — a, b, c distinct, alpha = gamma = 90 deg, beta != 90 deg
+    "monoclinic": dict(
+        name="monoclinic",
+        a=5.0,
+        b=7.0,
+        c=9.0,
+        alpha=90,
+        beta=110,
+        gamma=90,
+    ),
+    # triclinic — all parameters distinct, alpha != beta != gamma != 90 deg
     "triclinic": dict(
         name="triclinic",
         a=3.5,
@@ -386,7 +413,14 @@ GROUPS = {
 # hkl`` internally for these cases, so round-trip tests are not
 # xfailed.
 KNOWN_TTH_DISAGREEMENTS = {
-    # https://github.com/prjemian/hklpy2_solvers/issues/68
+    # https://github.com/prjemian/hklpy2_solvers/issues/68 - libhkl B-matrix
+    # bug for cells with direct alpha != 90 deg; ad_hoc + diffcalc-core
+    # agree exactly with each other and with the canonical BL1967 B,
+    # libhkl is the outlier.  Affects every cell whose direct alpha
+    # != 90 deg.  Currently the triclinic and trigonal-rhombohedral
+    # samples meet that criterion; cubic / tetragonal / orthorhombic /
+    # hexagonal-sapphire (gamma=120) / monoclinic (beta!=90, alpha=90)
+    # all have alpha = 90 deg and so escape the bug.
     ("euler_vertical", "fourcv", "triclinic", (0, 0, 6)): "issue #68",
     ("euler_vertical", "psic", "triclinic", (0, 0, 6)): "issue #68",
     ("euler_vertical", "fivec", "triclinic", (0, 0, 6)): "issue #68",
@@ -399,6 +433,18 @@ KNOWN_TTH_DISAGREEMENTS = {
     ("kappa_vertical", "kappa6c", "triclinic", (0, 0, 6)): "issue #68",
     ("kappa_horizontal", "kappa4ch", "triclinic", (0, 0, 6)): "issue #68",
     ("kappa_horizontal", "kappa6c", "triclinic", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "fourcv", "trigonal_rhombohedral", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "psic", "trigonal_rhombohedral", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "fivec", "trigonal_rhombohedral", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "sixc", "trigonal_rhombohedral", (0, 0, 6)): "issue #68",
+    ("euler_vertical", "diffcalc", "trigonal_rhombohedral", (0, 0, 6)): "issue #68",
+    ("euler_horizontal", "fourch", "trigonal_rhombohedral", (0, 0, 6)): "issue #68",
+    ("euler_horizontal", "psic", "trigonal_rhombohedral", (0, 0, 6)): "issue #68",
+    ("euler_horizontal", "diffcalc", "trigonal_rhombohedral", (0, 0, 6)): "issue #68",
+    ("kappa_vertical", "kappa4cv", "trigonal_rhombohedral", (0, 0, 6)): "issue #68",
+    ("kappa_vertical", "kappa6c", "trigonal_rhombohedral", (0, 0, 6)): "issue #68",
+    ("kappa_horizontal", "kappa4ch", "trigonal_rhombohedral", (0, 0, 6)): "issue #68",
+    ("kappa_horizontal", "kappa6c", "trigonal_rhombohedral", (0, 0, 6)): "issue #68",
 }
 
 # Known forward-solution gaps: parameter cases where ``forward()`` itself
@@ -426,6 +472,18 @@ KNOWN_FORWARD_GAPS = {
     # other reflection in the sapphire scan still solve.
     ("kappa_vertical", "kappa4cv", "sapphire", (0, 1, 2)): "issue #99",
     ("kappa_vertical", "kappa6c", "sapphire", (0, 1, 2)): "issue #99",
+    # https://github.com/prjemian/hklpy2_solvers/issues/69 and upstream
+    # https://github.com/BCDA-APS/ad_hoc_diffractometer/issues/285 -
+    # three ``ad_hoc`` horizontal-bisecting modes (``fourch bisecting``,
+    # ``psic bisecting_vertical``, ``kappa6c bisecting_horizontal``)
+    # decline the trigonal-rhombohedral reflection ``(1, 1, 0)`` on
+    # both ``ad_hoc_diffractometer 0.10.1`` and ``0.11.0``.  The
+    # ``hkl_soleil`` peers (``E4CH``, ``K6C``) solve the same
+    # reflection with ``|chi| ~ 51 deg`` / ``|kappa| ~ 97 deg``
+    # branches that the bisecting solvers do not enumerate.
+    ("euler_horizontal", "fourch", "trigonal_rhombohedral", (1, 1, 0)): "issue #69",
+    ("euler_horizontal", "psic", "trigonal_rhombohedral", (1, 1, 0)): "issue #69",
+    ("kappa_horizontal", "kappa6c", "trigonal_rhombohedral", (1, 1, 0)): "issue #69",
 }
 
 # CI-environment-dependent forward gaps: cases that pass locally on

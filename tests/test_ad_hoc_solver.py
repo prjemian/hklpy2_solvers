@@ -1869,3 +1869,188 @@ def test_creator_end_to_end(parms, context):
         sim = hklpy2.creator(solver="ad_hoc", geometry=parms["geometry"])
         assert sim.core.solver.name == "ad_hoc"
         assert sim.core.solver.geometry == parms["geometry"]
+
+
+# ---------------------------------------------------------------------------
+# Reference helpers (issues #63, #101, #103): six thin wrappers around
+# ``ad_hoc_diffractometer.reference`` exposed as methods on ``AdHocSolver``.
+# ---------------------------------------------------------------------------
+
+
+REF_HELPER_ANGLES = dict(mu=0.0, eta=20.0, chi=30.0, phi=15.0, nu=0.0, delta=40.0)
+"""Non-degenerate motor positions for the reference-helper tests."""
+
+
+def _ref_helper_solver(*, configure: bool = True) -> AdHocSolver:
+    """Build a psic AdHocSolver wired for reference-helper tests.
+
+    When ``configure`` is False the geometry is left without
+    ``azimuthal_reference`` / ``surface_normal`` so that failure
+    paths in the upstream helpers can be exercised.
+    """
+    import ad_hoc_diffractometer as ahd
+
+    solver = AdHocSolver(geometry="psic")
+    solver._geom.wavelength = WAVELENGTH
+    ahd.ub_identity(solver._geom.sample)
+    solver.set_reals(REF_HELPER_ANGLES)
+    if configure:
+        solver._geom.azimuthal_reference = (0, 0, 1)
+        solver._geom.surface_normal = (1, 1, 6)
+    return solver
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                method="psi_angle",
+                args=(REF_HELPER_ANGLES,),
+                expected=pytest.approx(97.63074021243006, abs=1e-9),
+            ),
+            does_not_raise(),
+            id="psi_angle with explicit angles dict",
+        ),
+        pytest.param(
+            dict(
+                method="psi_angle",
+                args=(),
+                expected=pytest.approx(97.63074021243006, abs=1e-9),
+            ),
+            does_not_raise(),
+            id="psi_angle with default None angles uses current geometry",
+        ),
+        pytest.param(
+            dict(
+                method="incidence_angle",
+                args=(REF_HELPER_ANGLES,),
+                expected=pytest.approx(6.748271970061214, abs=1e-9),
+            ),
+            does_not_raise(),
+            id="incidence_angle with explicit angles dict",
+        ),
+        pytest.param(
+            dict(
+                method="exit_angle",
+                args=(REF_HELPER_ANGLES,),
+                expected=pytest.approx(19.456294998006513, abs=1e-9),
+            ),
+            does_not_raise(),
+            id="exit_angle with explicit angles dict",
+        ),
+        pytest.param(
+            dict(
+                method="naz_angle",
+                args=(REF_HELPER_ANGLES,),
+                expected=pytest.approx(80.53767779197439, abs=1e-9),
+            ),
+            does_not_raise(),
+            id="naz_angle with explicit angles dict",
+        ),
+        pytest.param(
+            dict(
+                method="omega_pseudo",
+                args=(REF_HELPER_ANGLES,),
+                expected=pytest.approx(0.0, abs=1e-9),
+            ),
+            does_not_raise(),
+            id="omega_pseudo with explicit angles dict",
+        ),
+        pytest.param(
+            dict(
+                method="natural_psi",
+                args=(1, 1, 1),
+                expected=pytest.approx(120.0, abs=1e-9),
+            ),
+            does_not_raise(),
+            id="natural_psi returns float for (1, 1, 1)",
+        ),
+        pytest.param(
+            dict(
+                method="natural_psi",
+                args=(0, 0, 1),
+                expected=None,
+            ),
+            does_not_raise(),
+            id="natural_psi returns None when reflection parallel to azimuthal reference",
+        ),
+        pytest.param(
+            dict(
+                method="psi_angle",
+                args=({"bogus": 0.0},),
+                expected=None,
+            ),
+            pytest.raises(SolverError, match=re.escape("Unknown axis name(s) ['bogus']")),
+            id="psi_angle with unknown axis name raises SolverError",
+        ),
+        pytest.param(
+            dict(
+                method="incidence_angle",
+                args=([0.0, 0.0, 0.0],),
+                expected=None,
+            ),
+            pytest.raises(TypeError, match=re.escape("angles must be a dict[str, float] or None")),
+            id="incidence_angle with non-dict angles raises TypeError",
+        ),
+    ],
+)
+def test_reference_helpers(parms, context):
+    """Cover all six reference-helper methods plus their failure paths.
+
+    Verifies that ``AdHocSolver.{psi,incidence,exit,naz}_angle``,
+    ``omega_pseudo`` and ``natural_psi`` forward to
+    :mod:`ad_hoc_diffractometer.reference`, accept the documented
+    inputs (dict-of-angles, default ``None``, or ``h, k, l``), and that
+    the wrapper's own validation surfaces ``SolverError`` / ``TypeError``
+    for malformed inputs.  Closes :issue:`63`, :issue:`101`,
+    :issue:`103`.
+    """
+    with context:
+        solver = _ref_helper_solver()
+        method = getattr(solver, parms["method"])
+        result = method(*parms["args"])
+        if parms["expected"] is None:
+            assert result is None
+        else:
+            assert result == parms["expected"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(method="psi_angle"),
+            pytest.raises(ValueError, match=re.escape("azimuthal_reference")),
+            id="psi_angle without azimuthal_reference raises upstream ValueError",
+        ),
+        pytest.param(
+            dict(method="incidence_angle"),
+            pytest.raises(ValueError, match=re.escape("surface_normal")),
+            id="incidence_angle without surface_normal raises upstream ValueError",
+        ),
+        pytest.param(
+            dict(method="exit_angle"),
+            pytest.raises(ValueError, match=re.escape("surface_normal")),
+            id="exit_angle without surface_normal raises upstream ValueError",
+        ),
+        pytest.param(
+            dict(method="naz_angle"),
+            pytest.raises(ValueError, match=re.escape("surface_normal")),
+            id="naz_angle without surface_normal raises upstream ValueError",
+        ),
+    ],
+)
+def test_reference_helpers_missing_geometry_config(parms, context):
+    """Preconditions documented on each wrapper are enforced by upstream.
+
+    Wrappers do **not** silently default ``azimuthal_reference`` or
+    ``surface_normal``; with neither set, the upstream call raises a
+    ``ValueError`` mentioning the missing attribute.  This test pins
+    that behaviour so users get a useful diagnostic rather than a
+    silent garbage answer.
+    """
+    with context:
+        solver = _ref_helper_solver(configure=False)
+        method = getattr(solver, parms["method"])
+        method(REF_HELPER_ANGLES)

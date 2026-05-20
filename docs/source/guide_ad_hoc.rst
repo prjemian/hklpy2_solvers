@@ -143,6 +143,71 @@ motor positions.  ``fourc.real_position`` is the current readout of
 all real axes; pass a different set of values to compute ``(h, k, l)``
 at a hypothetical position instead.
 
+Derived quantities (ψ, α_i, β_out, n_az, OMEGA)
+------------------------------------------------
+
+``AdHocSolver`` exposes the six derived-quantity helpers from
+``ad_hoc_diffractometer.reference`` as methods, so users do not need
+to reach into ``solver._geom``:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 40 40
+
+   * - Method
+     - Returns
+     - Geometry prerequisite
+   * - ``psi_angle(angles=None)``
+     - Azimuthal angle ψ (deg) from motors
+     - ``azimuthal_reference`` set
+   * - ``incidence_angle(angles=None)``
+     - Incidence angle α_i (deg)
+     - ``surface_normal`` set
+   * - ``exit_angle(angles=None)``
+     - Exit angle β_out (deg)
+     - ``surface_normal`` set
+   * - ``naz_angle(angles=None)``
+     - Lab-frame azimuthal angle of n̂ (deg)
+     - ``surface_normal`` set
+   * - ``omega_pseudo(angles=None)``
+     - SPEC ``OMEGA`` pseudo-angle (deg)
+     - none
+   * - ``natural_psi(h, k, l)``
+     - Natural ψ (deg) from UB; ``None`` if undefined
+     - ``azimuthal_reference`` set
+
+``angles`` may be a dict keyed by real-axis name (any subset); ``None``
+(default) uses the geometry's current angles.  Unknown axis names raise
+:class:`~hklpy2.exceptions.SolverError`; a non-dict input raises
+``TypeError``.
+
+The reference vectors ``azimuthal_reference`` and ``surface_normal``
+are still configured on the underlying geometry object:
+
+.. code-block:: python
+
+   import hklpy2
+
+   psic2 = hklpy2.creator(name="psic2", geometry="psic", solver="ad_hoc")
+   solver = psic2.core.solver
+   solver._geom.azimuthal_reference = (0, 0, 1)
+   solver._geom.surface_normal = (1, 1, 6)
+   solver._geom.wavelength = 1.0
+
+   angles = dict(mu=0, eta=20, chi=30, phi=15, nu=0, delta=40)
+   solver.set_reals(angles)
+
+   psi = solver.psi_angle(angles)
+   alpha_i = solver.incidence_angle(angles)
+   beta_out = solver.exit_angle(angles)
+   naz = solver.naz_angle(angles)
+   omega = solver.omega_pseudo(angles)
+   natural = solver.natural_psi(1, 1, 1)
+
+See the upstream
+`ad_hoc_diffractometer.reference <https://bcda-aps.github.io/ad_hoc_diffractometer/latest/api/reference.html>`_
+module for the mathematical definitions.
+
 Available geometries at a glance
 ---------------------------------
 

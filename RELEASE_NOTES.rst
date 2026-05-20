@@ -39,6 +39,7 @@ describe future plans.
     * Add vertical four-circle cross-validation suite against ``hkl_soleil``.  :issue:`50`
     * Add vertical kappa four-circle cross-validation group against ``hkl_soleil``.  :issue:`66`
     * Expand cross-validation sample set to all seven crystal systems.  :issue:`69`
+    * Surface ``ad_hoc_diffractometer.reference`` helpers on ``AdHocSolver``.  :issue:`101`
 
     Enhancements
     ~~~~~~~~~~~~
@@ -46,6 +47,7 @@ describe future plans.
     * Add guide-regression smoke test to catch API drift in how-to guides.  :issue:`88`
     * Add regression test documenting ``ad_hoc/kappa6c bisecting_horizontal`` reflection-pattern gap.  :issue:`77`
     * Add regression test documenting ``ad_hoc/psic bisecting_horizontal`` asymmetric-reflection gap.  :issue:`71`
+    * Document derived-quantity access (ψ, α_i, β_out, n_az, OMEGA) for ``AdHocSolver``.  :issue:`63`
     * Expand sapphire cross-validation matrix with ``(1, 1, 3)`` and ``(1, 1, 6)``.  :issue:`77`
 
     Fixes

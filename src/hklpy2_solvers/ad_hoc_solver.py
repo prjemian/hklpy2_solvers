@@ -27,6 +27,12 @@ from ad_hoc_diffractometer.mode import (
     ConstraintViolation,
     EwaldSphereViolation,
 )
+from ad_hoc_diffractometer.reference import exit_angle as _ref_exit_angle
+from ad_hoc_diffractometer.reference import incidence_angle as _ref_incidence_angle
+from ad_hoc_diffractometer.reference import natural_psi as _ref_natural_psi
+from ad_hoc_diffractometer.reference import naz_angle as _ref_naz_angle
+from ad_hoc_diffractometer.reference import omega_pseudo as _ref_omega_pseudo
+from ad_hoc_diffractometer.reference import psi_angle as _ref_psi_angle
 from ad_hoc_diffractometer.refinement import refine_lattice_bl1967
 from hklpy2.backends.base import SolverBase
 from hklpy2.backends.typing import ReflectionDict
@@ -148,6 +154,23 @@ class AdHocSolver(SolverBase):
         if self._geom.wavelength is None:
             self._geom.wavelength = 1.0
         ahd.ub_identity(self._geom.sample)
+
+    def _normalize_angles(self, angles: dict[str, float] | None) -> dict[str, float] | None:
+        """Validate the optional motor-angles dict used by reference helpers.
+
+        Returns ``None`` unchanged (upstream interprets this as
+        "use the geometry's current angles").  A dict is shallow-copied
+        with values coerced to ``float``.  Unknown axis names raise
+        :class:`SolverError`; a non-dict input raises ``TypeError``.
+        """
+        if angles is None:
+            return None
+        if not isinstance(angles, dict):
+            raise TypeError(f"angles must be a dict[str, float] or None, received {angles!r}")
+        unknown = set(angles) - set(self._real_axes)
+        if unknown:
+            raise SolverError(f"Unknown axis name(s) {sorted(unknown)}; expected subset of {self._real_axes}")
+        return {k: float(v) for k, v in angles.items()}
 
     # ------------------------------------------------------------------
     # SolverBase abstract methods
@@ -540,6 +563,94 @@ class AdHocSolver(SolverBase):
         # Re-apply lattice if we had one.
         if self._lattice:
             self.lattice = self._lattice
+
+    # ------------------------------------------------------------------
+    # Reference helpers (backend-specific derived quantities).
+    #
+    # Thin wrappers around ``ad_hoc_diffractometer.reference`` so users
+    # do not need to reach into ``solver._geom``.  See the
+    # "Derived quantities" section of the AdHoc user guide.
+    # ------------------------------------------------------------------
+
+    def exit_angle(self, angles: dict[str, float] | None = None) -> float:
+        """Exit angle β_out (deg).
+
+        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.surface_normal`
+        to be set on the underlying geometry.
+
+        PARAMETERS
+
+        angles : dict[str, float] or None
+            Motor angles in degrees keyed by real-axis name.  ``None``
+            (default) means use the geometry's current angles.
+        """
+        return float(_ref_exit_angle(self._geom, angles=self._normalize_angles(angles)))
+
+    def incidence_angle(self, angles: dict[str, float] | None = None) -> float:
+        """Incidence angle α_i (deg).
+
+        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.surface_normal`
+        to be set on the underlying geometry.
+
+        PARAMETERS
+
+        angles : dict[str, float] or None
+            Motor angles in degrees keyed by real-axis name.  ``None``
+            (default) means use the geometry's current angles.
+        """
+        return float(_ref_incidence_angle(self._geom, angles=self._normalize_angles(angles)))
+
+    def natural_psi(self, h: float, k: float, l: float) -> float | None:  # noqa: E741
+        """Natural azimuthal angle ψ (deg) for reflection ``(h, k, l)`` from UB.
+
+        Uses ``UB @ (h, k, l)`` and ``UB @ azimuthal_reference``; **no
+        motor angles enter the calculation**.  Returns ``None`` when the
+        reflection is parallel to the azimuthal reference (ψ undefined).
+
+        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuthal_reference`
+        to be set on the underlying geometry.
+        """
+        result = _ref_natural_psi(self._geom, float(h), float(k), float(l))
+        return None if result is None else float(result)
+
+    def naz_angle(self, angles: dict[str, float] | None = None) -> float:
+        """Lab-frame azimuthal angle of n̂, ``naz`` (deg).
+
+        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.surface_normal`
+        to be set on the underlying geometry.
+
+        PARAMETERS
+
+        angles : dict[str, float] or None
+            Motor angles in degrees keyed by real-axis name.  ``None``
+            (default) means use the geometry's current angles.
+        """
+        return float(_ref_naz_angle(self._geom, angles=self._normalize_angles(angles)))
+
+    def omega_pseudo(self, angles: dict[str, float] | None = None) -> float:
+        """SPEC ``OMEGA`` pseudo-angle (deg), in ``[-90°, +90°]``.
+
+        PARAMETERS
+
+        angles : dict[str, float] or None
+            Motor angles in degrees keyed by real-axis name.  ``None``
+            (default) means use the geometry's current angles.
+        """
+        return float(_ref_omega_pseudo(self._geom, angles=self._normalize_angles(angles)))
+
+    def psi_angle(self, angles: dict[str, float] | None = None) -> float:
+        """Azimuthal angle ψ (deg) from motor positions.
+
+        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuthal_reference`
+        to be set on the underlying geometry.
+
+        PARAMETERS
+
+        angles : dict[str, float] or None
+            Motor angles in degrees keyed by real-axis name.  ``None``
+            (default) means use the geometry's current angles.
+        """
+        return float(_ref_psi_angle(self._geom, angles=self._normalize_angles(angles)))
 
     @property
     def UB(self) -> Matrix3x3:

@@ -64,32 +64,32 @@ except PackageNotFoundError:  # pragma: no cover - defensive
 
 _MODES: dict[str, dict[str, Any]] = {
     # ---- 1 det + 1 ref + 1 samp ----
-    "4S+2D mu_fixed a_eq_b delta_fixed": {"delta": 0.0, "a_eq_b": True, "mu": 0.0},
-    "4S+2D mu_fixed a_eq_b nu_fixed": {"nu": 0.0, "a_eq_b": True, "mu": 0.0},
-    "4S+2D eta_fixed a_eq_b delta_fixed": {"delta": 0.0, "a_eq_b": True, "eta": 0.0},
-    "4S+2D phi_fixed psi_fixed nu_fixed": {"nu": 0.0, "psi": 0.0, "phi": 0.0},
+    "a_eq_b fixed_delta fixed_mu": {"delta": 0.0, "a_eq_b": True, "mu": 0.0},
+    "a_eq_b fixed_nu fixed_mu": {"nu": 0.0, "a_eq_b": True, "mu": 0.0},
+    "a_eq_b fixed_delta fixed_eta": {"delta": 0.0, "a_eq_b": True, "eta": 0.0},
+    "fixed_nu fixed_psi fixed_phi": {"nu": 0.0, "psi": 0.0, "phi": 0.0},
     # ---- 1 det + 2 samp ----
-    "4S+2D chi_phi_fixed delta_fixed": {"delta": 0.0, "chi": 0.0, "phi": 0.0},
-    "4S+2D mu_eta_fixed delta_fixed": {"delta": 0.0, "mu": 0.0, "eta": 0.0},
-    "4S+2D mu_phi_fixed delta_fixed": {"delta": 0.0, "mu": 0.0, "phi": 0.0},
-    "4S+2D mu_chi_fixed nu_fixed": {"nu": 0.0, "mu": 0.0, "chi": 0.0},
-    "4S+2D eta_phi_fixed nu_fixed": {"nu": 0.0, "eta": 0.0, "phi": 0.0},
-    "4S+2D eta_chi_fixed nu_fixed": {"nu": 0.0, "eta": 0.0, "chi": 0.0},
-    "4S+2D bisect_mu_fixed delta_fixed": {"delta": 0.0, "bisect": True, "mu": 0.0},
-    "4S+2D bisect_eta_fixed nu_fixed": {"nu": 0.0, "bisect": True, "eta": 0.0},
-    "4S+2D bisect_omega_fixed nu_fixed": {"nu": 0.0, "bisect": True, "omega": 0.0},
+    "fixed_delta fixed_chi fixed_phi": {"delta": 0.0, "chi": 0.0, "phi": 0.0},
+    "fixed_delta fixed_mu fixed_eta": {"delta": 0.0, "mu": 0.0, "eta": 0.0},
+    "fixed_delta fixed_mu fixed_phi": {"delta": 0.0, "mu": 0.0, "phi": 0.0},
+    "fixed_nu fixed_mu fixed_chi": {"nu": 0.0, "mu": 0.0, "chi": 0.0},
+    "fixed_nu fixed_eta fixed_phi": {"nu": 0.0, "eta": 0.0, "phi": 0.0},
+    "fixed_nu fixed_eta fixed_chi": {"nu": 0.0, "eta": 0.0, "chi": 0.0},
+    "bisect fixed_mu fixed_nu": {"bisect": True, "mu": 0.0, "nu": 0.0},
+    "bisect fixed_eta fixed_delta": {"bisect": True, "eta": 0.0, "delta": 0.0},
+    "bisect fixed_omega fixed_nu": {"bisect": True, "omega": 0.0, "nu": 0.0},
     # ---- 1 ref + 2 samp ----
-    "4S+2D chi_phi_fixed a_eq_b": {"a_eq_b": True, "chi": 0.0, "phi": 0.0},
-    "4S+2D chi_eta_fixed a_eq_b": {"a_eq_b": True, "chi": 0.0, "eta": 0.0},
-    "4S+2D chi_mu_fixed a_eq_b": {"a_eq_b": True, "chi": 0.0, "mu": 0.0},
-    "4S+2D mu_eta_fixed a_eq_b": {"a_eq_b": True, "mu": 0.0, "eta": 0.0},
-    "4S+2D mu_phi_fixed a_eq_b": {"a_eq_b": True, "mu": 0.0, "phi": 0.0},
-    "4S+2D eta_phi_fixed a_eq_b": {"a_eq_b": True, "eta": 0.0, "phi": 0.0},
+    "a_eq_b fixed_chi fixed_phi": {"a_eq_b": True, "chi": 0.0, "phi": 0.0},
+    "a_eq_b fixed_chi fixed_eta": {"a_eq_b": True, "chi": 0.0, "eta": 0.0},
+    "a_eq_b fixed_chi fixed_mu": {"a_eq_b": True, "chi": 0.0, "mu": 0.0},
+    "a_eq_b fixed_mu fixed_eta": {"a_eq_b": True, "mu": 0.0, "eta": 0.0},
+    "a_eq_b fixed_mu fixed_phi": {"a_eq_b": True, "mu": 0.0, "phi": 0.0},
+    "a_eq_b fixed_eta fixed_phi": {"a_eq_b": True, "eta": 0.0, "phi": 0.0},
     # ---- 3 samp ----
-    "4S+2D eta_chi_phi_fixed": {"eta": 0.0, "chi": 0.0, "phi": 0.0},
-    "4S+2D mu_chi_phi_fixed": {"mu": 0.0, "chi": 0.0, "phi": 0.0},
-    "4S+2D mu_eta_phi_fixed": {"mu": 0.0, "eta": 0.0, "phi": 0.0},
-    "4S+2D mu_eta_chi_fixed": {"mu": 0.0, "eta": 0.0, "chi": 0.0},
+    "fixed_eta fixed_chi fixed_phi": {"eta": 0.0, "chi": 0.0, "phi": 0.0},
+    "fixed_mu fixed_chi fixed_phi": {"mu": 0.0, "chi": 0.0, "phi": 0.0},
+    "fixed_mu fixed_eta fixed_phi": {"mu": 0.0, "eta": 0.0, "phi": 0.0},
+    "fixed_mu fixed_eta fixed_chi": {"mu": 0.0, "eta": 0.0, "chi": 0.0},
 }
 
 
@@ -134,11 +134,13 @@ class DiffcalcSolver(SolverBase):
         super().__init__(geometry, **kwargs)
 
         # Apply default mode if none was set via kwargs.
-        # Use bisect_eta_fixed nu_fixed: vertical bisector mode
-        # (eta = delta/2, eta=0, nu=0).  Equivalent to bisecting_vertical
-        # in E6C terminology.  See geometries.rst for details.
+        # bisect + mu=0 + nu=0 is the canonical bisecting_vertical
+        # (per diffcalc-core's __calc_sample_con_mu_bisect: "Vertical
+        # scattering geometry with omega = 0").  Equivalent to
+        # bisecting_vertical in hkl_soleil E6C terminology.  See
+        # geometries.rst for details.
         if not self.mode and self.modes:  # pragma: no branch
-            self.mode = "4S+2D bisect_eta_fixed nu_fixed"
+            self.mode = "bisect fixed_mu fixed_nu"
 
     # ------------------------------------------------------------------
     # Internal helpers

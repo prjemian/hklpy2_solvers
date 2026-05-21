@@ -130,6 +130,10 @@ class DiffcalcSolver(SolverBase):
         self._reflections: list[ReflectionDict] = []
         self._wavelength: float | None = None
         self._lattice: NamedFloatDict = {}
+        # User-registered modes added at runtime via register_mode().
+        # Lives for this instance only; not persisted across instances
+        # or across hklpy2 save/restore.
+        self._user_modes: dict[str, dict[str, Any]] = {}
 
         super().__init__(geometry, **kwargs)
 
@@ -150,6 +154,15 @@ class DiffcalcSolver(SolverBase):
         """Recreate the HklCalculation from current state."""
         self._hklcalc = HklCalculation(self._ubcalc, self._constraints)
 
+    def _all_modes(self) -> dict[str, dict[str, Any]]:
+        """Merged view of built-in plus user-registered modes.
+
+        Built-in modes come first; user modes follow in registration
+        order.  Built-in names cannot be shadowed (enforced by
+        :meth:`register_mode`).
+        """
+        return {**_MODES, **self._user_modes}
+
     def _apply_mode_constraints(self) -> None:
         """Set diffcalc constraints from the current mode.
 
@@ -161,7 +174,7 @@ class DiffcalcSolver(SolverBase):
             return
         if getattr(self, "_applied_mode", None) == self.mode:
             return
-        self._constraints = Constraints(_MODES[self.mode])
+        self._constraints = Constraints(self._all_modes()[self.mode])
         self._rebuild_hklcalc()
         self._applied_mode = self.mode
 
@@ -449,13 +462,17 @@ class DiffcalcSolver(SolverBase):
         check_value_in_list("Mode", value, self.modes, blank_ok=True)
         self._mode = value
         self._applied_mode = None  # invalidate so next forward() rebuilds
-        if value and value in _MODES:
+        if value and value in self._all_modes():
             self._apply_mode_constraints()
 
     @property
     def modes(self) -> list[str]:
-        """List of operating modes for this geometry."""
-        return list(_MODES.keys())
+        """List of operating modes for this geometry.
+
+        Includes both built-in modes and any user-registered modes
+        (see :meth:`register_mode`).
+        """
+        return list(self._all_modes().keys())
 
     @property
     def pseudo_axis_names(self) -> list[str]:
@@ -506,6 +523,80 @@ class DiffcalcSolver(SolverBase):
         self._rebuild_hklcalc()
         return refined
 
+    def register_mode(self, name: str, constraints: dict[str, Any]) -> None:
+        """Register a new operating mode at runtime.
+
+        Lets users add mode/constraint combinations that diffcalc-core
+        implements but ``DiffcalcSolver`` does not ship by default,
+        without forking the package.  The mode is validated against
+        :class:`diffcalc.hkl.constraints.Constraints` before being
+        accepted.
+
+        PARAMETERS
+
+        name : str
+            Name to register the mode under.  Must not clash with a
+            built-in mode name nor with a previously registered user
+            mode (use :meth:`unregister_mode` first to redefine).
+        constraints : dict[str, Any]
+            Exactly three diffcalc constraints, keyed by diffcalc
+            constraint name.  Float values pin the named axis at
+            that value; ``True`` activates a boolean constraint
+            (``a_eq_b``, ``bin_eq_bout``, ``bisect``).
+
+        RAISES
+
+        SolverError
+            If ``name`` clashes with a built-in or already-registered
+            mode; if ``constraints`` is not a dict of exactly three
+            entries with diffcalc-recognised keys; if the combination
+            does not survive ``Constraints(...).asdict`` round-trip
+            (catches same-category conflicts that diffcalc silently
+            collapses); or if
+            :meth:`diffcalc.hkl.constraints.Constraints.is_current_mode_implemented`
+            returns False.
+
+        .. note::
+
+           User-registered modes live only for the lifetime of this
+           solver instance.  They are not persisted across hklpy2
+           ``save_config`` / ``restore_config`` round-trips.
+        """
+        if not isinstance(name, str) or not name:
+            raise SolverError(f"Mode name must be a non-empty string, received {name!r}.")
+        if name in _MODES:
+            raise SolverError(f"Cannot redefine built-in mode {name!r}.")
+        if name in self._user_modes:
+            raise SolverError(f"User mode {name!r} already registered; call unregister_mode() first.")
+        if not isinstance(constraints, dict):
+            raise SolverError(f"Constraints must be a dict, received {constraints!r}.")
+        if len(constraints) != 3:
+            raise SolverError(f"Mode {name!r} requires exactly three constraints, received {len(constraints)}.")
+        try:
+            probe = Constraints(constraints)
+        except (DiffcalcException, ValueError) as exc:
+            raise SolverError(f"diffcalc rejected constraints for {name!r}: {exc}") from exc
+        # Guard against same-category collisions that diffcalc silently
+        # collapses (e.g. {delta: 0, nu: 0, mu: 0} drops delta).
+        if set(probe.asdict) != set(constraints):
+            dropped = sorted(set(constraints) - set(probe.asdict))
+            raise SolverError(
+                f"Mode {name!r}: constraints {dropped!r} were dropped by "
+                f"diffcalc (same-category conflict).  Only one detector "
+                f"and one reference constraint are allowed."
+            )
+        # ``is_current_mode_implemented()`` raises for 0/1/2-constraint
+        # Constraints objects, but those are already rejected above by
+        # the explicit ``len(constraints) != 3`` check; the bare except
+        # is defensive only.
+        try:
+            implemented = probe.is_current_mode_implemented()
+        except (DiffcalcException, ValueError) as exc:  # pragma: no cover
+            raise SolverError(f"diffcalc validation failed for {name!r}: {exc}") from exc
+        if not implemented:
+            raise SolverError(f"Mode {name!r}: constraint combination is not implemented by diffcalc-core.")
+        self._user_modes[name] = dict(constraints)
+
     def removeAllReflections(self) -> None:
         """Remove all reflections."""
         self._reflections.clear()
@@ -539,6 +630,39 @@ class DiffcalcSolver(SolverBase):
                 self._ubcalc.set_lattice("default", 1.0, 1.0, 1.0, 90.0, 90.0, 90.0)
         self._ubcalc.set_ub(value)
         self._rebuild_hklcalc()
+
+    def unregister_mode(self, name: str) -> None:
+        """Remove a previously :meth:`register_mode`-registered mode.
+
+        PARAMETERS
+
+        name : str
+            Name of the user-registered mode to remove.
+
+        RAISES
+
+        SolverError
+            If ``name`` refers to a built-in mode (built-ins cannot
+            be removed); if ``name`` is not currently registered.
+
+        If the solver-side active :attr:`mode` is the one being
+        removed, it is cleared to ``""``.  When the solver is wired
+        into an hklpy2 ``Diffractometer``, the diffractometer's own
+        cached ``core.mode`` may still hold the now-stale name and
+        cause a "Mode unknown" ``ValueError`` on the next
+        ``forward()`` call.  To avoid that, switch
+        ``diffractometer.core.mode`` to a different mode before
+        calling :meth:`unregister_mode` when the user mode is
+        currently active.
+        """
+        if name in _MODES:
+            raise SolverError(f"Cannot unregister built-in mode {name!r}.")
+        if name not in self._user_modes:
+            raise SolverError(f"User mode {name!r} is not registered.")
+        del self._user_modes[name]
+        if self.mode == name:
+            self._mode = ""
+            self._applied_mode = None
 
     @property
     def wavelength(self) -> float | None:

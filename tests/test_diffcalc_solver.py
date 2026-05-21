@@ -1766,3 +1766,299 @@ def test_register_mode_end_to_end(parms, context):
         solver.mode = parms["name"]
         result = solver.inverse({"mu": 0.0, "delta": 0.0, "nu": 0.0, "eta": 0.0, "chi": 0.0, "phi": 0.0})
         assert set(result) == {"h", "k", "l"}
+
+
+# ---------------------------------------------------------------------------
+# Order-independent mode name matching (:issue:`109`)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                input_name="fixed_mu bisect fixed_nu",
+                canonical="bisect fixed_mu fixed_nu",
+            ),
+            does_not_raise(),
+            id="bisect keyword permuted into middle resolves to built-in",
+        ),
+        pytest.param(
+            dict(
+                input_name="fixed_nu fixed_mu bisect",
+                canonical="bisect fixed_mu fixed_nu",
+            ),
+            does_not_raise(),
+            id="bisect keyword permuted to end resolves to built-in",
+        ),
+        pytest.param(
+            dict(
+                input_name="fixed_phi fixed_chi fixed_eta",
+                canonical="fixed_eta fixed_chi fixed_phi",
+            ),
+            does_not_raise(),
+            id="all-fixed_ name reversed resolves to built-in",
+        ),
+        pytest.param(
+            dict(
+                input_name="fixed_mu   bisect    fixed_nu",
+                canonical="bisect fixed_mu fixed_nu",
+            ),
+            does_not_raise(),
+            id="extra whitespace is normalized",
+        ),
+        pytest.param(
+            dict(
+                input_name="  bisect fixed_mu fixed_nu  ",
+                canonical="bisect fixed_mu fixed_nu",
+            ),
+            does_not_raise(),
+            id="leading and trailing whitespace is stripped",
+        ),
+        pytest.param(
+            dict(
+                input_name="bisect fixed_mu fixed_nu",
+                canonical="bisect fixed_mu fixed_nu",
+            ),
+            does_not_raise(),
+            id="exact built-in name still accepted",
+        ),
+        pytest.param(
+            dict(
+                input_name="fixed_mu fixed_nu fixed_bogus",
+                canonical=None,
+            ),
+            pytest.raises(ValueError, match=re.escape("fixed_mu fixed_nu fixed_bogus")),
+            id="unknown permutation still rejected",
+        ),
+    ],
+)
+def test_mode_setter_order_independent(parms, context):
+    """Mode setter accepts any permutation of the constraint tokens.
+
+    Resolves issue #109: ``self.mode`` always reads back as the
+    registered display name regardless of the order in which the
+    caller specified the tokens.
+    """
+    solver = DiffcalcSolver()
+    with context:
+        solver.mode = parms["input_name"]
+        assert solver.mode == parms["canonical"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                name="fixed_mu bisect fixed_nu",
+                constraints={"bisect": True, "mu": 0.0, "nu": 0.0},
+            ),
+            pytest.raises(
+                SolverError, match=re.escape("Cannot redefine built-in mode 'bisect fixed_mu fixed_nu'")
+            ),
+            id="permuted built-in name rejected as redefinition",
+        ),
+        pytest.param(
+            dict(
+                name="fixed_phi fixed_chi fixed_eta",
+                constraints={"eta": 0.0, "chi": 0.0, "phi": 0.0},
+            ),
+            pytest.raises(
+                SolverError, match=re.escape("Cannot redefine built-in mode 'fixed_eta fixed_chi fixed_phi'")
+            ),
+            id="permuted all-fixed_ built-in rejected",
+        ),
+        pytest.param(
+            dict(
+                name="bisect bisect fixed_mu",
+                constraints={"bisect": True, "mu": 0.0, "nu": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("repeats constraint name(s) ['bisect']")),
+            id="repeated constraint name rejected",
+        ),
+        pytest.param(
+            dict(
+                name="   ",
+                constraints={"bisect": True, "mu": 0.0, "nu": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("at least one constraint")),
+            id="whitespace-only name rejected",
+        ),
+    ],
+)
+def test_register_mode_token_set_collisions(parms, context):
+    """register_mode rejects permutations of existing built-in names.
+
+    Resolves issue #109: ``mode a`` and ``a mode`` are treated as the
+    same mode for the purposes of collision detection.
+    """
+    solver = DiffcalcSolver()
+    with context:
+        solver.register_mode(parms["name"], parms["constraints"])
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                first_name="fixed_delta fixed_eta fixed_chi",
+                second_name="fixed_chi fixed_delta fixed_eta",
+            ),
+            pytest.raises(SolverError, match=re.escape("already registered")),
+            id="permuted user mode rejected as duplicate",
+        ),
+        pytest.param(
+            dict(
+                first_name="fixed_delta fixed_eta fixed_chi",
+                second_name="fixed_eta fixed_chi fixed_delta",
+            ),
+            pytest.raises(SolverError, match=re.escape("already registered")),
+            id="another permutation rejected as duplicate",
+        ),
+    ],
+)
+def test_register_mode_user_token_set_collisions(parms, context):
+    """register_mode rejects permutations of previously-registered user modes."""
+    solver = DiffcalcSolver()
+    constraints = {"delta": 0.0, "eta": 0.0, "chi": 0.0}
+    solver.register_mode(parms["first_name"], constraints)
+    with context:
+        solver.register_mode(parms["second_name"], constraints)
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                registered="fixed_delta fixed_eta fixed_chi",
+                request="fixed_chi fixed_eta fixed_delta",
+            ),
+            does_not_raise(),
+            id="permuted user mode unregistered symmetrically",
+        ),
+        pytest.param(
+            dict(
+                registered="fixed_delta fixed_eta fixed_chi",
+                request="fixed_eta fixed_delta fixed_chi",
+            ),
+            does_not_raise(),
+            id="another permuted form unregistered symmetrically",
+        ),
+        pytest.param(
+            dict(
+                registered="fixed_delta fixed_eta fixed_chi",
+                request="fixed_mu bisect fixed_nu",
+            ),
+            pytest.raises(
+                SolverError, match=re.escape("Cannot unregister built-in mode 'bisect fixed_mu fixed_nu'")
+            ),
+            id="permuted built-in rejected with canonical name in message",
+        ),
+        pytest.param(
+            dict(
+                registered="fixed_delta fixed_eta fixed_chi",
+                request="fixed_mu fixed_chi fixed_omega",
+            ),
+            pytest.raises(SolverError, match=re.escape("is not registered")),
+            id="unknown permutation rejected",
+        ),
+    ],
+)
+def test_unregister_mode_token_set(parms, context):
+    """unregister_mode resolves permutations to the registered name."""
+    solver = DiffcalcSolver()
+    solver.register_mode(parms["registered"], {"delta": 0.0, "eta": 0.0, "chi": 0.0})
+    with context:
+        solver.unregister_mode(parms["request"])
+        assert parms["registered"] not in solver.modes
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                registered="fixed_delta fixed_eta fixed_chi",
+                expected_writable=["mu", "nu", "phi"],
+            ),
+            does_not_raise(),
+            id="axes_w works for user-registered mode",
+        ),
+    ],
+)
+def test_axes_w_user_registered_mode(parms, context):
+    """axes_w no longer KeyErrors on user-registered modes (:issue:`109`).
+
+    Regression test for the latent bug fixed alongside #109: ``axes_w``
+    previously consulted only ``_MODES`` and raised ``KeyError`` for
+    any mode added via ``register_mode``.
+    """
+    solver = DiffcalcSolver()
+    solver.register_mode(parms["registered"], {"delta": 0.0, "eta": 0.0, "chi": 0.0})
+    with context:
+        solver.mode = parms["registered"]
+        assert solver.axes_w == parms["expected_writable"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(name=123),
+            pytest.raises(SolverError, match=re.escape("Mode name must be a string")),
+            id="non-string name rejected",
+        ),
+    ],
+)
+def test_unregister_mode_non_string(parms, context):
+    """unregister_mode rejects non-string names defensively."""
+    solver = DiffcalcSolver()
+    with context:
+        solver.unregister_mode(parms["name"])
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(name="   "),
+            does_not_raise(),
+            id="whitespace-only resolves to None",
+        ),
+        pytest.param(
+            dict(name=""),
+            does_not_raise(),
+            id="empty string resolves to None",
+        ),
+    ],
+)
+def test_resolve_mode_name_empty(parms, context):
+    """_resolve_mode_name returns None for empty/whitespace input."""
+    solver = DiffcalcSolver()
+    with context:
+        assert solver._resolve_mode_name(parms["name"]) is None
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="permuted name does not add a phantom mode entry",
+        ),
+    ],
+)
+def test_modes_list_unchanged_by_permutations(parms, context):
+    """Selecting a permuted name does not inflate the modes list."""
+    solver = DiffcalcSolver()
+    baseline = len(solver.modes)
+    with context:
+        solver.mode = "fixed_mu bisect fixed_nu"  # permutation of a built-in
+        assert len(solver.modes) == baseline
+        assert "fixed_mu bisect fixed_nu" not in solver.modes
+        assert "bisect fixed_mu fixed_nu" in solver.modes

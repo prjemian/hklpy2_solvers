@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="_static/documentation_options.js?v=3549b550"></script>
+    <script src="_static/documentation_options.js?v=bbefc5a2"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -580,7 +580,7 @@ describe future plans.</p>
 <h3>Fixes<a class="headerlink" href="#id19" title="Link to this heading">#</a></h3>
 <ul class="simple">
 <li><p>Fix <code class="docutils literal notranslate"><span class="pre">ModuleNotFoundError:</span> <span class="pre">No</span> <span class="pre">module</span> <span class="pre">named</span> <span class="pre">'hklpy2.misc'</span></code>; update imports to <code class="docutils literal notranslate"><span class="pre">hklpy2.exceptions</span></code> and <code class="docutils literal notranslate"><span class="pre">hklpy2.utils</span></code> for compatibility with hklpy2 ≥ 0.6.0.  <span class="issue">31</span></p></li>
-<li><p>Fix <code class="docutils literal notranslate"><span class="pre">forward()</span></code> raising <code class="docutils literal notranslate"><span class="pre">AttributeError:</span> <span class="pre">no</span> <span class="pre">attribute</span> <span class="pre">'set_reals'</span></code>; add <code class="docutils literal notranslate"><span class="pre">set_reals()</span></code> and <code class="docutils literal notranslate"><span class="pre">UB</span></code> setter, change default mode to <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_chi_phi_fixed</span></code>.  <span class="issue">29</span></p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">forward()</span></code> raising <code class="docutils literal notranslate"><span class="pre">AttributeError:</span> <span class="pre">no</span> <span class="pre">attribute</span> <span class="pre">'set_reals'</span></code>; add <code class="docutils literal notranslate"><span class="pre">set_reals()</span></code> and <code class="docutils literal notranslate"><span class="pre">UB</span></code> setter, change default mode to <code class="docutils literal notranslate"><span class="pre">fixed_mu</span> <span class="pre">fixed_chi</span> <span class="pre">fixed_phi</span></code>.  <span class="issue">29</span></p></li>
 <li><p>Fix <code class="docutils literal notranslate"><span class="pre">calc_UB()</span></code> raising <code class="docutils literal notranslate"><span class="pre">SolverError:</span> <span class="pre">Lattice</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">set</span></code>; override <code class="docutils literal notranslate"><span class="pre">sample</span></code> setter to push lattice into diffcalc.  <span class="issue">25</span></p></li>
 <li><p>Fix <code class="docutils literal notranslate"><span class="pre">wh()</span></code> raising <code class="docutils literal notranslate"><span class="pre">SolverError:</span> <span class="pre">UB</span> <span class="pre">matrix</span> <span class="pre">has</span> <span class="pre">not</span> <span class="pre">been</span> <span class="pre">set</span></code> before reflections are added.  <span class="issue">24</span></p></li>
 </ul>

@@ -72,7 +72,7 @@ Example output::
    Diffractometer benchmark
      solver:     diffcalc
      geometry:   diffcalc_4S_2D
-     mode:       4S+2D bisect_eta_fixed nu_fixed
+     mode:       bisect fixed_mu fixed_nu
      wavelength: 1.54
      calls:      500
 

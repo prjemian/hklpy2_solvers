@@ -190,4 +190,4 @@ beam:
   energy_units: keV
   wavelength_units: angstrom
 presets:
-  4S+2D mu_chi_phi_fixed: {}
+  fixed_mu fixed_chi fixed_phi: {}

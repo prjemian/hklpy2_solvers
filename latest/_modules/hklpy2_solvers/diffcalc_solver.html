@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../_static/documentation_options.js?v=3549b550"></script>
+    <script src="../../_static/documentation_options.js?v=bbefc5a2"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -468,32 +468,32 @@
 
 <span class="n">_MODES</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="c1"># ---- 1 det + 1 ref + 1 samp ----</span>
-    <span class="s2">&quot;4S+2D mu_fixed a_eq_b delta_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D mu_fixed a_eq_b nu_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D eta_fixed a_eq_b delta_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D phi_fixed psi_fixed nu_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;psi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;a_eq_b fixed_delta fixed_mu&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;a_eq_b fixed_nu fixed_mu&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;a_eq_b fixed_delta fixed_eta&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;fixed_nu fixed_psi fixed_phi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;psi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
     <span class="c1"># ---- 1 det + 2 samp ----</span>
-    <span class="s2">&quot;4S+2D chi_phi_fixed delta_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D mu_eta_fixed delta_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D mu_phi_fixed delta_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D mu_chi_fixed nu_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D eta_phi_fixed nu_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D eta_chi_fixed nu_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D bisect_mu_fixed delta_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;bisect&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D bisect_eta_fixed nu_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;bisect&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D bisect_omega_fixed nu_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;bisect&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;fixed_delta fixed_chi fixed_phi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;fixed_delta fixed_mu fixed_eta&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;fixed_delta fixed_mu fixed_phi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;fixed_nu fixed_mu fixed_chi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;fixed_nu fixed_eta fixed_phi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;fixed_nu fixed_eta fixed_chi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;bisect fixed_mu fixed_nu&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bisect&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;bisect fixed_eta fixed_delta&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bisect&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;bisect fixed_omega fixed_nu&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;bisect&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;nu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
     <span class="c1"># ---- 1 ref + 2 samp ----</span>
-    <span class="s2">&quot;4S+2D chi_phi_fixed a_eq_b&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D chi_eta_fixed a_eq_b&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D chi_mu_fixed a_eq_b&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D mu_eta_fixed a_eq_b&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D mu_phi_fixed a_eq_b&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D eta_phi_fixed a_eq_b&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;a_eq_b fixed_chi fixed_phi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;a_eq_b fixed_chi fixed_eta&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;a_eq_b fixed_chi fixed_mu&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;a_eq_b fixed_mu fixed_eta&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;a_eq_b fixed_mu fixed_phi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;a_eq_b fixed_eta fixed_phi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;a_eq_b&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
     <span class="c1"># ---- 3 samp ----</span>
-    <span class="s2">&quot;4S+2D eta_chi_phi_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D mu_chi_phi_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D mu_eta_phi_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
-    <span class="s2">&quot;4S+2D mu_eta_chi_fixed&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;fixed_eta fixed_chi fixed_phi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;fixed_mu fixed_chi fixed_phi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;fixed_mu fixed_eta fixed_phi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+    <span class="s2">&quot;fixed_mu fixed_eta fixed_chi&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;mu&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
 <span class="p">}</span>
 
 
@@ -536,15 +536,21 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ReflectionDict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">:</span> <span class="n">NamedFloatDict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="c1"># User-registered modes added at runtime via register_mode().</span>
+        <span class="c1"># Lives for this instance only; not persisted across instances</span>
+        <span class="c1"># or across hklpy2 save/restore.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_modes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># Apply default mode if none was set via kwargs.</span>
-        <span class="c1"># Use bisect_eta_fixed nu_fixed: vertical bisector mode</span>
-        <span class="c1"># (eta = delta/2, eta=0, nu=0).  Equivalent to bisecting_vertical</span>
-        <span class="c1"># in E6C terminology.  See geometries.rst for details.</span>
+        <span class="c1"># bisect + mu=0 + nu=0 is the canonical bisecting_vertical</span>
+        <span class="c1"># (per diffcalc-core&#39;s __calc_sample_con_mu_bisect: &quot;Vertical</span>
+        <span class="c1"># scattering geometry with omega = 0&quot;).  Equivalent to</span>
+        <span class="c1"># bisecting_vertical in hkl_soleil E6C terminology.  See</span>
+        <span class="c1"># geometries.rst for details.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modes</span><span class="p">:</span>  <span class="c1"># pragma: no branch</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;4S+2D bisect_eta_fixed nu_fixed&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bisect fixed_mu fixed_nu&quot;</span>
 
     <span class="c1"># ------------------------------------------------------------------</span>
     <span class="c1"># Internal helpers</span>
@@ -553,6 +559,15 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">_rebuild_hklcalc</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Recreate the HklCalculation from current state.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_hklcalc</span> <span class="o">=</span> <span class="n">HklCalculation</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constraints</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_all_modes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Merged view of built-in plus user-registered modes.</span>
+
+<span class="sd">        Built-in modes come first; user modes follow in registration</span>
+<span class="sd">        order.  Built-in names cannot be shadowed (enforced by</span>
+<span class="sd">        :meth:`register_mode`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">_MODES</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_user_modes</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_apply_mode_constraints</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set diffcalc constraints from the current mode.</span>
@@ -565,7 +580,7 @@
             <span class="k">return</span>
         <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;_applied_mode&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_constraints</span> <span class="o">=</span> <span class="n">Constraints</span><span class="p">(</span><span class="n">_MODES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_constraints</span> <span class="o">=</span> <span class="n">Constraints</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_modes</span><span class="p">()[</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_hklcalc</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_applied_mode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
 
@@ -868,13 +883,17 @@
         <span class="n">check_value_in_list</span><span class="p">(</span><span class="s2">&quot;Mode&quot;</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">modes</span><span class="p">,</span> <span class="n">blank_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="n">value</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_applied_mode</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># invalidate so next forward() rebuilds</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">_MODES</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_modes</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_apply_mode_constraints</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of operating modes for this geometry.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_MODES</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List of operating modes for this geometry.</span>
+
+<span class="sd">        Includes both built-in modes and any user-registered modes</span>
+<span class="sd">        (see :meth:`register_mode`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_modes</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">pseudo_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
@@ -931,6 +950,83 @@
         <span class="k">return</span> <span class="n">refined</span></div>
 
 
+<div class="viewcode-block" id="DiffcalcSolver.register_mode">
+<a class="viewcode-back" href="../../api/hklpy2_solvers/diffcalc_solver/index.html#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.register_mode">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">constraints</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a new operating mode at runtime.</span>
+
+<span class="sd">        Lets users add mode/constraint combinations that diffcalc-core</span>
+<span class="sd">        implements but ``DiffcalcSolver`` does not ship by default,</span>
+<span class="sd">        without forking the package.  The mode is validated against</span>
+<span class="sd">        :class:`diffcalc.hkl.constraints.Constraints` before being</span>
+<span class="sd">        accepted.</span>
+
+<span class="sd">        PARAMETERS</span>
+
+<span class="sd">        name : str</span>
+<span class="sd">            Name to register the mode under.  Must not clash with a</span>
+<span class="sd">            built-in mode name nor with a previously registered user</span>
+<span class="sd">            mode (use :meth:`unregister_mode` first to redefine).</span>
+<span class="sd">        constraints : dict[str, Any]</span>
+<span class="sd">            Exactly three diffcalc constraints, keyed by diffcalc</span>
+<span class="sd">            constraint name.  Float values pin the named axis at</span>
+<span class="sd">            that value; ``True`` activates a boolean constraint</span>
+<span class="sd">            (``a_eq_b``, ``bin_eq_bout``, ``bisect``).</span>
+
+<span class="sd">        RAISES</span>
+
+<span class="sd">        SolverError</span>
+<span class="sd">            If ``name`` clashes with a built-in or already-registered</span>
+<span class="sd">            mode; if ``constraints`` is not a dict of exactly three</span>
+<span class="sd">            entries with diffcalc-recognised keys; if the combination</span>
+<span class="sd">            does not survive ``Constraints(...).asdict`` round-trip</span>
+<span class="sd">            (catches same-category conflicts that diffcalc silently</span>
+<span class="sd">            collapses); or if</span>
+<span class="sd">            :meth:`diffcalc.hkl.constraints.Constraints.is_current_mode_implemented`</span>
+<span class="sd">            returns False.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           User-registered modes live only for the lifetime of this</span>
+<span class="sd">           solver instance.  They are not persisted across hklpy2</span>
+<span class="sd">           ``save_config`` / ``restore_config`` round-trips.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mode name must be a non-empty string, received </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_MODES</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot redefine built-in mode </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_modes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User mode </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> already registered; call unregister_mode() first.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">constraints</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Constraints must be a dict, received </span><span class="si">{</span><span class="n">constraints</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mode </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> requires exactly three constraints, received </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">probe</span> <span class="o">=</span> <span class="n">Constraints</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">DiffcalcException</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;diffcalc rejected constraints for </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="c1"># Guard against same-category collisions that diffcalc silently</span>
+        <span class="c1"># collapses (e.g. {delta: 0, nu: 0, mu: 0} drops delta).</span>
+        <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="n">probe</span><span class="o">.</span><span class="n">asdict</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">set</span><span class="p">(</span><span class="n">constraints</span><span class="p">):</span>
+            <span class="n">dropped</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">probe</span><span class="o">.</span><span class="n">asdict</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Mode </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">: constraints </span><span class="si">{</span><span class="n">dropped</span><span class="si">!r}</span><span class="s2"> were dropped by &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;diffcalc (same-category conflict).  Only one detector &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;and one reference constraint are allowed.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># ``is_current_mode_implemented()`` raises for 0/1/2-constraint</span>
+        <span class="c1"># Constraints objects, but those are already rejected above by</span>
+        <span class="c1"># the explicit ``len(constraints) != 3`` check; the bare except</span>
+        <span class="c1"># is defensive only.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">implemented</span> <span class="o">=</span> <span class="n">probe</span><span class="o">.</span><span class="n">is_current_mode_implemented</span><span class="p">()</span>
+        <span class="k">except</span> <span class="p">(</span><span class="n">DiffcalcException</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;diffcalc validation failed for </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">implemented</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Mode </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">: constraint combination is not implemented by diffcalc-core.&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_user_modes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="DiffcalcSolver.removeAllReflections">
 <a class="viewcode-back" href="../../api/hklpy2_solvers/diffcalc_solver/index.html#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.removeAllReflections">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">removeAllReflections</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -967,6 +1063,42 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">set_lattice</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">,</span> <span class="mf">90.0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span><span class="o">.</span><span class="n">set_ub</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_hklcalc</span><span class="p">()</span>
+
+<div class="viewcode-block" id="DiffcalcSolver.unregister_mode">
+<a class="viewcode-back" href="../../api/hklpy2_solvers/diffcalc_solver/index.html#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.unregister_mode">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unregister_mode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a previously :meth:`register_mode`-registered mode.</span>
+
+<span class="sd">        PARAMETERS</span>
+
+<span class="sd">        name : str</span>
+<span class="sd">            Name of the user-registered mode to remove.</span>
+
+<span class="sd">        RAISES</span>
+
+<span class="sd">        SolverError</span>
+<span class="sd">            If ``name`` refers to a built-in mode (built-ins cannot</span>
+<span class="sd">            be removed); if ``name`` is not currently registered.</span>
+
+<span class="sd">        If the solver-side active :attr:`mode` is the one being</span>
+<span class="sd">        removed, it is cleared to ``&quot;&quot;``.  When the solver is wired</span>
+<span class="sd">        into an hklpy2 ``Diffractometer``, the diffractometer&#39;s own</span>
+<span class="sd">        cached ``core.mode`` may still hold the now-stale name and</span>
+<span class="sd">        cause a &quot;Mode unknown&quot; ``ValueError`` on the next</span>
+<span class="sd">        ``forward()`` call.  To avoid that, switch</span>
+<span class="sd">        ``diffractometer.core.mode`` to a different mode before</span>
+<span class="sd">        calling :meth:`unregister_mode` when the user mode is</span>
+<span class="sd">        currently active.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_MODES</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cannot unregister built-in mode </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_modes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;User mode </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> is not registered.&quot;</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_modes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_applied_mode</span> <span class="o">=</span> <span class="kc">None</span></div>
+
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">wavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>

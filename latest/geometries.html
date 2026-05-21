@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="_static/documentation_options.js?v=3549b550"></script>
+    <script src="_static/documentation_options.js?v=bbefc5a2"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -1423,7 +1423,7 @@ for full details of the underlying library.</p>
 <td><p><code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p>Default mode</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_eta_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bisect</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_nu</span></code></p></td>
 </tr>
 </tbody>
 </table>
@@ -1450,117 +1450,117 @@ remaining axes are held constant (<code class="docutils literal notranslate"><sp
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_fixed</span> <span class="pre">a_eq_b</span> <span class="pre">delta_fixed</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">a_eq_b</span> <span class="pre">fixed_delta</span> <span class="pre">fixed_mu</span></code></p></td>
 <td><p>delta=0, a_eq_b, mu=0</p></td>
 <td><p>nu, eta, chi, phi</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_fixed</span> <span class="pre">a_eq_b</span> <span class="pre">nu_fixed</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">a_eq_b</span> <span class="pre">fixed_nu</span> <span class="pre">fixed_mu</span></code></p></td>
 <td><p>nu=0, a_eq_b, mu=0</p></td>
 <td><p>delta, eta, chi, phi</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_fixed</span> <span class="pre">a_eq_b</span> <span class="pre">delta_fixed</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">a_eq_b</span> <span class="pre">fixed_delta</span> <span class="pre">fixed_eta</span></code></p></td>
 <td><p>delta=0, a_eq_b, eta=0</p></td>
 <td><p>mu, nu, chi, phi</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">phi_fixed</span> <span class="pre">psi_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_nu</span> <span class="pre">fixed_psi</span> <span class="pre">fixed_phi</span></code></p></td>
 <td><p>nu=0, psi=0, phi=0</p></td>
 <td><p>mu, delta, eta, chi</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">chi_phi_fixed</span> <span class="pre">delta_fixed</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_delta</span> <span class="pre">fixed_chi</span> <span class="pre">fixed_phi</span></code></p></td>
 <td><p>delta=0, chi=0, phi=0</p></td>
 <td><p>mu, nu, eta</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_eta_fixed</span> <span class="pre">delta_fixed</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_delta</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_eta</span></code></p></td>
 <td><p>delta=0, mu=0, eta=0</p></td>
 <td><p>nu, chi, phi</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_phi_fixed</span> <span class="pre">delta_fixed</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_delta</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_phi</span></code></p></td>
 <td><p>delta=0, mu=0, phi=0</p></td>
 <td><p>nu, eta, chi</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_chi_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_nu</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_chi</span></code></p></td>
 <td><p>nu=0, mu=0, chi=0</p></td>
 <td><p>delta, eta, phi</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_phi_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_nu</span> <span class="pre">fixed_eta</span> <span class="pre">fixed_phi</span></code></p></td>
 <td><p>nu=0, eta=0, phi=0</p></td>
 <td><p>mu, delta, chi</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_chi_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_nu</span> <span class="pre">fixed_eta</span> <span class="pre">fixed_chi</span></code></p></td>
 <td><p>nu=0, eta=0, chi=0</p></td>
 <td><p>mu, delta, phi</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_mu_fixed</span> <span class="pre">delta_fixed</span></code></p></td>
-<td><p>delta=0, bisect, mu=0</p></td>
-<td><p>nu, eta, chi, phi</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisect</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_nu</span></code></p></td>
+<td><p>bisect, mu=0, nu=0</p></td>
+<td><p>delta, eta, chi, phi</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_eta_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
-<td><p>nu=0, bisect, eta=0</p></td>
-<td><p>mu, delta, chi, phi</p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bisect</span> <span class="pre">fixed_eta</span> <span class="pre">fixed_delta</span></code></p></td>
+<td><p>bisect, eta=0, delta=0</p></td>
+<td><p>mu, nu, chi, phi</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_omega_fixed</span> <span class="pre">nu_fixed</span></code></p></td>
-<td><p>nu=0, bisect, omega=0</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisect</span> <span class="pre">fixed_omega</span> <span class="pre">fixed_nu</span></code></p></td>
+<td><p>bisect, omega=0, nu=0</p></td>
 <td><p>mu, delta, eta, chi, phi</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">chi_phi_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">a_eq_b</span> <span class="pre">fixed_chi</span> <span class="pre">fixed_phi</span></code></p></td>
 <td><p>a_eq_b, chi=0, phi=0</p></td>
 <td><p>mu, delta, nu, eta</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">chi_eta_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">a_eq_b</span> <span class="pre">fixed_chi</span> <span class="pre">fixed_eta</span></code></p></td>
 <td><p>a_eq_b, chi=0, eta=0</p></td>
 <td><p>mu, delta, nu, phi</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">chi_mu_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">a_eq_b</span> <span class="pre">fixed_chi</span> <span class="pre">fixed_mu</span></code></p></td>
 <td><p>a_eq_b, chi=0, mu=0</p></td>
 <td><p>delta, nu, eta, phi</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_eta_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">a_eq_b</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_eta</span></code></p></td>
 <td><p>a_eq_b, mu=0, eta=0</p></td>
 <td><p>delta, nu, chi, phi</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_phi_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">a_eq_b</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_phi</span></code></p></td>
 <td><p>a_eq_b, mu=0, phi=0</p></td>
 <td><p>delta, nu, eta, chi</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_phi_fixed</span> <span class="pre">a_eq_b</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">a_eq_b</span> <span class="pre">fixed_eta</span> <span class="pre">fixed_phi</span></code></p></td>
 <td><p>a_eq_b, eta=0, phi=0</p></td>
 <td><p>mu, delta, nu, chi</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">eta_chi_phi_fixed</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_eta</span> <span class="pre">fixed_chi</span> <span class="pre">fixed_phi</span></code></p></td>
 <td><p>eta=0, chi=0, phi=0</p></td>
 <td><p>mu, delta, nu</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_chi_phi_fixed</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu</span> <span class="pre">fixed_chi</span> <span class="pre">fixed_phi</span></code></p></td>
 <td><p>mu=0, chi=0, phi=0</p></td>
 <td><p>delta, nu, eta</p></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_eta_phi_fixed</span></code></p></td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu</span> <span class="pre">fixed_eta</span> <span class="pre">fixed_phi</span></code></p></td>
 <td><p>mu=0, eta=0, phi=0</p></td>
 <td><p>delta, nu, chi</p></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">mu_eta_chi_fixed</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu</span> <span class="pre">fixed_eta</span> <span class="pre">fixed_chi</span></code></p></td>
 <td><p>mu=0, eta=0, chi=0</p></td>
 <td><p>delta, nu, phi</p></td>
 <td></td>
@@ -1571,44 +1571,88 @@ remaining axes are held constant (<code class="docutils literal notranslate"><sp
 </section>
 <section id="default-mode">
 <h4>Default mode<a class="headerlink" href="#default-mode" title="Link to this heading">#</a></h4>
-<p>The default mode is <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_eta_fixed</span> <span class="pre">nu_fixed</span></code> (bisect,
-eta=0, nu=0).  This is equivalent to <code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code> in E6C
-terminology: scattering stays in the vertical plane with the sample
-angle bisecting the detector angle (<code class="docutils literal notranslate"><span class="pre">eta</span> <span class="pre">=</span> <span class="pre">delta/2</span></code>).</p>
+<p>The default mode is <code class="docutils literal notranslate"><span class="pre">bisect</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_nu</span></code> (canonical
+<code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code>: <code class="docutils literal notranslate"><span class="pre">bisect</span></code>, <code class="docutils literal notranslate"><span class="pre">mu=0</span></code>, <code class="docutils literal notranslate"><span class="pre">nu=0</span></code>).
+Equivalent to <code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code> in E6C terminology: scattering
+stays in the vertical plane on the <code class="docutils literal notranslate"><span class="pre">delta</span></code> axis with the sample
+bisecting the scattering angle.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p><strong>Bisector modes</strong></p>
+<p><strong>Bisecting modes</strong></p>
 <p>Following You (1999) Figure 1 (see also
 <a class="reference external" href="https://diffcalc-core.readthedocs.io">diffcalc-core docs</a>),
-<code class="docutils literal notranslate"><span class="pre">nu</span></code> rotates about the vertical axis and swings the detector
-<strong>horizontally</strong>; <code class="docutils literal notranslate"><span class="pre">delta</span></code> rotates about the horizontal axis and swings
-the detector <strong>vertically</strong>.</p>
-<p>The <code class="docutils literal notranslate"><span class="pre">bisect</span></code> constraint implements <code class="docutils literal notranslate"><span class="pre">eta</span> <span class="pre">=</span> <span class="pre">delta/2</span></code> (vertical
-bisector).  <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_eta_fixed</span> <span class="pre">nu_fixed</span></code> (bisect + eta=0 +
-nu=0) is equivalent to a <code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code> mode: scattering
-stays in the vertical plane with the sample bisecting the detector
-angle.  <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_mu_fixed</span> <span class="pre">delta_fixed</span></code> (bisect + mu=0 +
-delta=0) is the horizontal counterpart.</p>
-<p>In the mode name the <em>bisected sample axis</em> is stated; the
-corresponding <em>detector axis</em> is implied by the bisect constraint
-(<code class="docutils literal notranslate"><span class="pre">delta</span></code>).</p>
+<code class="docutils literal notranslate"><span class="pre">delta</span></code> rotates about a horizontal axis and swings the detector
+<strong>vertically</strong>; <code class="docutils literal notranslate"><span class="pre">nu</span></code> rotates about a vertical axis and swings the
+detector <strong>horizontally</strong>.  <code class="docutils literal notranslate"><span class="pre">mu</span></code> is the horizontal-arm sample
+axis (rotates about the vertical lab axis); <code class="docutils literal notranslate"><span class="pre">eta</span></code> rotates about a
+horizontal axis.</p>
+<p>diffcalc’s <code class="docutils literal notranslate"><span class="pre">bisect</span></code> constraint pairs with one sample axis at a
+time (<code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">eta</span></code>, or <code class="docutils literal notranslate"><span class="pre">omega</span></code>) and pins the <em>other</em>
+in-plane axes so that the active detector axis bisects with that
+sample axis:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 30.0%" />
+<col style="width: 20.0%" />
+<col style="width: 25.0%" />
+<col style="width: 25.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode</p></th>
+<th class="head"><p>Family</p></th>
+<th class="head"><p>Pinned axes</p></th>
+<th class="head"><p>Active axes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisect</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_nu</span></code></p></td>
+<td><p>bisecting vertical (≡ E6C <code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mu=0</span></code>, <code class="docutils literal notranslate"><span class="pre">nu=0</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">delta</span></code> and <code class="docutils literal notranslate"><span class="pre">eta</span></code> acting as ttheta and ttheta/2,
+respectively</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bisect</span> <span class="pre">fixed_eta</span> <span class="pre">fixed_delta</span></code></p></td>
+<td><p>bisecting horizontal (≡ E6C <code class="docutils literal notranslate"><span class="pre">bisecting_horizontal</span></code>)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">eta=0</span></code>, <code class="docutils literal notranslate"><span class="pre">delta=0</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">nu</span></code> and <code class="docutils literal notranslate"><span class="pre">mu</span></code> acting as ttheta and ttheta/2,
+respectively</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisect</span> <span class="pre">fixed_omega</span> <span class="pre">fixed_nu</span></code></p></td>
+<td><p>bisecting vertical with <code class="docutils literal notranslate"><span class="pre">omega</span></code>-tilt (general You case)</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">omega=0</span></code>, <code class="docutils literal notranslate"><span class="pre">nu=0</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">eta</span></code>, <code class="docutils literal notranslate"><span class="pre">delta</span></code></p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 </section>
 <section id="mode-naming-convention">
 <h4>Mode naming convention<a class="headerlink" href="#mode-naming-convention" title="Link to this heading">#</a></h4>
-<p>All mode names follow the pattern <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">&lt;constraints&gt;</span></code>, where <code class="docutils literal notranslate"><span class="pre">4S+2D</span></code>
-identifies the You (1999) geometry and the suffix encodes the three fixed
-constraints:</p>
+<p>Each mode name lists the three diffcalc constraints separated by
+spaces.  Token order is <strong>keyword constraints first</strong>
+(<code class="docutils literal notranslate"><span class="pre">a_eq_b</span></code>, <code class="docutils literal notranslate"><span class="pre">bisect</span></code>, <code class="docutils literal notranslate"><span class="pre">bin_eq_bout</span></code>), then <code class="docutils literal notranslate"><span class="pre">fixed_&lt;axis&gt;</span></code>
+tokens.  For all-<code class="docutils literal notranslate"><span class="pre">fixed_*</span></code> modes the conventional order is
+<strong>detector → sample(s)</strong>.</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">&lt;axis&gt;_fixed</span></code> or <code class="docutils literal notranslate"><span class="pre">&lt;ax1&gt;_&lt;ax2&gt;_fixed</span></code> — motor axis (or axes) fixed at
-zero.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fixed_&lt;axis&gt;</span></code> — that axis or pseudo-angle is pinned at <code class="docutils literal notranslate"><span class="pre">0</span></code>.
+Applies to detector axes (<code class="docutils literal notranslate"><span class="pre">delta</span></code>, <code class="docutils literal notranslate"><span class="pre">nu</span></code>), reference angles
+(<code class="docutils literal notranslate"><span class="pre">psi</span></code>), and sample axes (<code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">eta</span></code>, <code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code>,
+<code class="docutils literal notranslate"><span class="pre">omega</span></code>).</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">a_eq_b</span></code> — reference-vector constraint: azimuthal reference equals
 scattering vector direction.  <strong>Caution:</strong> singular when the scattering
 vector is parallel to the reference vector; avoid as a default.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">bisect</span></code> — bisector condition: <code class="docutils literal notranslate"><span class="pre">eta</span> <span class="pre">=</span> <span class="pre">delta/2</span></code>.  The bisected sample
-axis (e.g. <code class="docutils literal notranslate"><span class="pre">eta</span></code>) is named; the detector axis (<code class="docutils literal notranslate"><span class="pre">delta</span></code>) is implied.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">psi_fixed</span></code>, <code class="docutils literal notranslate"><span class="pre">omega_fixed</span></code> — azimuthal or omega angle fixed at zero.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bin_eq_bout</span></code> — reference constraint: incidence equals exit angle.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bisect</span></code> — sample bisector condition (one of three diffcalc
+variants, see “Bisector modes” above).</p></li>
 </ul>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">bisect</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_nu</span></code> encodes
+<code class="docutils literal notranslate"><span class="pre">{bisect:</span> <span class="pre">True,</span> <span class="pre">mu:</span> <span class="pre">0,</span> <span class="pre">nu:</span> <span class="pre">0}</span></code> and <code class="docutils literal notranslate"><span class="pre">a_eq_b</span> <span class="pre">fixed_delta</span> <span class="pre">fixed_mu</span></code>
+encodes <code class="docutils literal notranslate"><span class="pre">{a_eq_b:</span> <span class="pre">True,</span> <span class="pre">delta:</span> <span class="pre">0,</span> <span class="pre">mu:</span> <span class="pre">0}</span></code>.  See the
+<a class="reference internal" href="guide_diffcalc.html#guide-diffcalc"><span class="std std-ref">How to use the diffcalc solver</span></a> “Cross-reference to common conventions” section
+for a mapping between these names and the
+<code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code> / <code class="docutils literal notranslate"><span class="pre">lifting_detector_&lt;axis&gt;</span></code> / <code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code>
+vocabulary used by other solvers.</p>
 </section>
 <section id="id4">
 <h4>Extensibility<a class="headerlink" href="#id4" title="Link to this heading">#</a></h4>

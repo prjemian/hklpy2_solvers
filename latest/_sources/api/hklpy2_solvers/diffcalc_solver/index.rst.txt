@@ -162,6 +162,9 @@ Module Contents
 
       List of operating modes for this geometry.
 
+      Includes both built-in modes and any user-registered modes
+      (see :meth:`register_mode`).
+
 
    .. py:attribute:: name
       :value: 'diffcalc'
@@ -190,6 +193,48 @@ Module Contents
 
 
 
+   .. py:method:: register_mode(name: str, constraints: dict[str, Any]) -> None
+
+      Register a new operating mode at runtime.
+
+      Lets users add mode/constraint combinations that diffcalc-core
+      implements but ``DiffcalcSolver`` does not ship by default,
+      without forking the package.  The mode is validated against
+      :class:`diffcalc.hkl.constraints.Constraints` before being
+      accepted.
+
+      PARAMETERS
+
+      name : str
+          Name to register the mode under.  Must not clash with a
+          built-in mode name nor with a previously registered user
+          mode (use :meth:`unregister_mode` first to redefine).
+      constraints : dict[str, Any]
+          Exactly three diffcalc constraints, keyed by diffcalc
+          constraint name.  Float values pin the named axis at
+          that value; ``True`` activates a boolean constraint
+          (``a_eq_b``, ``bin_eq_bout``, ``bisect``).
+
+      RAISES
+
+      SolverError
+          If ``name`` clashes with a built-in or already-registered
+          mode; if ``constraints`` is not a dict of exactly three
+          entries with diffcalc-recognised keys; if the combination
+          does not survive ``Constraints(...).asdict`` round-trip
+          (catches same-category conflicts that diffcalc silently
+          collapses); or if
+          :meth:`diffcalc.hkl.constraints.Constraints.is_current_mode_implemented`
+          returns False.
+
+      .. note::
+
+         User-registered modes live only for the lifetime of this
+         solver instance.  They are not persisted across hklpy2
+         ``save_config`` / ``restore_config`` round-trips.
+
+
+
    .. py:method:: removeAllReflections() -> None
 
       Remove all reflections.
@@ -211,6 +256,33 @@ Module Contents
           :class:`~hklpy2.backends.base.SolverBase`; it was introduced via
           the hklpy2 presets feature.  Tracked upstream as
           `bluesky/hklpy2#347 <https://github.com/bluesky/hklpy2/issues/347>`_.
+
+
+
+   .. py:method:: unregister_mode(name: str) -> None
+
+      Remove a previously :meth:`register_mode`-registered mode.
+
+      PARAMETERS
+
+      name : str
+          Name of the user-registered mode to remove.
+
+      RAISES
+
+      SolverError
+          If ``name`` refers to a built-in mode (built-ins cannot
+          be removed); if ``name`` is not currently registered.
+
+      If the solver-side active :attr:`mode` is the one being
+      removed, it is cleared to ``""``.  When the solver is wired
+      into an hklpy2 ``Diffractometer``, the diffractometer's own
+      cached ``core.mode`` may still hold the now-stale name and
+      cause a "Mode unknown" ``ValueError`` on the next
+      ``forward()`` call.  To avoid that, switch
+      ``diffractometer.core.mode`` to a different mode before
+      calling :meth:`unregister_mode` when the user mode is
+      currently active.
 
 
 

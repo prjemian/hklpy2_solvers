@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="_static/documentation_options.js?v=3549b550"></script>
+    <script src="_static/documentation_options.js?v=bbefc5a2"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -497,12 +497,126 @@ with 23 operating modes.</p>
 </section>
 <section id="choose-an-operating-mode">
 <h2>Choose an operating mode<a class="headerlink" href="#choose-an-operating-mode" title="Link to this heading">#</a></h2>
-<p>The default mode is <code class="docutils literal notranslate"><span class="pre">4S+2D</span> <span class="pre">bisect_eta_fixed</span> <span class="pre">nu_fixed</span></code> (vertical
-bisector: <code class="docutils literal notranslate"><span class="pre">eta</span> <span class="pre">=</span> <span class="pre">delta/2</span></code>, eta=0, nu=0).  To change it:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;4S+2D mu_chi_phi_fixed&quot;</span>
+<p>The default mode is <code class="docutils literal notranslate"><span class="pre">bisect</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_nu</span></code> (canonical
+<code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code>: <code class="docutils literal notranslate"><span class="pre">mu=0</span></code>, <code class="docutils literal notranslate"><span class="pre">nu=0</span></code>; <code class="docutils literal notranslate"><span class="pre">delta</span></code> and <code class="docutils literal notranslate"><span class="pre">eta</span></code> acting as
+ttheta and ttheta/2, respectively).  To choose a different mode:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;fixed_mu fixed_chi fixed_phi&quot;</span>
 </pre></div>
 </div>
 <p>See <a class="reference internal" href="geometries.html#geometry-diffcalc-4s-2d"><span class="std std-ref">diffcalc solver</span></a> for the full list of 23 modes.</p>
+</section>
+<section id="cross-reference-to-common-conventions">
+<h2>Cross-reference to common conventions<a class="headerlink" href="#cross-reference-to-common-conventions" title="Link to this heading">#</a></h2>
+<p>Mode names use diffcalc’s constraint vocabulary directly
+(<code class="docutils literal notranslate"><span class="pre">fixed_&lt;axis&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">bisect</span></code>, <code class="docutils literal notranslate"><span class="pre">a_eq_b</span></code>, …) rather than the
+<code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code> / <code class="docutils literal notranslate"><span class="pre">lifting_detector_&lt;axis&gt;</span></code> /
+<code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code> vocabulary used by <code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code> and
+<code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solvers.  The table below maps the most common
+conventions onto the equivalent diffcalc mode:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 35.0%" />
+<col style="width: 30.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Common-convention name</p></th>
+<th class="head"><p>Equivalent diffcalc mode</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bisect</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_nu</span></code></p></td>
+<td><p>Vertical bisector: <code class="docutils literal notranslate"><span class="pre">mu=0</span></code>, <code class="docutils literal notranslate"><span class="pre">nu=0</span></code>.  <code class="docutils literal notranslate"><span class="pre">delta</span></code> swings the
+detector vertically; <code class="docutils literal notranslate"><span class="pre">eta</span></code> is the bisecting sample axis.
+Default.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_horizontal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">bisect</span> <span class="pre">fixed_eta</span> <span class="pre">fixed_delta</span></code></p></td>
+<td><p>Horizontal bisector: <code class="docutils literal notranslate"><span class="pre">eta=0</span></code>, <code class="docutils literal notranslate"><span class="pre">delta=0</span></code>.  <code class="docutils literal notranslate"><span class="pre">nu</span></code> swings
+the detector horizontally; <code class="docutils literal notranslate"><span class="pre">mu</span></code> is the bisecting sample axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_mu</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fixed_eta</span> <span class="pre">fixed_chi</span> <span class="pre">fixed_phi</span></code></p></td>
+<td><p>All three sample-stage axes other than <code class="docutils literal notranslate"><span class="pre">mu</span></code> are pinned;
+<code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">delta</span></code>, <code class="docutils literal notranslate"><span class="pre">nu</span></code> move.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_eta</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu</span> <span class="pre">fixed_chi</span> <span class="pre">fixed_phi</span></code></p></td>
+<td><p>Equivalent of E6C <code class="docutils literal notranslate"><span class="pre">lifting_detector_omega</span></code> (diffcalc’s
+<code class="docutils literal notranslate"><span class="pre">eta</span></code> is the same physical axis as <code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code>’s
+<code class="docutils literal notranslate"><span class="pre">omega</span></code>).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_phi</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fixed_mu</span> <span class="pre">fixed_eta</span> <span class="pre">fixed_chi</span></code></p></td>
+<td><p>Sample <code class="docutils literal notranslate"><span class="pre">phi</span></code> carries the motion together with the detector.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">constant_chi</span></code> / <code class="docutils literal notranslate"><span class="pre">constant_phi</span></code></p></td>
+<td><p>2-sample-fixed modes such as <code class="docutils literal notranslate"><span class="pre">fixed_delta</span> <span class="pre">fixed_chi</span> <span class="pre">fixed_phi</span></code></p></td>
+<td><p>Pick the <code class="docutils literal notranslate"><span class="pre">fixed_*</span></code> mode whose suffix names the two sample
+axes you want held constant plus the desired pinned detector.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
+<td><p>n/a in diffcalc-core</p></td>
+<td><p>diffcalc-core does not implement a double-diffraction
+constraint; use the <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> or <code class="docutils literal notranslate"><span class="pre">hkl_soleil</span></code> solvers for
+that engine.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">psi_constant</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">fixed_nu</span> <span class="pre">fixed_psi</span> <span class="pre">fixed_phi</span></code></p></td>
+<td><p>Reference-azimuth pinned to a fixed value (here 0).</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The diffcalc constraint categories are documented in
+<code class="xref py py-class docutils literal notranslate"><span class="pre">diffcalc.hkl.constraints.Constraints</span></code> (see the
+<a class="reference external" href="https://diffcalc-core.readthedocs.io">diffcalc-core documentation</a>).
+A valid combination is <strong>at most one</strong> detector constraint, <strong>at
+most one</strong> reference constraint, and <strong>one to three</strong> sample
+constraints, totalling three constraints overall.</p>
+</section>
+<section id="register-a-runtime-mode">
+<h2>Register a runtime mode<a class="headerlink" href="#register-a-runtime-mode" title="Link to this heading">#</a></h2>
+<p>The 23 built-in modes do not exhaust the constraint combinations
+that diffcalc-core implements.  Use
+<a class="reference internal" href="api/hklpy2_solvers/diffcalc_solver/index.html#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.register_mode" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.register_mode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">register_mode()</span></code></a>
+to add a new mode at runtime without forking the package:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">solver</span> <span class="o">=</span> <span class="n">psic</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">register_mode</span><span class="p">(</span>
+    <span class="s2">&quot;fixed_delta fixed_eta fixed_chi&quot;</span><span class="p">,</span>
+    <span class="p">{</span><span class="s2">&quot;delta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;eta&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="s2">&quot;chi&quot;</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">},</span>
+<span class="p">)</span>
+<span class="n">psic</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;fixed_delta fixed_eta fixed_chi&quot;</span>
+</pre></div>
+</div>
+<p>The mode is validated against
+<code class="xref py py-class docutils literal notranslate"><span class="pre">diffcalc.hkl.constraints.Constraints</span></code> before acceptance:
+the name cannot clash with a built-in, the dict must have exactly
+three diffcalc-recognised constraints with no same-category
+conflicts, and the combination must satisfy
+<code class="docutils literal notranslate"><span class="pre">is_current_mode_implemented()</span></code>.  Otherwise
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.SolverError" title="(in hklpy2 v0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverError</span></code></a> is raised with a message
+naming the offending input.</p>
+<p>Remove a user mode with
+<a class="reference internal" href="api/hklpy2_solvers/diffcalc_solver/index.html#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.unregister_mode" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.unregister_mode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unregister_mode()</span></code></a>.
+Switch away first if the mode is currently active, so the
+diffractometer’s cached mode stays consistent with the solver:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bisect fixed_mu fixed_nu&quot;</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">unregister_mode</span><span class="p">(</span><span class="s2">&quot;fixed_delta fixed_eta fixed_chi&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>User-registered modes live only for the lifetime of the solver
+instance.  <code class="docutils literal notranslate"><span class="pre">Diffractometer.export()</span></code> /
+<code class="docutils literal notranslate"><span class="pre">Diffractometer.restore()</span></code> / <code class="docutils literal notranslate"><span class="pre">simulator_from_config()</span></code> do
+not round-trip them through the YAML configuration, because
+hklpy2’s configuration schema has no solver-defined state slot
+today.  Re-register your modes in any process that loads a
+saved configuration.  Tracked in <span class="issue">108</span>.</p>
+</div>
 </section>
 <section id="compute-motor-positions-forward">
 <h2>Compute motor positions (forward)<a class="headerlink" href="#compute-motor-positions-forward" title="Link to this heading">#</a></h2>
@@ -557,7 +671,7 @@ at a hypothetical position instead.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="geometries.html#geometry-diffcalc-4s-2d"><span class="std std-ref">diffcalc_4S_2D</span></a></p></td>
 <td><p>mu, delta, nu, eta, chi, phi</p></td>
 <td><p>23</p></td>
-<td><p>4S+2D bisect_eta_fixed nu_fixed</p></td>
+<td><p>bisect fixed_mu fixed_nu</p></td>
 </tr>
 </tbody>
 </table>
@@ -626,6 +740,8 @@ hklpy2 documentation</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#add-orientation-reflections">Add orientation reflections</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calculate-the-ub-matrix">Calculate the UB matrix</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-an-operating-mode">Choose an operating mode</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-reference-to-common-conventions">Cross-reference to common conventions</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#register-a-runtime-mode">Register a runtime mode</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-motor-positions-forward">Compute motor positions (forward)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-h-k-l-from-motor-positions-inverse">Compute (h, k, l) from motor positions (inverse)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-geometries-at-a-glance">Available geometries at a glance</a></li>

@@ -137,6 +137,52 @@ A valid combination is **at most one** detector constraint, **at
 most one** reference constraint, and **one to three** sample
 constraints, totalling three constraints overall.
 
+Register a runtime mode
+-----------------------
+
+The 23 built-in modes do not exhaust the constraint combinations
+that diffcalc-core implements.  Use
+:meth:`~hklpy2_solvers.diffcalc_solver.DiffcalcSolver.register_mode`
+to add a new mode at runtime without forking the package:
+
+.. code-block:: python
+
+   solver = psic.core.solver
+   solver.register_mode(
+       "fixed_delta fixed_eta fixed_chi",
+       {"delta": 0.0, "eta": 0.0, "chi": 0.0},
+   )
+   psic.core.mode = "fixed_delta fixed_eta fixed_chi"
+
+The mode is validated against
+:class:`diffcalc.hkl.constraints.Constraints` before acceptance:
+the name cannot clash with a built-in, the dict must have exactly
+three diffcalc-recognised constraints with no same-category
+conflicts, and the combination must satisfy
+``is_current_mode_implemented()``.  Otherwise
+:class:`~hklpy2.exceptions.SolverError` is raised with a message
+naming the offending input.
+
+Remove a user mode with
+:meth:`~hklpy2_solvers.diffcalc_solver.DiffcalcSolver.unregister_mode`.
+Switch away first if the mode is currently active, so the
+diffractometer's cached mode stays consistent with the solver:
+
+.. code-block:: python
+
+   psic.core.mode = "bisect fixed_mu fixed_nu"
+   solver.unregister_mode("fixed_delta fixed_eta fixed_chi")
+
+.. warning::
+
+   User-registered modes live only for the lifetime of the solver
+   instance.  ``Diffractometer.export()`` /
+   ``Diffractometer.restore()`` / ``simulator_from_config()`` do
+   not round-trip them through the YAML configuration, because
+   hklpy2's configuration schema has no solver-defined state slot
+   today.  Re-register your modes in any process that loads a
+   saved configuration.  Tracked in :issue:`108`.
+
 Compute motor positions (forward)
 ---------------------------------
 

@@ -29,6 +29,12 @@ describe future plans.
 
     Expected release: tba
 
+    New Features
+    ~~~~~~~~~~~~
+
+    * Persist ``AdHocSolver`` geometry modifications through hklpy2 ``simulator_from_config``.  :issue:`108`
+    * Persist ``DiffcalcSolver`` user-registered modes through hklpy2 ``simulator_from_config``.  :issue:`108`
+
     Enhancements
     ~~~~~~~~~~~~
 
@@ -38,6 +44,11 @@ describe future plans.
     ~~~~~
 
     * Fix ``DiffcalcSolver.axes_w`` ``KeyError`` for user-registered modes.  :issue:`109`
+
+    Maintenance
+    ~~~~~~~~~~~
+
+    * Bump ``hklpy2`` floor to ``>=0.7.1`` for uniform ``solver_kwargs`` forwarding.  :issue:`108`
 
 0.3.2
 ######

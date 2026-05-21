@@ -2062,3 +2062,208 @@ def test_modes_list_unchanged_by_permutations(parms, context):
         assert len(solver.modes) == baseline
         assert "fixed_mu bisect fixed_nu" not in solver.modes
         assert "bisect fixed_mu fixed_nu" in solver.modes
+
+
+# ---------------------------------------------------------------------------
+# Persist solver-defined state through export/restore (:issue:`108`)
+# ---------------------------------------------------------------------------
+
+
+# A combination diffcalc-core implements but ``_MODES`` does not ship,
+# used to exercise the user-mode persistence path.
+PERSIST_MODE_NAME = "fixed_delta fixed_eta fixed_chi"
+PERSIST_MODE_CONSTRAINTS = {"delta": 0.0, "eta": 0.0, "chi": 0.0}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(register=False, expect_user_modes=False, expected_mode_key=True),
+            does_not_raise(),
+            id="vanilla solver: only built-in mode key in metadata",
+        ),
+        pytest.param(
+            dict(register=True, expect_user_modes=True, expected_mode_key=True),
+            does_not_raise(),
+            id="with user mode: user_modes key present alongside mode",
+        ),
+    ],
+)
+def test_metadata_persists_user_modes(parms, context):
+    """``_metadata`` emits ``user_modes`` only when non-empty.
+
+    Regression for :issue:`108`: the ``solver:`` block in
+    ``export()`` carries the dict of user-registered modes so they
+    survive a ``simulator_from_config()`` round-trip.  The ``mode``
+    key is always emitted (mirroring :class:`HklSolver`).
+    """
+    solver = DiffcalcSolver()
+    if parms["register"]:
+        solver.register_mode(PERSIST_MODE_NAME, PERSIST_MODE_CONSTRAINTS)
+        solver.mode = PERSIST_MODE_NAME
+    with context:
+        meta = solver._metadata
+        assert ("mode" in meta) is parms["expected_mode_key"]
+        assert ("user_modes" in meta) is parms["expect_user_modes"]
+        if parms["expect_user_modes"]:
+            assert meta["user_modes"] == {PERSIST_MODE_NAME: PERSIST_MODE_CONSTRAINTS}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(user_modes={PERSIST_MODE_NAME: PERSIST_MODE_CONSTRAINTS}),
+            does_not_raise(),
+            id="single user mode replayed at construction",
+        ),
+        pytest.param(
+            dict(user_modes={}),
+            does_not_raise(),
+            id="empty user_modes dict is a no-op",
+        ),
+        pytest.param(
+            dict(user_modes="not a dict"),
+            pytest.raises(SolverError, match=re.escape("user_modes must be a dict")),
+            id="non-dict user_modes raises SolverError",
+        ),
+        pytest.param(
+            dict(user_modes={123: PERSIST_MODE_CONSTRAINTS}),
+            pytest.raises(SolverError, match=re.escape("user_modes key must be a string")),
+            id="non-string mode name in user_modes raises",
+        ),
+        pytest.param(
+            dict(user_modes={"bisect fixed_mu fixed_nu": {"bisect": True, "mu": 0.0, "nu": 0.0}}),
+            pytest.raises(SolverError, match=re.escape("user_modes replay failed")),
+            id="redefinition of a built-in mode raises with replay-failed prefix",
+        ),
+    ],
+)
+def test_init_replays_user_modes_kwarg(parms, context):
+    """Constructor pops and replays ``user_modes`` from kwargs.
+
+    This is the delivery channel used by
+    ``hklpy2.simulator_from_config()`` (:issue:`108` / upstream
+    :issue:`405`): non-reserved keys under ``solver:`` flow as
+    ``solver_kwargs`` into ``__init__``.
+    """
+    with context:
+        solver = DiffcalcSolver(user_modes=parms["user_modes"])
+        if isinstance(parms["user_modes"], dict):
+            for name in parms["user_modes"]:
+                assert name in solver.modes
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                name=PERSIST_MODE_NAME,
+                constraints=PERSIST_MODE_CONSTRAINTS,
+                select_user_mode=True,
+            ),
+            does_not_raise(),
+            id="round-trip with user mode active",
+        ),
+        pytest.param(
+            dict(
+                name=PERSIST_MODE_NAME,
+                constraints=PERSIST_MODE_CONSTRAINTS,
+                select_user_mode=False,
+            ),
+            does_not_raise(),
+            id="round-trip with user mode registered but not active",
+        ),
+    ],
+)
+def test_simulator_from_config_round_trip(parms, context):
+    """End-to-end round-trip via ``hklpy2.simulator_from_config``.
+
+    Resolves :issue:`108`: a user mode registered before
+    ``export()`` is available in the reconstructed solver after
+    ``simulator_from_config()``, and the saved active mode is
+    reapplied.
+    """
+    import hklpy2
+    from hklpy2.run_utils import simulator_from_config
+
+    sim = hklpy2.creator(solver="diffcalc", geometry=GEOMETRY_NAME, name="diff_persist")
+    solver = sim.core.solver
+    solver.register_mode(parms["name"], parms["constraints"])
+    if parms["select_user_mode"]:
+        solver.mode = parms["name"]
+    cfg = sim.configuration
+    with context:
+        sim2 = simulator_from_config(cfg)
+        solver2 = sim2.core.solver
+        assert parms["name"] in solver2.modes
+        assert solver2._user_modes[parms["name"]] == parms["constraints"]
+        if parms["select_user_mode"]:
+            # ``Core.mode`` is the authoritative cache; the solver's
+            # own mode follows on the next forward/inverse call when
+            # ``update_solver()`` pushes it through.
+            assert sim2.core.mode == parms["name"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="replay is idempotent on repeated simulator_from_config",
+        ),
+    ],
+)
+def test_simulator_from_config_round_trip_idempotent(parms, context):
+    """Replaying a config twice does not raise (idempotent registration).
+
+    Loading the same persisted state into a solver that already
+    has the user mode registered must be a no-op rather than
+    raising "already registered".
+    """
+    import hklpy2
+    from hklpy2.run_utils import simulator_from_config
+
+    sim = hklpy2.creator(solver="diffcalc", geometry=GEOMETRY_NAME, name="diff_idem")
+    sim.core.solver.register_mode(PERSIST_MODE_NAME, PERSIST_MODE_CONSTRAINTS)
+    cfg = sim.configuration
+    with context:
+        sim2 = simulator_from_config(cfg)
+        # Second load on the same instance must not raise.
+        sim2.restore(cfg, restore_mode=True)
+        assert PERSIST_MODE_NAME in sim2.core.solver.modes
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="constructor-level idempotent replay skips known token-set",
+        ),
+    ],
+)
+def test_init_user_modes_replay_idempotent(parms, context):
+    """``_replay_user_modes`` skips an already-registered token-set.
+
+    Exercises the early-continue branch that makes the kwarg
+    delivery channel safe to re-use across construction +
+    explicit ``restore()`` cycles without raising "already
+    registered".
+    """
+    # Two entries with the same token-set, second is a permutation
+    # of the first.  After the first registration the second is a
+    # no-op rather than a SolverError.
+    state = {
+        PERSIST_MODE_NAME: PERSIST_MODE_CONSTRAINTS,
+        "fixed_eta fixed_delta fixed_chi": PERSIST_MODE_CONSTRAINTS,
+    }
+    with context:
+        solver = DiffcalcSolver(user_modes=state)
+        # Only one user-mode entry stored (canonical name from first insert).
+        assert len(solver._user_modes) == 1
+        assert PERSIST_MODE_NAME in solver._user_modes

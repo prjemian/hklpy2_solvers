@@ -68,6 +68,7 @@ jobs:
           # in this env.
           create-args: >-
             python=3.14
+            hkl
             hklpy2
             ad-hoc-diffractometer
             numpy
@@ -84,10 +85,15 @@ jobs:
         # bumped to the PyPI release because the conda-forge feedstock
         # tracks releases asynchronously (see :issue:`99`); remove the
         # explicit pin once the feedstock catches up to the
-        # ``pyproject.toml`` floor.
+        # ``pyproject.toml`` floor.  ``hklpy2`` is bumped to the PyPI
+        # release for the same reason (see :issue:`108`); the
+        # conda-forge ``hkl`` package above keeps the libhkl GI
+        # bindings in place.  Remove the explicit ``hklpy2`` pip pin
+        # once the conda-forge feedstock ships >=0.7.1.
         run: |
           pip install diffcalc-core
           pip install --upgrade "ad_hoc_diffractometer>=0.11.0"
+          pip install --upgrade "hklpy2>=0.7.1"
 
       - name: Install hklpy2_solvers (editable, no deps)
         # Use --no-deps because all runtime deps are already provided

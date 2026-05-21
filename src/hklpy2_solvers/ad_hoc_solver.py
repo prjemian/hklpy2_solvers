@@ -55,6 +55,42 @@ except PackageNotFoundError:  # pragma: no cover - defensive
 _INPUT_EXTRA_NAMES: frozenset[str] = frozenset({"n_hat", "psi", "alpha_i", "beta_out", "h2", "k2", "l2"})
 """Names of mode-extra parameters supplied by the user (vs. solver outputs)."""
 
+# ---------------------------------------------------------------------------
+# Solver-state persistence (:issue:`108`)
+# ---------------------------------------------------------------------------
+
+_AD_HOC_BUILTIN_GEOMETRIES: frozenset[str] = frozenset(
+    {
+        "fivec",
+        "fourch",
+        "fourcv",
+        "kappa4ch",
+        "kappa4cv",
+        "kappa6c",
+        "psic",
+        "s2d2",
+        "sixc",
+        "zaxis",
+    }
+)
+"""Geometry names shipped by the installed ``ad_hoc_diffractometer``.
+
+Used to decide whether a geometry needs to be persisted in the
+solver's ``_metadata``: any name not in this set is treated as
+user-registered and is always persisted; names in this set are
+persisted only when the live geometry has been modified (modes
+added or removed) relative to a fresh reference instance.
+
+Guarded by :func:`tests.test_ad_hoc_solver.test_builtin_geometry_set`
+so an upstream addition fails CI rather than silently turning a
+shipped geometry into a "user-registered" one.
+"""
+
+_GEOMETRY_STATE_OMIT_KEYS: frozenset[str] = frozenset({"active_sample", "samples", "wavelength"})
+"""Top-level keys in ``AdHocDiffractometer.to_dict()`` that hklpy2
+manages independently and must not round-trip through the solver
+state (avoids double-restore of samples and wavelength)."""
+
 _REFERENCE_EXTRA_NAMES: frozenset[str] = frozenset({"psi", "alpha_i", "beta_out"})
 """Reference-constraint scalar extras (set via ConstraintSet rebuild)."""
 
@@ -91,11 +127,11 @@ class AdHocSolver(SolverBase):
     version = _BACKEND_VERSION
 
     def __init__(self, geometry: str = DEFAULT_GEOMETRY, **kwargs: Any) -> None:
-        available = ahd.list_geometries()
-        if geometry not in available:
-            raise SolverError(
-                f"AdHocSolver does not support geometry {geometry!r}.  Available: {sorted(available.keys())}"
-            )
+        # Pop persistence kwargs delivered via ``solver_kwargs`` from
+        # a saved configuration (see :issue:`108`).  When present,
+        # ``geometry_state`` rebuilds the internal geometry from a
+        # serialised snapshot rather than calling ``make_geometry``.
+        geometry_state = kwargs.pop("geometry_state", None)
 
         # Extract factory kwargs that are not for SolverBase.  ``ad_hoc``
         # kappa factories take ``alpha_deg``; we accept the more explicit
@@ -105,8 +141,21 @@ class AdHocSolver(SolverBase):
         if "kappa_alpha_deg" in kwargs:
             factory_kwargs["alpha_deg"] = kwargs.pop("kappa_alpha_deg")
 
-        # Create the internal geometry object.
-        self._geom = ahd.make_geometry(geometry, **factory_kwargs)
+        if geometry_state is not None:
+            # Replay path (:issue:`108`): rebuild the geometry from
+            # the persisted snapshot.  Validates the geometry name
+            # matches what the snapshot describes so a corrupted
+            # config does not silently produce a wrong-geometry
+            # solver.
+            self._geom = self._geometry_from_state(geometry, geometry_state)
+        else:
+            available = ahd.list_geometries()
+            if geometry not in available:
+                raise SolverError(
+                    f"AdHocSolver does not support geometry {geometry!r}.  Available: {sorted(available.keys())}"
+                )
+            # Create the internal geometry object from the registry.
+            self._geom = ahd.make_geometry(geometry, **factory_kwargs)
 
         # Cache axis names from geometry stages (stable after creation).
         self._real_axes = [s.name for s in self._geom.sample_stages + self._geom.detector_stages]
@@ -127,6 +176,31 @@ class AdHocSolver(SolverBase):
             if default is None:  # pragma: no cover - geometry always sets one
                 default = self.modes[0]
             self.mode = default
+
+    @staticmethod
+    def _geometry_from_state(geometry: str, state: Any) -> Any:
+        """Reconstruct an ``AdHocDiffractometer`` from a persisted snapshot.
+
+        Wraps :meth:`ad_hoc_diffractometer.AdHocDiffractometer.from_dict`
+        with hklpy2-side validation: the snapshot must be a dict and
+        its ``name`` field (when present) must match ``geometry``,
+        catching configs in which the ``geometry:`` field and the
+        persisted state have drifted.
+        """
+        if not isinstance(state, dict):
+            raise SolverError(f"geometry_state must be a dict, received {state!r}.")
+        snapshot_name = state.get("name")
+        if snapshot_name is not None and snapshot_name != geometry:
+            raise SolverError(
+                f"geometry_state name {snapshot_name!r} does not match the requested geometry {geometry!r}."
+            )
+        # The omitted keys (samples, active_sample, wavelength) are
+        # restored by hklpy2's own mechanisms after construction.
+        # ``from_dict`` tolerates their absence — verified in tests.
+        try:
+            return ahd.AdHocDiffractometer.from_dict(state)
+        except Exception as exc:  # pragma: no cover - defensive
+            raise SolverError(f"AdHocDiffractometer.from_dict failed for geometry {geometry!r}: {exc}") from exc
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -502,6 +576,76 @@ class AdHocSolver(SolverBase):
     def modes(self) -> list[str]:
         """List of operating modes for this geometry."""
         return list(self._geom.modes.keys())
+
+    @property
+    def _metadata(self) -> dict[str, Any]:
+        """Solver metadata extended with the active mode and geometry state.
+
+        Adds the following keys to the base :class:`SolverBase`
+        metadata:
+
+        * ``mode`` — the currently active operating mode name.  Read
+          back by :meth:`hklpy2.diffract.DiffractometerBase.restore`
+          (via ``restore_mode=True``).  Mirrors the precedent set by
+          :class:`hklpy2.backends.hkl_soleil.HklSolver._metadata`.
+        * ``geometry_state`` — only when the live geometry has
+          deviated from a fresh reference of the same name (either
+          a user-registered geometry, or a built-in geometry whose
+          mode list has been modified).  The snapshot is produced
+          by :meth:`ad_hoc_diffractometer.AdHocDiffractometer.to_dict`
+          with hklpy2-managed fields (``samples``, ``active_sample``,
+          ``wavelength``) stripped to avoid double-restore.
+
+        ``hklpy2.simulator_from_config()`` forwards every
+        non-reserved key under ``solver:`` as a ``solver_kwargs``
+        entry, where :meth:`__init__` consumes ``geometry_state``
+        and replays it via
+        :meth:`ad_hoc_diffractometer.AdHocDiffractometer.from_dict`.
+        See :issue:`108`.
+
+        .. note::
+
+           ``hklpy2.Core`` caches the active mode and pushes it to
+           the underlying solver only when the next ``forward()``
+           / ``inverse()`` runs (or when
+           :meth:`hklpy2.ops.Core.update_solver` is called
+           explicitly).  If a caller sets ``diffractometer.core.mode``
+           then immediately reads ``_metadata`` / calls
+           ``export()`` without an intervening calculation, the
+           saved ``mode`` may reflect the previous value.  This
+           caching behaviour is upstream and affects every solver
+           (including :class:`~hklpy2.backends.hkl_soleil.HklSolver`).
+        """
+        meta = dict(super()._metadata)
+        meta["mode"] = self.mode
+        state = self._serialize_geometry_state()
+        if state is not None:
+            meta["geometry_state"] = state
+        return meta
+
+    def _serialize_geometry_state(self) -> dict[str, Any] | None:
+        """Return a serialised geometry snapshot iff non-default.
+
+        Returns ``None`` for a vanilla built-in geometry (name in
+        :data:`_AD_HOC_BUILTIN_GEOMETRIES`, modes structurally
+        identical to a fresh reference).  Otherwise returns a YAML-
+        safe dict suitable for embedding in ``_metadata``.
+        """
+        live = self._geom.to_dict()
+        if self.geometry in _AD_HOC_BUILTIN_GEOMETRIES:
+            try:
+                reference = ahd.make_geometry(self.geometry).to_dict()
+            except Exception:  # pragma: no cover - defensive
+                # Failure to build a reference forces persistence
+                # so the user does not lose state silently.
+                reference = None
+            if reference is not None and live.get("modes") == reference.get("modes"):
+                # Vanilla built-in geometry with unmodified modes:
+                # nothing solver-specific to persist.
+                return None
+        # Strip fields hklpy2 manages independently to avoid
+        # double-restore (samples, wavelength, active_sample).
+        return {k: v for k, v in live.items() if k not in _GEOMETRY_STATE_OMIT_KEYS}
 
     @property
     def pseudo_axis_names(self) -> list[str]:

@@ -124,7 +124,14 @@ html_theme_options = {
     "github_url": github_url,
     "navbar_end": ["version-switcher", "theme-switcher", "navbar-icon-links"],
     "switcher": {
-        "json_url": "https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json",
+        # ``?v={release}`` is a cache-buster: GitHub Pages serves JSON with
+        # ``Cache-Control: max-age=600`` and the URL is otherwise identical
+        # across releases, so without this stale entries would linger in
+        # browser/CDN caches for up to 10 minutes after a new release.
+        "json_url": (
+            "https://prjemian.github.io/hklpy2_solvers/latest/_static/"
+            f"switcher.json?v={release}"
+        ),
         "version_match": switcher_version_match,
     },
     "check_switcher": False,

@@ -29,59 +29,64 @@ describe future plans.
 
     Expected release: tba
 
-    Breaking Changes
-    ~~~~~~~~~~~~~~~~
+0.3.2
+######
 
-    * Realign ``DiffcalcSolver`` bisect modes to canonical vertical/horizontal pairings.  :issue:`97`
-    * Rename all ``DiffcalcSolver`` modes; drop ``4S+2D`` prefix and use ``fixed_<axis>`` form.  :issue:`97`
-    * Set ``DiffcalcSolver`` default mode to ``bisect fixed_mu fixed_nu`` (canonical vertical bisector).  :issue:`97`
+Released 2026-05-20.
 
-    New Features
-    ~~~~~~~~~~~~
+Breaking Changes
+~~~~~~~~~~~~~~~~
 
-    * Add ``cross-validation.yml`` workflow running libhkl-backed tests via conda-forge.  :issue:`65`
-    * Add ``DiffcalcSolver.register_mode`` / ``unregister_mode`` for runtime constraint sets.  :issue:`106`
-    * Add horizontal four-circle cross-validation group against ``hkl_soleil``.  :issue:`67`
-    * Add horizontal kappa cross-validation group against ``hkl_soleil``.  :issue:`75`
-    * Add six-circle bisecting peers to cross-validation groups.  :issue:`64`
-    * Add vertical four-circle cross-validation suite against ``hkl_soleil``.  :issue:`50`
-    * Add vertical kappa four-circle cross-validation group against ``hkl_soleil``.  :issue:`66`
-    * Expand cross-validation sample set to all seven crystal systems.  :issue:`69`
-    * Surface ``ad_hoc_diffractometer.reference`` helpers on ``AdHocSolver``.  :issue:`101`
+* Realign ``DiffcalcSolver`` bisect modes to canonical vertical/horizontal pairings.  :issue:`97`
+* Rename all ``DiffcalcSolver`` modes; drop ``4S+2D`` prefix and use ``fixed_<axis>`` form.  :issue:`97`
+* Set ``DiffcalcSolver`` default mode to ``bisect fixed_mu fixed_nu`` (canonical vertical bisector).  :issue:`97`
 
-    Enhancements
-    ~~~~~~~~~~~~
+New Features
+~~~~~~~~~~~~
 
-    * Add cross-reference table mapping common-convention names to diffcalc modes.  :issue:`97`
-    * Add guide-regression smoke test to catch API drift in how-to guides.  :issue:`88`
-    * Add regression test documenting ``ad_hoc/kappa6c bisecting_horizontal`` reflection-pattern gap.  :issue:`77`
-    * Add regression test documenting ``ad_hoc/psic bisecting_horizontal`` asymmetric-reflection gap.  :issue:`71`
-    * Document derived-quantity access (ψ, α_i, β_out, n_az, OMEGA) for ``AdHocSolver``.  :issue:`63`
-    * Expand sapphire cross-validation matrix with ``(1, 1, 3)`` and ``(1, 1, 6)``.  :issue:`77`
+* Add ``cross-validation.yml`` workflow running libhkl-backed tests via conda-forge.  :issue:`65`
+* Add ``DiffcalcSolver.register_mode`` / ``unregister_mode`` for runtime constraint sets.  :issue:`106`
+* Add horizontal four-circle cross-validation group against ``hkl_soleil``.  :issue:`67`
+* Add horizontal kappa cross-validation group against ``hkl_soleil``.  :issue:`75`
+* Add six-circle bisecting peers to cross-validation groups.  :issue:`64`
+* Add vertical four-circle cross-validation suite against ``hkl_soleil``.  :issue:`50`
+* Add vertical kappa four-circle cross-validation group against ``hkl_soleil``.  :issue:`66`
+* Expand cross-validation sample set to all seven crystal systems.  :issue:`69`
+* Surface ``ad_hoc_diffractometer.reference`` helpers on ``AdHocSolver``.  :issue:`101`
 
-    Fixes
-    ~~~~~
+Enhancements
+~~~~~~~~~~~~
 
-    * Accept scalar default ``n_hat`` from ``hklpy2`` Core in ``AdHocSolver`` extras setter.  :issue:`81`
-    * Clarify guide wording: diffractometer ``forward()`` returns a single chosen solution.  :issue:`87`
-    * Correct ``ad_hoc`` and ``diffcalc`` guides to use current hklpy2 API.  :issue:`86`
-    * Correct horizontal eulerian cross-validation reference to ``E4CH``.  :issue:`78`
-    * Honour ``r1`` / ``r2`` arguments in ``AdHocSolver.calculate_UB``.  :issue:`56`
-    * Harden cross-validation bootstrap with deterministic retry on rough-UB ``forward()`` rejection.  :issue:`83`
-    * Honour ``r1`` / ``r2`` arguments in ``DiffcalcSolver.calculate_UB``.  :issue:`58`
-    * Lift ``ad_hoc`` ``psic`` / ``kappa6c`` ``bisecting_horizontal`` known-gap markers.  :issue:`99`
-    * Pin ``python=3.14`` in ``cross-validation.yml`` to narrow K6C triclinic env skew.  :issue:`83`
-    * Track ``ad_hoc`` horizontal-bisecting rhombohedral ``(1, 1, 0)`` gap as known-gap.  :issue:`69`
-    * Track ``ad_hoc`` kappa-vertical sapphire ``(0, 1, 2)`` regression as new known-gap.  :issue:`99`
-    * Track libhkl rhombohedral ``(0, 0, 6)`` B-matrix disagreements as ``tth``-disagreement.  :issue:`68`
+* Add cross-reference table mapping common-convention names to diffcalc modes.  :issue:`97`
+* Add guide-regression smoke test to catch API drift in how-to guides.  :issue:`88`
+* Add regression test documenting ``ad_hoc/kappa6c bisecting_horizontal`` reflection-pattern gap.  :issue:`77`
+* Add regression test documenting ``ad_hoc/psic bisecting_horizontal`` asymmetric-reflection gap.  :issue:`71`
+* Document derived-quantity access (ψ, α_i, β_out, n_az, OMEGA) for ``AdHocSolver``.  :issue:`63`
+* Expand sapphire cross-validation matrix with ``(1, 1, 3)`` and ``(1, 1, 6)``.  :issue:`77`
 
-    Maintenance
-    ~~~~~~~~~~~
+Fixes
+~~~~~
 
-    * Add focused key-package-version diagnostic step to ``cross-validation.yml``.  :issue:`83`
-    * Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.0``.  :issue:`99`
-    * Pip-upgrade ``ad_hoc_diffractometer`` in ``cross-validation.yml`` ahead of conda-forge.  :issue:`99`
-    * Remove cross-references between solver implementations.  :issue:`60`
+* Accept scalar default ``n_hat`` from ``hklpy2`` Core in ``AdHocSolver`` extras setter.  :issue:`81`
+* Clarify guide wording: diffractometer ``forward()`` returns a single chosen solution.  :issue:`87`
+* Correct ``ad_hoc`` and ``diffcalc`` guides to use current hklpy2 API.  :issue:`86`
+* Correct horizontal eulerian cross-validation reference to ``E4CH``.  :issue:`78`
+* Honour ``r1`` / ``r2`` arguments in ``AdHocSolver.calculate_UB``.  :issue:`56`
+* Harden cross-validation bootstrap with deterministic retry on rough-UB ``forward()`` rejection.  :issue:`83`
+* Honour ``r1`` / ``r2`` arguments in ``DiffcalcSolver.calculate_UB``.  :issue:`58`
+* Lift ``ad_hoc`` ``psic`` / ``kappa6c`` ``bisecting_horizontal`` known-gap markers.  :issue:`99`
+* Pin ``python=3.14`` in ``cross-validation.yml`` to narrow K6C triclinic env skew.  :issue:`83`
+* Track ``ad_hoc`` horizontal-bisecting rhombohedral ``(1, 1, 0)`` gap as known-gap.  :issue:`69`
+* Track ``ad_hoc`` kappa-vertical sapphire ``(0, 1, 2)`` regression as new known-gap.  :issue:`99`
+* Track libhkl rhombohedral ``(0, 0, 6)`` B-matrix disagreements as ``tth``-disagreement.  :issue:`68`
+
+Maintenance
+~~~~~~~~~~~
+
+* Add focused key-package-version diagnostic step to ``cross-validation.yml``.  :issue:`83`
+* Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.0``.  :issue:`99`
+* Pip-upgrade ``ad_hoc_diffractometer`` in ``cross-validation.yml`` ahead of conda-forge.  :issue:`99`
+* Remove cross-references between solver implementations.  :issue:`60`
 
 0.3.1
 ######

@@ -93,6 +93,24 @@ _MODES: dict[str, dict[str, Any]] = {
 }
 
 
+def _mode_token_key(name: str) -> frozenset[str]:
+    """Canonical key for a space-delimited mode name.
+
+    Returns the set of whitespace-delimited tokens.  Two mode names
+    that differ only in the order of their tokens map to equal keys
+    (see :issue:`109`).  Empty / whitespace-only input maps to an
+    empty frozenset.
+    """
+    return frozenset(name.split())
+
+
+_MODES_BY_TOKENS: dict[frozenset[str], str] = {_mode_token_key(name): name for name in _MODES}
+"""Reverse index for built-in modes, keyed by token-set.
+
+Maps each token-set to the canonical display name in ``_MODES``.
+Built at import time; never mutated.  See :issue:`109`."""
+
+
 class DiffcalcSolver(SolverBase):
     """
     Solver for diffcalc-core (You 1999, 4S+2D six-circle 'psic' geometry).
@@ -134,6 +152,10 @@ class DiffcalcSolver(SolverBase):
         # Lives for this instance only; not persisted across instances
         # or across hklpy2 save/restore.
         self._user_modes: dict[str, dict[str, Any]] = {}
+        # Reverse index from token-set to user-mode display name,
+        # mirroring ``_MODES_BY_TOKENS`` for built-ins.  Enables
+        # order-independent matching (see :issue:`109`).
+        self._user_modes_by_tokens: dict[frozenset[str], str] = {}
 
         super().__init__(geometry, **kwargs)
 
@@ -162,6 +184,23 @@ class DiffcalcSolver(SolverBase):
         :meth:`register_mode`).
         """
         return {**_MODES, **self._user_modes}
+
+    def _resolve_mode_name(self, name: str) -> str | None:
+        """Return the canonical display name for ``name``, or ``None``.
+
+        Matches by token set so any permutation of a registered mode
+        name resolves to the stored display name (see :issue:`109`).
+        Built-in modes take precedence over user modes on collision
+        (which :meth:`register_mode` already prevents).
+        """
+        key = _mode_token_key(name)
+        if not key:
+            return None
+        if key in _MODES_BY_TOKENS:
+            return _MODES_BY_TOKENS[key]
+        if key in self._user_modes_by_tokens:
+            return self._user_modes_by_tokens[key]
+        return None
 
     def _apply_mode_constraints(self) -> None:
         """Set diffcalc constraints from the current mode.
@@ -293,7 +332,7 @@ class DiffcalcSolver(SolverBase):
         """
         if not self.mode:
             return list(REAL_AXES)
-        constrained_motors = set(_MODES[self.mode].keys()) & set(REAL_AXES)
+        constrained_motors = set(self._all_modes()[self.mode].keys()) & set(REAL_AXES)
         return [ax for ax in REAL_AXES if ax not in constrained_motors]
 
     @property
@@ -459,6 +498,14 @@ class DiffcalcSolver(SolverBase):
     def mode(self, value: str) -> None:
         from hklpy2.utils import check_value_in_list
 
+        # Order-independent matching (:issue:`109`): resolve any
+        # permutation of the constraint tokens to the registered
+        # display name before validation, then store and apply the
+        # canonical name.
+        if isinstance(value, str) and value.strip():
+            canonical = self._resolve_mode_name(value)
+            if canonical is not None:
+                value = canonical
         check_value_in_list("Mode", value, self.modes, blank_ok=True)
         self._mode = value
         self._applied_mode = None  # invalidate so next forward() rebuilds
@@ -535,9 +582,14 @@ class DiffcalcSolver(SolverBase):
         PARAMETERS
 
         name : str
-            Name to register the mode under.  Must not clash with a
-            built-in mode name nor with a previously registered user
-            mode (use :meth:`unregister_mode` first to redefine).
+            Name to register the mode under, as a space-delimited
+            list of the constraint names.  Order does not matter:
+            ``"bisect fixed_mu fixed_nu"`` and
+            ``"fixed_mu bisect fixed_nu"`` are treated as the same
+            mode name (see :issue:`109`).  Must not clash, under
+            this order-independent rule, with a built-in mode name
+            or with a previously registered user mode (use
+            :meth:`unregister_mode` first to redefine).
         constraints : dict[str, Any]
             Exactly three diffcalc constraints, keyed by diffcalc
             constraint name.  Float values pin the named axis at
@@ -564,10 +616,24 @@ class DiffcalcSolver(SolverBase):
         """
         if not isinstance(name, str) or not name:
             raise SolverError(f"Mode name must be a non-empty string, received {name!r}.")
-        if name in _MODES:
-            raise SolverError(f"Cannot redefine built-in mode {name!r}.")
-        if name in self._user_modes:
-            raise SolverError(f"User mode {name!r} already registered; call unregister_mode() first.")
+        # Collision detection by token-set (:issue:`109`): a permuted
+        # form of an existing built-in or user mode is also a clash.
+        tokens = name.split()
+        if not tokens:
+            raise SolverError(f"Mode name must list at least one constraint, received {name!r}.")
+        if len(set(tokens)) != len(tokens):
+            duplicates = sorted({t for t in tokens if tokens.count(t) > 1})
+            raise SolverError(
+                f"Mode name {name!r} repeats constraint name(s) {duplicates!r}; "
+                f"each constraint may appear at most once."
+            )
+        token_key = frozenset(tokens)
+        if token_key in _MODES_BY_TOKENS:
+            existing = _MODES_BY_TOKENS[token_key]
+            raise SolverError(f"Cannot redefine built-in mode {existing!r}.")
+        if token_key in self._user_modes_by_tokens:
+            existing = self._user_modes_by_tokens[token_key]
+            raise SolverError(f"User mode {existing!r} already registered; call unregister_mode() first.")
         if not isinstance(constraints, dict):
             raise SolverError(f"Constraints must be a dict, received {constraints!r}.")
         if len(constraints) != 3:
@@ -596,6 +662,7 @@ class DiffcalcSolver(SolverBase):
         if not implemented:
             raise SolverError(f"Mode {name!r}: constraint combination is not implemented by diffcalc-core.")
         self._user_modes[name] = dict(constraints)
+        self._user_modes_by_tokens[token_key] = name
 
     def removeAllReflections(self) -> None:
         """Remove all reflections."""
@@ -637,7 +704,10 @@ class DiffcalcSolver(SolverBase):
         PARAMETERS
 
         name : str
-            Name of the user-registered mode to remove.
+            Name of the user-registered mode to remove.  Matched
+            order-independently against the registered constraint
+            names, so any permutation of the original name resolves
+            to the same mode (see :issue:`109`).
 
         RAISES
 
@@ -655,12 +725,22 @@ class DiffcalcSolver(SolverBase):
         calling :meth:`unregister_mode` when the user mode is
         currently active.
         """
-        if name in _MODES:
-            raise SolverError(f"Cannot unregister built-in mode {name!r}.")
-        if name not in self._user_modes:
+        # Symmetric with register_mode (:issue:`109`): resolve any
+        # token-permutation to the registered display name before
+        # acting.  Built-in detection also uses the token-set so a
+        # permuted built-in name fails with the same message as the
+        # exact built-in name.
+        if not isinstance(name, str):
+            raise SolverError(f"Mode name must be a string, received {name!r}.")
+        token_key = frozenset(name.split())
+        if token_key in _MODES_BY_TOKENS:
+            existing = _MODES_BY_TOKENS[token_key]
+            raise SolverError(f"Cannot unregister built-in mode {existing!r}.")
+        if token_key not in self._user_modes_by_tokens:
             raise SolverError(f"User mode {name!r} is not registered.")
-        del self._user_modes[name]
-        if self.mode == name:
+        canonical = self._user_modes_by_tokens.pop(token_key)
+        del self._user_modes[canonical]
+        if self.mode == canonical:
             self._mode = ""
             self._applied_mode = None
 

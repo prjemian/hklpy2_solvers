@@ -29,6 +29,16 @@ describe future plans.
 
     Expected release: tba
 
+    Enhancements
+    ~~~~~~~~~~~~
+
+    * Match ``DiffcalcSolver`` mode names by token set, ignoring constraint order.  :issue:`109`
+
+    Fixes
+    ~~~~~
+
+    * Fix ``DiffcalcSolver.axes_w`` ``KeyError`` for user-registered modes.  :issue:`109`
+
 0.3.2
 ######
 

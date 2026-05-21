@@ -79,6 +79,28 @@ ttheta and ttheta/2, respectively).  To choose a different mode:
 
 See :ref:`geometry.diffcalc_4S_2D` for the full list of 23 modes.
 
+Mode names are order-independent
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The mode name is the set of three diffcalc constraints that
+define the mode; the order in which those constraints are written
+does not matter.  These assignments all select the same mode:
+
+.. code-block:: python
+
+   psic.core.mode = "bisect fixed_mu fixed_nu"     # canonical form
+   psic.core.mode = "fixed_mu bisect fixed_nu"     # equivalent
+   psic.core.mode = "fixed_nu fixed_mu bisect"     # equivalent
+
+After assignment, reading ``psic.core.mode`` always returns the
+canonical (registered) form — in the example above,
+``"bisect fixed_mu fixed_nu"``.  The same equivalence applies to
+:meth:`~hklpy2_solvers.diffcalc_solver.DiffcalcSolver.register_mode`
+and :meth:`~hklpy2_solvers.diffcalc_solver.DiffcalcSolver.unregister_mode`:
+re-registering a permutation of an existing mode name is rejected
+as a duplicate, and unregistering a permutation of a registered
+user mode removes the original.  See :issue:`109`.
+
 Cross-reference to common conventions
 -------------------------------------
 

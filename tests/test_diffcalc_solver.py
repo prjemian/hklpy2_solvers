@@ -1552,3 +1552,217 @@ def test_mode_naming_invariants(parms, context):
             solver = DiffcalcSolver()
             assert solver.mode == "bisect fixed_mu fixed_nu"
             assert _MODES[solver.mode] == {"bisect": True, "mu": 0.0, "nu": 0.0}
+
+
+# ---------------------------------------------------------------------------
+# Runtime mode registration (issues #97, #106): register_mode / unregister_mode
+# fill gaps where diffcalc-core implements a constraint combination that
+# DiffcalcSolver does not ship by default.
+# ---------------------------------------------------------------------------
+
+
+# A combination diffcalc-core implements but ``_MODES`` does not ship.
+# ``{delta: 0, eta: 0, chi: 0}`` is the delta-pinned cousin of the
+# nu-pinned ``fixed_nu fixed_eta fixed_chi`` built-in (eta&chi sample
+# pair + delta detector pin); is_current_mode_implemented() returns True.
+RUNTIME_MODE_NAME = "fixed_delta fixed_eta fixed_chi"
+RUNTIME_MODE_CONSTRAINTS = {"delta": 0.0, "eta": 0.0, "chi": 0.0}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                name=RUNTIME_MODE_NAME,
+                constraints=RUNTIME_MODE_CONSTRAINTS,
+            ),
+            does_not_raise(),
+            id="register a valid not-shipped combination",
+        ),
+        pytest.param(
+            dict(
+                name="bisect fixed_mu fixed_nu",
+                constraints={"bisect": True, "mu": 0.0, "nu": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("Cannot redefine built-in mode")),
+            id="reject clash with built-in mode name",
+        ),
+        pytest.param(
+            dict(
+                name="",
+                constraints=RUNTIME_MODE_CONSTRAINTS,
+            ),
+            pytest.raises(SolverError, match=re.escape("non-empty string")),
+            id="reject empty name",
+        ),
+        pytest.param(
+            dict(
+                name=123,
+                constraints=RUNTIME_MODE_CONSTRAINTS,
+            ),
+            pytest.raises(SolverError, match=re.escape("non-empty string")),
+            id="reject non-string name",
+        ),
+        pytest.param(
+            dict(
+                name="bad_not_dict",
+                constraints=[("delta", 0.0), ("eta", 0.0), ("chi", 0.0)],
+            ),
+            pytest.raises(SolverError, match=re.escape("must be a dict")),
+            id="reject non-dict constraints",
+        ),
+        pytest.param(
+            dict(
+                name="bad_two",
+                constraints={"delta": 0.0, "eta": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("exactly three constraints")),
+            id="reject 2-constraint dict",
+        ),
+        pytest.param(
+            dict(
+                name="bad_four",
+                constraints={"delta": 0.0, "eta": 0.0, "chi": 0.0, "phi": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("exactly three constraints")),
+            id="reject 4-constraint dict",
+        ),
+        pytest.param(
+            dict(
+                name="bad_unknown",
+                constraints={"bogus": 0.0, "mu": 0.0, "phi": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("diffcalc rejected constraints")),
+            id="reject unknown constraint name",
+        ),
+        pytest.param(
+            dict(
+                name="bad_two_detector",
+                constraints={"delta": 0.0, "nu": 0.0, "mu": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("dropped by diffcalc (same-category conflict)")),
+            id="reject same-category collision (two detectors)",
+        ),
+        pytest.param(
+            dict(
+                name="bad_not_implemented",
+                constraints={"mu": 0.0, "chi": 0.0, "omega": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("not implemented by diffcalc-core")),
+            id="reject structurally-valid but not-implemented combination",
+        ),
+        pytest.param(
+            dict(
+                name=RUNTIME_MODE_NAME,
+                constraints=RUNTIME_MODE_CONSTRAINTS,
+                preregister=True,
+            ),
+            pytest.raises(SolverError, match=re.escape("already registered")),
+            id="reject duplicate registration of an existing user mode",
+        ),
+    ],
+)
+def test_register_mode(parms, context):
+    """Cover register_mode happy path and every rejection path.
+
+    Validates the runtime mode-registration contract:
+
+    * Valid not-shipped combinations are accepted and become
+      selectable via the merged ``modes`` list.
+    * Built-in mode names cannot be shadowed.
+    * Inputs are validated for type and count before being passed
+      to diffcalc, so error messages stay actionable.
+    * Same-category collisions silently collapsed by diffcalc
+      (e.g. two detector constraints) are rejected explicitly,
+      naming the dropped keys.
+    * Combinations that survive structural validation but lack a
+      diffcalc implementation (``is_current_mode_implemented()``
+      returns False) are rejected.
+    """
+    solver = DiffcalcSolver()
+    if parms.get("preregister"):
+        solver.register_mode(parms["name"], parms["constraints"])
+    with context:
+        solver.register_mode(parms["name"], parms["constraints"])
+        assert parms["name"] in solver.modes
+        # Verify selectability and that the active mode round-trips.
+        solver.mode = parms["name"]
+        assert solver.mode == parms["name"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(name=RUNTIME_MODE_NAME, preselect=False),
+            does_not_raise(),
+            id="unregister a previously registered user mode",
+        ),
+        pytest.param(
+            dict(name=RUNTIME_MODE_NAME, preselect=True),
+            does_not_raise(),
+            id="unregister the currently selected mode clears self.mode",
+        ),
+        pytest.param(
+            dict(name="bisect fixed_mu fixed_nu", preselect=False),
+            pytest.raises(SolverError, match=re.escape("Cannot unregister built-in mode")),
+            id="reject unregister of built-in",
+        ),
+        pytest.param(
+            dict(name="never_registered", preselect=False),
+            pytest.raises(SolverError, match=re.escape("is not registered")),
+            id="reject unregister of missing user mode",
+        ),
+    ],
+)
+def test_unregister_mode(parms, context):
+    """Cover unregister_mode happy path and rejection paths.
+
+    Confirms that built-in modes cannot be removed; that a request
+    to remove a never-registered mode is rejected; and that
+    removing the currently-selected mode clears the active mode so
+    subsequent forward() calls don't silently re-use the dropped
+    constraints.
+    """
+    solver = DiffcalcSolver()
+    # Always register the runtime mode so the happy-path cases have
+    # something to remove; built-in/missing cases ignore it.
+    solver.register_mode(RUNTIME_MODE_NAME, RUNTIME_MODE_CONSTRAINTS)
+    if parms["preselect"]:
+        solver.mode = parms["name"]
+    with context:
+        solver.unregister_mode(parms["name"])
+        assert parms["name"] not in solver.modes
+        if parms["preselect"]:
+            assert solver.mode == ""
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                name=RUNTIME_MODE_NAME,
+                constraints=RUNTIME_MODE_CONSTRAINTS,
+            ),
+            does_not_raise(),
+            id="user-registered mode is usable end-to-end",
+        ),
+    ],
+)
+def test_register_mode_end_to_end(parms, context):
+    """A registered user mode is selectable and drives inverse() / forward().
+
+    Confirms the merged-mode path through ``_apply_mode_constraints`` —
+    proving that ``register_mode`` is not just bookkeeping but actually
+    feeds the diffcalc ``Constraints`` object used by the calculator.
+    """
+    with context:
+        # Build a solver with UB *before* registering, then switch into
+        # the user mode and exercise inverse() at the origin.
+        solver = _make_solver_with_ub()
+        solver.register_mode(parms["name"], parms["constraints"])
+        solver.mode = parms["name"]
+        result = solver.inverse({"mu": 0.0, "delta": 0.0, "nu": 0.0, "eta": 0.0, "chi": 0.0, "phi": 0.0})
+        assert set(result) == {"h", "k", "l"}

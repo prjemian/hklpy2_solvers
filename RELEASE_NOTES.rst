@@ -29,10 +29,18 @@ describe future plans.
 
     Expected release: tba
 
+    Breaking Changes
+    ~~~~~~~~~~~~~~~~
+
+    * Realign ``DiffcalcSolver`` bisect modes to canonical vertical/horizontal pairings.  :issue:`97`
+    * Rename all ``DiffcalcSolver`` modes; drop ``4S+2D`` prefix and use ``fixed_<axis>`` form.  :issue:`97`
+    * Set ``DiffcalcSolver`` default mode to ``bisect fixed_mu fixed_nu`` (canonical vertical bisector).  :issue:`97`
+
     New Features
     ~~~~~~~~~~~~
 
     * Add ``cross-validation.yml`` workflow running libhkl-backed tests via conda-forge.  :issue:`65`
+    * Add ``DiffcalcSolver.register_mode`` / ``unregister_mode`` for runtime constraint sets.  :issue:`106`
     * Add horizontal four-circle cross-validation group against ``hkl_soleil``.  :issue:`67`
     * Add horizontal kappa cross-validation group against ``hkl_soleil``.  :issue:`75`
     * Add six-circle bisecting peers to cross-validation groups.  :issue:`64`
@@ -44,6 +52,7 @@ describe future plans.
     Enhancements
     ~~~~~~~~~~~~
 
+    * Add cross-reference table mapping common-convention names to diffcalc modes.  :issue:`97`
     * Add guide-regression smoke test to catch API drift in how-to guides.  :issue:`88`
     * Add regression test documenting ``ad_hoc/kappa6c bisecting_horizontal`` reflection-pattern gap.  :issue:`77`
     * Add regression test documenting ``ad_hoc/psic bisecting_horizontal`` asymmetric-reflection gap.  :issue:`71`
@@ -203,7 +212,7 @@ Fixes
 ~~~~~
 
 * Fix ``ModuleNotFoundError: No module named 'hklpy2.misc'``; update imports to ``hklpy2.exceptions`` and ``hklpy2.utils`` for compatibility with hklpy2 ≥ 0.6.0.  :issue:`31`
-* Fix ``forward()`` raising ``AttributeError: no attribute 'set_reals'``; add ``set_reals()`` and ``UB`` setter, change default mode to ``4S+2D mu_chi_phi_fixed``.  :issue:`29`
+* Fix ``forward()`` raising ``AttributeError: no attribute 'set_reals'``; add ``set_reals()`` and ``UB`` setter, change default mode to ``fixed_mu fixed_chi fixed_phi``.  :issue:`29`
 * Fix ``calc_UB()`` raising ``SolverError: Lattice must be set``; override ``sample`` setter to push lattice into diffcalc.  :issue:`25`
 * Fix ``wh()`` raising ``SolverError: UB matrix has not been set`` before reflections are added.  :issue:`24`
 

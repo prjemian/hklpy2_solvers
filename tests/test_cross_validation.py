@@ -212,7 +212,7 @@ EULER_VERTICAL_GROUP = {
         solver="diffcalc",
         geometry="diffcalc_4S_2D",
         reals=["mu", "ttheta", "nu", "omega", "chi", "phi"],
-        mode="4S+2D bisect_eta_fixed nu_fixed",
+        mode="bisect fixed_mu fixed_nu",
     ),
 }
 
@@ -295,7 +295,7 @@ EULER_HORIZONTAL_GROUP = {
         solver="diffcalc",
         geometry="diffcalc_4S_2D",
         reals=["mu", "delta", "ttheta", "omega", "chi", "phi"],
-        mode="4S+2D mu_fixed a_eq_b delta_fixed",
+        mode="a_eq_b fixed_delta fixed_mu",
     ),
 }
 

@@ -24,7 +24,7 @@ TTH_100 = 2 * THETA_100
 
 
 def _make_solver_with_ub(
-    mode: str = "4S+2D mu_chi_phi_fixed",
+    mode: str = "fixed_mu fixed_chi fixed_phi",
 ) -> DiffcalcSolver:
     """Return a DiffcalcSolver with Si lattice, two reflections, and UB calculated."""
     solver = DiffcalcSolver()
@@ -114,12 +114,12 @@ def test_class_attributes(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(mode="4S+2D mu_chi_phi_fixed"),
+            dict(mode="fixed_mu fixed_chi fixed_phi"),
             does_not_raise(),
             id="valid mode accepted",
         ),
         pytest.param(
-            dict(mode="4S+2D eta_chi_phi_fixed"),
+            dict(mode="fixed_eta fixed_chi fixed_phi"),
             does_not_raise(),
             id="another valid mode",
         ),
@@ -384,7 +384,7 @@ def test_calculate_ub_honours_arguments(parms, context):
     [
         pytest.param(
             dict(
-                mode="4S+2D mu_chi_phi_fixed",
+                mode="fixed_mu fixed_chi fixed_phi",
                 pseudos={"h": 1.0, "k": 0.0, "l": 0.0},
                 expected_h=1.0,
                 expected_k=0.0,
@@ -395,7 +395,7 @@ def test_calculate_ub_honours_arguments(parms, context):
         ),
         pytest.param(
             dict(
-                mode="4S+2D eta_chi_phi_fixed",
+                mode="fixed_eta fixed_chi fixed_phi",
                 pseudos={"h": 0.0, "k": 1.0, "l": 0.0},
                 expected_h=0.0,
                 expected_k=1.0,
@@ -406,7 +406,7 @@ def test_calculate_ub_honours_arguments(parms, context):
         ),
         pytest.param(
             dict(
-                mode="4S+2D mu_chi_phi_fixed",
+                mode="fixed_mu fixed_chi fixed_phi",
                 pseudos="not a dict",
                 expected_h=0,
                 expected_k=0,
@@ -488,7 +488,7 @@ def test_inverse(parms, context):
     [
         pytest.param(
             dict(
-                mode="4S+2D mu_chi_phi_fixed",
+                mode="fixed_mu fixed_chi fixed_phi",
                 pseudos={"h": 1.0, "k": 0.0, "l": 0.0},
             ),
             does_not_raise(),
@@ -496,7 +496,7 @@ def test_inverse(parms, context):
         ),
         pytest.param(
             dict(
-                mode="4S+2D mu_chi_phi_fixed",
+                mode="fixed_mu fixed_chi fixed_phi",
                 pseudos={"h": 0.0, "k": 1.0, "l": 0.0},
             ),
             does_not_raise(),
@@ -504,7 +504,7 @@ def test_inverse(parms, context):
         ),
         pytest.param(
             dict(
-                mode="4S+2D mu_chi_phi_fixed",
+                mode="fixed_mu fixed_chi fixed_phi",
                 pseudos={"h": 1.0, "k": 1.0, "l": 0.0},
             ),
             does_not_raise(),
@@ -529,12 +529,12 @@ def test_forward_inverse_roundtrip(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(mode="4S+2D mu_chi_phi_fixed"),
+            dict(mode="fixed_mu fixed_chi fixed_phi"),
             does_not_raise(),
             id="extra_axis_names is always empty",
         ),
         pytest.param(
-            dict(mode="4S+2D mu_fixed a_eq_b delta_fixed"),
+            dict(mode="a_eq_b fixed_delta fixed_mu"),
             does_not_raise(),
             id="extra_axis_names empty for det+ref+samp mode",
         ),
@@ -558,7 +558,7 @@ def test_extra_axis_names(parms, context):
     [
         pytest.param(
             dict(
-                mode="4S+2D mu_chi_phi_fixed",
+                mode="fixed_mu fixed_chi fixed_phi",
                 expected_axes_w=["delta", "nu", "eta"],
             ),
             does_not_raise(),
@@ -566,7 +566,7 @@ def test_extra_axis_names(parms, context):
         ),
         pytest.param(
             dict(
-                mode="4S+2D mu_fixed a_eq_b delta_fixed",
+                mode="a_eq_b fixed_delta fixed_mu",
                 expected_axes_w=["nu", "eta", "chi", "phi"],
             ),
             does_not_raise(),
@@ -574,7 +574,7 @@ def test_extra_axis_names(parms, context):
         ),
         pytest.param(
             dict(
-                mode="4S+2D chi_phi_fixed delta_fixed",
+                mode="fixed_delta fixed_chi fixed_phi",
                 expected_axes_w=["mu", "nu", "eta"],
             ),
             does_not_raise(),
@@ -748,7 +748,7 @@ def test_lattice_preserved_after_reset(parms, context):
     [
         pytest.param(
             dict(
-                mode="4S+2D mu_chi_phi_fixed",
+                mode="fixed_mu fixed_chi fixed_phi",
                 pseudos={"h": 1, "k": 0, "l": 0},
                 min_solutions=1,
             ),
@@ -793,7 +793,7 @@ def test_refine_lattice_insufficient_reflections(parms, context):
     [
         pytest.param(
             dict(
-                mode="4S+2D mu_fixed a_eq_b delta_fixed",
+                mode="a_eq_b fixed_delta fixed_mu",
                 pseudos={"h": 100, "k": 100, "l": 100},
             ),
             pytest.raises(Exception, match=re.escape("Reflection unreachable")),
@@ -828,7 +828,7 @@ def test_refine_lattice_success(parms, context):
     # For cubic Si, d_hkl = a/sqrt(h^2+k^2+l^2).
     # Bragg: theta = arcsin(wl/(2*d))
     # Compute angles using mu_chi_phi_fixed mode from a helper solver.
-    helper = _make_solver_with_ub(mode="4S+2D mu_chi_phi_fixed")
+    helper = _make_solver_with_ub(mode="fixed_mu fixed_chi fixed_phi")
 
     # (1,0,0) and (0,1,0) work fine with this mode.
     # (1,1,0) also works. All are in-plane with chi=phi=mu=0.
@@ -1135,7 +1135,7 @@ def test_ub_setter(parms, context):
     "parms, context",
     [
         pytest.param(
-            dict(mode="4S+2D mu_chi_phi_fixed", pseudos={"h": 1.0, "k": 0.0, "l": 0.0}),
+            dict(mode="fixed_mu fixed_chi fixed_phi", pseudos={"h": 1.0, "k": 0.0, "l": 0.0}),
             does_not_raise(),
             id="forward succeeds after update_solver restores UB via setter - issue #29",
         ),
@@ -1164,7 +1164,7 @@ def test_forward_after_ub_restore(parms, context):
         # -- 1 det + 1 ref + 1 samp (a_eq_b is non-motor) --
         pytest.param(
             dict(
-                mode="4S+2D mu_fixed a_eq_b delta_fixed",
+                mode="a_eq_b fixed_delta fixed_mu",
                 expected_reals=["nu", "eta", "chi", "phi"],
             ),
             does_not_raise(),
@@ -1173,7 +1173,7 @@ def test_forward_after_ub_restore(parms, context):
         # -- 1 det + 1 ref + 1 samp (psi is non-motor) --
         pytest.param(
             dict(
-                mode="4S+2D phi_fixed psi_fixed nu_fixed",
+                mode="fixed_nu fixed_psi fixed_phi",
                 expected_reals=["mu", "delta", "eta", "chi"],
             ),
             does_not_raise(),
@@ -1182,7 +1182,7 @@ def test_forward_after_ub_restore(parms, context):
         # -- 1 det + 2 samp --
         pytest.param(
             dict(
-                mode="4S+2D chi_phi_fixed delta_fixed",
+                mode="fixed_delta fixed_chi fixed_phi",
                 expected_reals=["mu", "nu", "eta"],
             ),
             does_not_raise(),
@@ -1191,16 +1191,16 @@ def test_forward_after_ub_restore(parms, context):
         # -- 1 det + 2 samp (bisect is non-motor) --
         pytest.param(
             dict(
-                mode="4S+2D bisect_mu_fixed delta_fixed",
-                expected_reals=["nu", "eta", "chi", "phi"],
+                mode="bisect fixed_mu fixed_nu",
+                expected_reals=["delta", "eta", "chi", "phi"],
             ),
             does_not_raise(),
-            id="bisect non-motor: only mu,delta fixed",
+            id="bisect vertical: mu,nu fixed",
         ),
         # -- 1 det + 2 samp (bisect+omega are non-motor) --
         pytest.param(
             dict(
-                mode="4S+2D bisect_omega_fixed nu_fixed",
+                mode="bisect fixed_omega fixed_nu",
                 expected_reals=["mu", "delta", "eta", "chi", "phi"],
             ),
             does_not_raise(),
@@ -1209,7 +1209,7 @@ def test_forward_after_ub_restore(parms, context):
         # -- 1 ref + 2 samp --
         pytest.param(
             dict(
-                mode="4S+2D chi_mu_fixed a_eq_b",
+                mode="a_eq_b fixed_chi fixed_mu",
                 expected_reals=["delta", "nu", "eta", "phi"],
             ),
             does_not_raise(),
@@ -1218,7 +1218,7 @@ def test_forward_after_ub_restore(parms, context):
         # -- 3 samp --
         pytest.param(
             dict(
-                mode="4S+2D eta_chi_phi_fixed",
+                mode="fixed_eta fixed_chi fixed_phi",
                 expected_reals=["mu", "delta", "nu"],
             ),
             does_not_raise(),
@@ -1226,7 +1226,7 @@ def test_forward_after_ub_restore(parms, context):
         ),
         pytest.param(
             dict(
-                mode="4S+2D mu_eta_chi_fixed",
+                mode="fixed_mu fixed_eta fixed_chi",
                 expected_reals=["delta", "nu", "phi"],
             ),
             does_not_raise(),
@@ -1451,3 +1451,318 @@ def test_ub_setter_default_lattice(parms, context):
     with context:
         solver.UB = [[1, 0, 0], [0, 1, 0], [0, 0, 1]]
         assert solver._ubcalc.crystal is not None
+
+
+# ---------------------------------------------------------------------------
+# Rename completeness (issues #97, #105): guards the Proposal A naming rules.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(name="4S+2D bisect_eta_fixed nu_fixed"),
+            pytest.raises(ValueError, match=re.escape("Mode")),
+            id="old-style name with 4S+2D prefix rejected",
+        ),
+        pytest.param(
+            dict(name="fixed_mu fixed_chi fixed_phi"),
+            does_not_raise(),
+            id="new-style all-fixed_* name accepted",
+        ),
+        pytest.param(
+            dict(name="bisect fixed_mu fixed_nu"),
+            does_not_raise(),
+            id="new-style bisect-led name accepted (canonical vertical bisector)",
+        ),
+        pytest.param(
+            dict(name="a_eq_b fixed_delta fixed_mu"),
+            does_not_raise(),
+            id="new-style a_eq_b-led name accepted",
+        ),
+    ],
+)
+def test_mode_rename_completeness(parms, context):
+    """Pin the post-rename mode-name conventions.
+
+    Old-style names containing the ``4S+2D`` prefix or the
+    ``<axis>_fixed`` suffix are not part of ``_MODES`` any more and
+    must be rejected by the mode setter.  New-style names matching
+    Proposal A (drop prefix, ``fixed_<axis>`` form, keyword
+    constraints first) must be accepted.
+    """
+    solver = DiffcalcSolver()
+    with context:
+        solver.mode = parms["name"]
+        assert solver.mode == parms["name"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(check="no 4S+2D prefix"),
+            does_not_raise(),
+            id="no mode name contains the 4S+2D prefix",
+        ),
+        pytest.param(
+            dict(check="no <axis>_fixed suffix"),
+            does_not_raise(),
+            id="no mode name contains the legacy <axis>_fixed suffix",
+        ),
+        pytest.param(
+            dict(check="keyword constraints lead"),
+            does_not_raise(),
+            id="modes with a_eq_b/bisect/bin_eq_bout lead with that token",
+        ),
+        pytest.param(
+            dict(check="default is canonical bisecting_vertical"),
+            does_not_raise(),
+            id="default mode is bisect fixed_mu fixed_nu",
+        ),
+    ],
+)
+def test_mode_naming_invariants(parms, context):
+    """Static checks on the entire ``_MODES`` table.
+
+    These invariants are guarded as tests so a future PR that adds a
+    new mode in the old style (or moves a keyword token off the
+    leading position) trips immediately, rather than silently
+    re-introducing the inconsistency #97 set out to fix.
+    """
+    keywords = {"a_eq_b", "bisect", "bin_eq_bout"}
+    with context:
+        check = parms["check"]
+        if check == "no 4S+2D prefix":
+            assert not any("4S+2D" in name for name in _MODES)
+        elif check == "no <axis>_fixed suffix":
+            offenders = [name for name in _MODES if re.search(r"\b[a-z]+_fixed\b", name)]
+            assert offenders == []
+        elif check == "keyword constraints lead":
+            for name in _MODES:
+                toks = name.split()
+                kw_positions = [i for i, t in enumerate(toks) if t in keywords]
+                if not kw_positions:
+                    continue
+                assert kw_positions == list(range(len(kw_positions))), (
+                    f"mode {name!r}: keyword tokens must come first"
+                )
+        elif check == "default is canonical bisecting_vertical":
+            solver = DiffcalcSolver()
+            assert solver.mode == "bisect fixed_mu fixed_nu"
+            assert _MODES[solver.mode] == {"bisect": True, "mu": 0.0, "nu": 0.0}
+
+
+# ---------------------------------------------------------------------------
+# Runtime mode registration (issues #97, #106): register_mode / unregister_mode
+# fill gaps where diffcalc-core implements a constraint combination that
+# DiffcalcSolver does not ship by default.
+# ---------------------------------------------------------------------------
+
+
+# A combination diffcalc-core implements but ``_MODES`` does not ship.
+# ``{delta: 0, eta: 0, chi: 0}`` is the delta-pinned cousin of the
+# nu-pinned ``fixed_nu fixed_eta fixed_chi`` built-in (eta&chi sample
+# pair + delta detector pin); is_current_mode_implemented() returns True.
+RUNTIME_MODE_NAME = "fixed_delta fixed_eta fixed_chi"
+RUNTIME_MODE_CONSTRAINTS = {"delta": 0.0, "eta": 0.0, "chi": 0.0}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                name=RUNTIME_MODE_NAME,
+                constraints=RUNTIME_MODE_CONSTRAINTS,
+            ),
+            does_not_raise(),
+            id="register a valid not-shipped combination",
+        ),
+        pytest.param(
+            dict(
+                name="bisect fixed_mu fixed_nu",
+                constraints={"bisect": True, "mu": 0.0, "nu": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("Cannot redefine built-in mode")),
+            id="reject clash with built-in mode name",
+        ),
+        pytest.param(
+            dict(
+                name="",
+                constraints=RUNTIME_MODE_CONSTRAINTS,
+            ),
+            pytest.raises(SolverError, match=re.escape("non-empty string")),
+            id="reject empty name",
+        ),
+        pytest.param(
+            dict(
+                name=123,
+                constraints=RUNTIME_MODE_CONSTRAINTS,
+            ),
+            pytest.raises(SolverError, match=re.escape("non-empty string")),
+            id="reject non-string name",
+        ),
+        pytest.param(
+            dict(
+                name="bad_not_dict",
+                constraints=[("delta", 0.0), ("eta", 0.0), ("chi", 0.0)],
+            ),
+            pytest.raises(SolverError, match=re.escape("must be a dict")),
+            id="reject non-dict constraints",
+        ),
+        pytest.param(
+            dict(
+                name="bad_two",
+                constraints={"delta": 0.0, "eta": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("exactly three constraints")),
+            id="reject 2-constraint dict",
+        ),
+        pytest.param(
+            dict(
+                name="bad_four",
+                constraints={"delta": 0.0, "eta": 0.0, "chi": 0.0, "phi": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("exactly three constraints")),
+            id="reject 4-constraint dict",
+        ),
+        pytest.param(
+            dict(
+                name="bad_unknown",
+                constraints={"bogus": 0.0, "mu": 0.0, "phi": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("diffcalc rejected constraints")),
+            id="reject unknown constraint name",
+        ),
+        pytest.param(
+            dict(
+                name="bad_two_detector",
+                constraints={"delta": 0.0, "nu": 0.0, "mu": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("dropped by diffcalc (same-category conflict)")),
+            id="reject same-category collision (two detectors)",
+        ),
+        pytest.param(
+            dict(
+                name="bad_not_implemented",
+                constraints={"mu": 0.0, "chi": 0.0, "omega": 0.0},
+            ),
+            pytest.raises(SolverError, match=re.escape("not implemented by diffcalc-core")),
+            id="reject structurally-valid but not-implemented combination",
+        ),
+        pytest.param(
+            dict(
+                name=RUNTIME_MODE_NAME,
+                constraints=RUNTIME_MODE_CONSTRAINTS,
+                preregister=True,
+            ),
+            pytest.raises(SolverError, match=re.escape("already registered")),
+            id="reject duplicate registration of an existing user mode",
+        ),
+    ],
+)
+def test_register_mode(parms, context):
+    """Cover register_mode happy path and every rejection path.
+
+    Validates the runtime mode-registration contract:
+
+    * Valid not-shipped combinations are accepted and become
+      selectable via the merged ``modes`` list.
+    * Built-in mode names cannot be shadowed.
+    * Inputs are validated for type and count before being passed
+      to diffcalc, so error messages stay actionable.
+    * Same-category collisions silently collapsed by diffcalc
+      (e.g. two detector constraints) are rejected explicitly,
+      naming the dropped keys.
+    * Combinations that survive structural validation but lack a
+      diffcalc implementation (``is_current_mode_implemented()``
+      returns False) are rejected.
+    """
+    solver = DiffcalcSolver()
+    if parms.get("preregister"):
+        solver.register_mode(parms["name"], parms["constraints"])
+    with context:
+        solver.register_mode(parms["name"], parms["constraints"])
+        assert parms["name"] in solver.modes
+        # Verify selectability and that the active mode round-trips.
+        solver.mode = parms["name"]
+        assert solver.mode == parms["name"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(name=RUNTIME_MODE_NAME, preselect=False),
+            does_not_raise(),
+            id="unregister a previously registered user mode",
+        ),
+        pytest.param(
+            dict(name=RUNTIME_MODE_NAME, preselect=True),
+            does_not_raise(),
+            id="unregister the currently selected mode clears self.mode",
+        ),
+        pytest.param(
+            dict(name="bisect fixed_mu fixed_nu", preselect=False),
+            pytest.raises(SolverError, match=re.escape("Cannot unregister built-in mode")),
+            id="reject unregister of built-in",
+        ),
+        pytest.param(
+            dict(name="never_registered", preselect=False),
+            pytest.raises(SolverError, match=re.escape("is not registered")),
+            id="reject unregister of missing user mode",
+        ),
+    ],
+)
+def test_unregister_mode(parms, context):
+    """Cover unregister_mode happy path and rejection paths.
+
+    Confirms that built-in modes cannot be removed; that a request
+    to remove a never-registered mode is rejected; and that
+    removing the currently-selected mode clears the active mode so
+    subsequent forward() calls don't silently re-use the dropped
+    constraints.
+    """
+    solver = DiffcalcSolver()
+    # Always register the runtime mode so the happy-path cases have
+    # something to remove; built-in/missing cases ignore it.
+    solver.register_mode(RUNTIME_MODE_NAME, RUNTIME_MODE_CONSTRAINTS)
+    if parms["preselect"]:
+        solver.mode = parms["name"]
+    with context:
+        solver.unregister_mode(parms["name"])
+        assert parms["name"] not in solver.modes
+        if parms["preselect"]:
+            assert solver.mode == ""
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                name=RUNTIME_MODE_NAME,
+                constraints=RUNTIME_MODE_CONSTRAINTS,
+            ),
+            does_not_raise(),
+            id="user-registered mode is usable end-to-end",
+        ),
+    ],
+)
+def test_register_mode_end_to_end(parms, context):
+    """A registered user mode is selectable and drives inverse() / forward().
+
+    Confirms the merged-mode path through ``_apply_mode_constraints`` —
+    proving that ``register_mode`` is not just bookkeeping but actually
+    feeds the diffcalc ``Constraints`` object used by the calculator.
+    """
+    with context:
+        # Build a solver with UB *before* registering, then switch into
+        # the user mode and exercise inverse() at the origin.
+        solver = _make_solver_with_ub()
+        solver.register_mode(parms["name"], parms["constraints"])
+        solver.mode = parms["name"]
+        result = solver.inverse({"mu": 0.0, "delta": 0.0, "nu": 0.0, "eta": 0.0, "chi": 0.0, "phi": 0.0})
+        assert set(result) == {"h", "k", "l"}

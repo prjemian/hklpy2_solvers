@@ -206,9 +206,14 @@ Module Contents
       PARAMETERS
 
       name : str
-          Name to register the mode under.  Must not clash with a
-          built-in mode name nor with a previously registered user
-          mode (use :meth:`unregister_mode` first to redefine).
+          Name to register the mode under, as a space-delimited
+          list of the constraint names.  Order does not matter:
+          ``"bisect fixed_mu fixed_nu"`` and
+          ``"fixed_mu bisect fixed_nu"`` are treated as the same
+          mode name (see :issue:`109`).  Must not clash, under
+          this order-independent rule, with a built-in mode name
+          or with a previously registered user mode (use
+          :meth:`unregister_mode` first to redefine).
       constraints : dict[str, Any]
           Exactly three diffcalc constraints, keyed by diffcalc
           constraint name.  Float values pin the named axis at
@@ -266,7 +271,10 @@ Module Contents
       PARAMETERS
 
       name : str
-          Name of the user-registered mode to remove.
+          Name of the user-registered mode to remove.  Matched
+          order-independently against the registered constraint
+          names, so any permutation of the original name resolves
+          to the same mode (see :issue:`109`).
 
       RAISES
 

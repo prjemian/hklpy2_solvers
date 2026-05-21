@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../../_static/documentation_options.js?v=6ffd0ab2"></script>
+    <script src="../../../_static/documentation_options.js?v=f9dd07e8"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/hklpy2_solvers/diffcalc_solver/index';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.18.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.3.dev1+g2fad0be21';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.3.dev2+gdc84e4f7c';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -621,9 +621,14 @@ without forking the package.  The mode is validated against
 accepted.</p>
 <p>PARAMETERS</p>
 <dl class="simple">
-<dt>name<span class="classifier">str</span></dt><dd><p>Name to register the mode under.  Must not clash with a
-built-in mode name nor with a previously registered user
-mode (use <a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.unregister_mode" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.unregister_mode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unregister_mode()</span></code></a> first to redefine).</p>
+<dt>name<span class="classifier">str</span></dt><dd><p>Name to register the mode under, as a space-delimited
+list of the constraint names.  Order does not matter:
+<code class="docutils literal notranslate"><span class="pre">&quot;bisect</span> <span class="pre">fixed_mu</span> <span class="pre">fixed_nu&quot;</span></code> and
+<code class="docutils literal notranslate"><span class="pre">&quot;fixed_mu</span> <span class="pre">bisect</span> <span class="pre">fixed_nu&quot;</span></code> are treated as the same
+mode name (see <span class="issue">109</span>).  Must not clash, under
+this order-independent rule, with a built-in mode name
+or with a previously registered user mode (use
+<a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.unregister_mode" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.unregister_mode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">unregister_mode()</span></code></a> first to redefine).</p>
 </dd>
 <dt>constraints<span class="classifier">dict[str, Any]</span></dt><dd><p>Exactly three diffcalc constraints, keyed by diffcalc
 constraint name.  Float values pin the named axis at
@@ -681,7 +686,10 @@ the hklpy2 presets feature.  Tracked upstream as
 <dd><p>Remove a previously <a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.DiffcalcSolver.register_mode" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver.register_mode"><code class="xref py py-meth docutils literal notranslate"><span class="pre">register_mode()</span></code></a>-registered mode.</p>
 <p>PARAMETERS</p>
 <dl class="simple">
-<dt>name<span class="classifier">str</span></dt><dd><p>Name of the user-registered mode to remove.</p>
+<dt>name<span class="classifier">str</span></dt><dd><p>Name of the user-registered mode to remove.  Matched
+order-independently against the registered constraint
+names, so any permutation of the original name resolves
+to the same mode (see <span class="issue">109</span>).</p>
 </dd>
 </dl>
 <p>RAISES</p>

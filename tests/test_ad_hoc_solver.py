@@ -2054,3 +2054,266 @@ def test_reference_helpers_missing_geometry_config(parms, context):
         solver = _ref_helper_solver(configure=False)
         method = getattr(solver, parms["method"])
         method(REF_HELPER_ANGLES)
+
+
+# ---------------------------------------------------------------------------
+# Persist solver-defined state through export/restore (:issue:`108`)
+# ---------------------------------------------------------------------------
+
+
+def _add_psic_user_mode(solver, name="my_psic_mode"):
+    """Mutate ``solver._geom`` to add a custom user mode.
+
+    Helper for the persistence tests below.  Uses
+    ``ad_hoc_diffractometer``'s public ``ModeDict.__setitem__``
+    contract.
+    """
+    import ad_hoc_diffractometer as ahd  # noqa: F401
+    from ad_hoc_diffractometer.mode import ConstraintSet, SampleConstraint
+
+    solver._geom.modes[name] = ConstraintSet(
+        constraints=[
+            SampleConstraint("mu", 0.5),
+            SampleConstraint("eta", 1.0),
+            SampleConstraint("chi", 2.0),
+        ],
+    )
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(geometry="fourcv", modify=False, expect_geometry_state=False),
+            does_not_raise(),
+            id="vanilla built-in: geometry_state omitted",
+        ),
+        pytest.param(
+            dict(geometry="psic", modify=True, expect_geometry_state=True),
+            does_not_raise(),
+            id="modified built-in: geometry_state present",
+        ),
+    ],
+)
+def test_metadata_persists_geometry_state(parms, context):
+    """``_metadata`` emits ``geometry_state`` only when non-default.
+
+    Regression for :issue:`108`: the ``solver:`` block in
+    ``export()`` carries a snapshot of the geometry's structure
+    only when the live geometry differs from a fresh reference;
+    vanilla built-ins stay clean.
+    """
+    solver = AdHocSolver(geometry=parms["geometry"])
+    if parms["modify"]:
+        _add_psic_user_mode(solver)
+    with context:
+        meta = solver._metadata
+        assert "mode" in meta
+        assert ("geometry_state" in meta) is parms["expect_geometry_state"]
+        if parms["expect_geometry_state"]:
+            gs = meta["geometry_state"]
+            assert "modes" in gs
+            assert "samples" not in gs  # stripped to avoid double-restore
+            assert "wavelength" not in gs
+            assert "my_psic_mode" in gs["modes"]
+
+
+def _psic_geometry_state_snapshot() -> dict:
+    """Build a real geometry_state snapshot from a fresh psic geometry.
+
+    Used by the parametrized ``test_init_replays_geometry_state_kwarg``
+    tests below.  Constructed at test-collection time would fetch
+    the wrong dict; call from within the test to keep the fixture
+    fresh.
+    """
+    import ad_hoc_diffractometer as ahd
+
+    from hklpy2_solvers.ad_hoc_solver import _GEOMETRY_STATE_OMIT_KEYS
+
+    d = ahd.make_geometry("psic").to_dict()
+    return {k: v for k, v in d.items() if k not in _GEOMETRY_STATE_OMIT_KEYS}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(geometry="psic", state="round-trip-fresh"),
+            does_not_raise(),
+            id="fresh snapshot replayed via from_dict reproduces psic",
+        ),
+        pytest.param(
+            dict(geometry="psic", state="not a dict"),
+            pytest.raises(SolverError, match=re.escape("geometry_state must be a dict")),
+            id="non-dict geometry_state raises SolverError",
+        ),
+        pytest.param(
+            dict(geometry="psic", state={"name": "fourcv"}),
+            pytest.raises(SolverError, match=re.escape("does not match")),
+            id="name mismatch between snapshot and geometry raises",
+        ),
+    ],
+)
+def test_init_replays_geometry_state_kwarg(parms, context):
+    """Constructor pops and replays ``geometry_state`` from kwargs.
+
+    The happy path round-trips a freshly-built psic snapshot
+    through :meth:`ad_hoc_diffractometer.AdHocDiffractometer.from_dict`
+    and produces a functional solver with all stages and modes
+    intact.  Failure cases validate the hklpy2-side guards before
+    delegating to ``from_dict``.
+    """
+    state = parms["state"]
+    if state == "round-trip-fresh":
+        state = _psic_geometry_state_snapshot()
+    with context:
+        solver = AdHocSolver(geometry=parms["geometry"], geometry_state=state)
+        assert solver.geometry == parms["geometry"]
+        # Verify a known psic mode is reachable through the replayed geometry.
+        assert "bisecting_vertical" in solver.modes
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(geometry="psic", custom_mode="my_psic_mode"),
+            does_not_raise(),
+            id="psic round-trip preserves user mode and selects it",
+        ),
+        pytest.param(
+            dict(geometry="fourcv", custom_mode="my_fourcv_mode"),
+            does_not_raise(),
+            id="fourcv round-trip preserves user mode and selects it",
+        ),
+    ],
+)
+def test_simulator_from_config_round_trip(parms, context):
+    """End-to-end round-trip via ``hklpy2.simulator_from_config``.
+
+    Resolves :issue:`108`: a user mode added to the underlying
+    ``ad_hoc_diffractometer`` geometry survives a YAML round-trip.
+    The test calls ``update_solver()`` before ``export()`` to flush
+    Core's cached mode (a documented upstream caching pattern).
+    """
+    import hklpy2
+    from ad_hoc_diffractometer.mode import ConstraintSet, SampleConstraint
+    from hklpy2.run_utils import simulator_from_config
+
+    sim = hklpy2.creator(solver="ad_hoc", geometry=parms["geometry"], name="adhoc_persist")
+    g = sim.core.solver._geom
+    # The constraint set must be valid for the geometry; the simplest
+    # universally-valid one is "fix every sample stage", which any
+    # ad_hoc geometry accepts as a degenerate but well-formed mode.
+    sample_stage_names = [s.name for s in g.sample_stages]
+    g.modes[parms["custom_mode"]] = ConstraintSet(
+        constraints=[SampleConstraint(name, 0.0) for name in sample_stage_names],
+    )
+    sim.core.mode = parms["custom_mode"]
+    sim.core.update_solver()  # flush Core's mode cache before export
+    cfg = sim.configuration
+    with context:
+        sim2 = simulator_from_config(cfg)
+        assert parms["custom_mode"] in sim2.core.solver.modes
+        assert sim2.core.mode == parms["custom_mode"]
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="vanilla solver round-trips without geometry_state in YAML",
+        ),
+    ],
+)
+def test_simulator_from_config_round_trip_vanilla(parms, context):
+    """Vanilla solver round-trips cleanly (no geometry_state emitted)."""
+    import hklpy2
+    from hklpy2.run_utils import simulator_from_config
+
+    sim = hklpy2.creator(solver="ad_hoc", geometry="fourcv", name="adhoc_vanilla")
+    cfg = sim.configuration
+    with context:
+        assert "geometry_state" not in cfg["solver"]
+        sim2 = simulator_from_config(cfg)
+        assert sim2.core.solver.geometry == "fourcv"
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="built-in geometry set matches ad_hoc_diffractometer.list_geometries",
+        ),
+    ],
+)
+def test_builtin_geometry_set(parms, context):
+    """Guard: hard-coded built-in set tracks ``ad_hoc_diffractometer``.
+
+    If the upstream library ships a new built-in geometry, this
+    test fails immediately so :data:`_AD_HOC_BUILTIN_GEOMETRIES`
+    can be updated in the same commit rather than silently
+    treating the new built-in as user-registered.
+    """
+    import ad_hoc_diffractometer as ahd
+
+    from hklpy2_solvers.ad_hoc_solver import _AD_HOC_BUILTIN_GEOMETRIES
+
+    with context:
+        assert frozenset(ahd.list_geometries().keys()) == _AD_HOC_BUILTIN_GEOMETRIES
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(),
+            does_not_raise(),
+            id="user-registered geometry always persists geometry_state",
+        ),
+    ],
+)
+def test_metadata_user_registered_geometry(parms, context):
+    """A user-registered geometry persists ``geometry_state`` unconditionally.
+
+    Geometries whose names are not in
+    :data:`_AD_HOC_BUILTIN_GEOMETRIES` are treated as user-added
+    and are always serialised, even when no extra modes have
+    been attached (the registry presence alone is the deviation
+    from a vanilla install).
+    """
+    import ad_hoc_diffractometer as ahd
+
+    # Borrow a built-in YAML by registering it under a fresh name.
+    # We use the existing ``fourcv.yml`` packaged by the library
+    # so the test does not depend on writing a sidecar YAML to
+    # disk.  Registration is reverted in the ``finally`` block to
+    # keep the registry clean for other tests in the session.
+    pkg_files = __import__("importlib.resources", fromlist=["files"]).files("ad_hoc_diffractometer.geometries")
+    yaml_path = str(pkg_files / "fourcv.yml")
+    custom_name = "fourcv_custom_for_test_108"
+    ahd.register_geometry_file(yaml_path, name=custom_name)
+    try:
+        with context:
+            solver = AdHocSolver(geometry=custom_name)
+            meta = solver._metadata
+            assert "geometry_state" in meta
+            # The geometry's internal ``name`` field is taken from the
+            # YAML file (``fourcv``), not from the registry key
+            # (``custom_name``).  What we are pinning here is that the
+            # ``geometry_state`` snapshot is *emitted* for a
+            # user-registered name even though the underlying YAML is
+            # a copy of a built-in.
+            assert "modes" in meta["geometry_state"]
+            assert meta["geometry"] == custom_name
+    finally:
+        # Manual cleanup of the global registry.  ``ad_hoc_diffractometer``
+        # does not expose a public unregister API; mutate the private
+        # registry dict directly so the next test sees a clean state.
+        from ad_hoc_diffractometer import factories as _factories
+
+        _factories._GEOMETRY_REGISTRY.pop(custom_name, None)

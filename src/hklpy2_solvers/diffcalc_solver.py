@@ -140,6 +140,13 @@ class DiffcalcSolver(SolverBase):
                 f"DiffcalcSolver supports only the {GEOMETRY_NAME!r} geometry, received {geometry!r}."
             )
 
+        # Pop persistence kwargs delivered via ``solver_kwargs`` from
+        # a saved configuration (see :issue:`108`).  Replayed after
+        # the internal state is initialised but before any mode is
+        # applied so a saved ``mode:`` referencing a user-registered
+        # mode resolves via the normal setter.
+        user_modes_state = kwargs.pop("user_modes", None)
+
         # Initialize internal state *before* super().__init__ which
         # may set mode via the setter.
         self._ubcalc = UBCalculation("default")
@@ -148,14 +155,22 @@ class DiffcalcSolver(SolverBase):
         self._reflections: list[ReflectionDict] = []
         self._wavelength: float | None = None
         self._lattice: NamedFloatDict = {}
-        # User-registered modes added at runtime via register_mode().
-        # Lives for this instance only; not persisted across instances
-        # or across hklpy2 save/restore.
+        # User-registered modes added at runtime via register_mode()
+        # or replayed from a persisted configuration via the
+        # ``user_modes`` kwarg.  Persisted across hklpy2
+        # ``export()`` / ``simulator_from_config()`` round-trips via
+        # the ``_metadata`` override (see :issue:`108`).
         self._user_modes: dict[str, dict[str, Any]] = {}
         # Reverse index from token-set to user-mode display name,
         # mirroring ``_MODES_BY_TOKENS`` for built-ins.  Enables
         # order-independent matching (see :issue:`109`).
         self._user_modes_by_tokens: dict[frozenset[str], str] = {}
+
+        # Replay persisted user modes (:issue:`108`) before
+        # ``super().__init__`` so a saved ``mode:`` set by the base
+        # class resolves cleanly.
+        if user_modes_state is not None:
+            self._replay_user_modes(user_modes_state)
 
         super().__init__(geometry, **kwargs)
 
@@ -167,6 +182,28 @@ class DiffcalcSolver(SolverBase):
         # geometries.rst for details.
         if not self.mode and self.modes:  # pragma: no branch
             self.mode = "bisect fixed_mu fixed_nu"
+
+    def _replay_user_modes(self, state: Any) -> None:
+        """Re-register user modes from a persisted ``user_modes`` dict.
+
+        Idempotent across re-restore: an entry whose token-set is
+        already registered is skipped (so loading the same config
+        twice does not raise).  Any other failure is propagated as
+        :class:`SolverError` naming the offending mode.
+        """
+        if not isinstance(state, dict):
+            raise SolverError(f"user_modes must be a dict[str, dict], received {state!r}.")
+        for name, constraints in state.items():
+            try:
+                token_key = frozenset(name.split())
+            except AttributeError as exc:
+                raise SolverError(f"user_modes key must be a string, received {name!r}.") from exc
+            if token_key in self._user_modes_by_tokens:
+                continue
+            try:
+                self.register_mode(name, constraints)
+            except SolverError as exc:
+                raise SolverError(f"user_modes replay failed for {name!r}: {exc}") from exc
 
     # ------------------------------------------------------------------
     # Internal helpers
@@ -520,6 +557,46 @@ class DiffcalcSolver(SolverBase):
         (see :meth:`register_mode`).
         """
         return list(self._all_modes().keys())
+
+    @property
+    def _metadata(self) -> dict[str, Any]:
+        """Solver metadata extended with the active mode and persisted user modes.
+
+        Adds the following keys to the base :class:`SolverBase`
+        metadata:
+
+        * ``mode`` — the currently active operating mode name.  Read
+          back by :meth:`hklpy2.diffract.DiffractometerBase.restore`
+          (via ``restore_mode=True``) and re-applied to the
+          reconstructed solver.  Mirrors the precedent set by
+          :class:`hklpy2.backends.hkl_soleil.HklSolver._metadata`.
+        * ``user_modes`` — only when non-empty.  Mapping of
+          user-registered mode names to their constraint dicts so
+          modes registered via :meth:`register_mode` survive
+          ``Diffractometer.export()`` →
+          :func:`hklpy2.run_utils.simulator_from_config` round-trips
+          (see :issue:`108`).  ``hklpy2.simulator_from_config()``
+          forwards every non-reserved key under ``solver:`` as a
+          ``solver_kwargs`` entry, where it is picked up by
+          :meth:`__init__` and replayed via :meth:`register_mode`.
+
+        .. note::
+
+           ``hklpy2.Core`` caches the active mode and pushes it to
+           the underlying solver only when the next ``forward()``
+           / ``inverse()`` runs (or when
+           :meth:`hklpy2.ops.Core.update_solver` is called
+           explicitly).  If a caller sets ``diffractometer.core.mode``
+           then immediately reads ``_metadata`` / calls
+           ``export()`` without an intervening calculation, the
+           saved ``mode`` may reflect the previous value.  This
+           caching behaviour is upstream and affects every solver.
+        """
+        meta = dict(super()._metadata)
+        meta["mode"] = self.mode
+        if self._user_modes:
+            meta["user_modes"] = {name: dict(constraints) for name, constraints in self._user_modes.items()}
+        return meta
 
     @property
     def pseudo_axis_names(self) -> list[str]:

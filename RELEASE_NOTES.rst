@@ -40,6 +40,7 @@ describe future plans.
     ~~~~~~~~~~~~
 
     * Add ``cross-validation.yml`` workflow running libhkl-backed tests via conda-forge.  :issue:`65`
+    * Add ``DiffcalcSolver.register_mode`` / ``unregister_mode`` for runtime constraint sets.  :issue:`106`
     * Add horizontal four-circle cross-validation group against ``hkl_soleil``.  :issue:`67`
     * Add horizontal kappa cross-validation group against ``hkl_soleil``.  :issue:`75`
     * Add six-circle bisecting peers to cross-validation groups.  :issue:`64`

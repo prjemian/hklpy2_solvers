@@ -302,6 +302,54 @@ Third-party packages can alternatively contribute geometries via the
 discovered automatically the first time
 :func:`ad_hoc_diffractometer.list_geometries` is called.
 
+Persistence across ``export()`` / ``simulator_from_config()``
+-------------------------------------------------------------
+
+User-registered geometries and modifications to built-in
+geometries (e.g. modes added at runtime) survive a save/restore
+cycle when the diffractometer is reconstructed via
+:func:`hklpy2.simulator_from_config` (see :issue:`108`).
+:meth:`AdHocSolver._metadata
+<hklpy2_solvers.ad_hoc_solver.AdHocSolver._metadata>` writes a
+``geometry_state`` snapshot into the ``solver:`` block of the
+YAML when the live geometry differs from a fresh reference, and
+``simulator_from_config()`` forwards it as a ``solver_kwargs``
+entry that :meth:`AdHocSolver.__init__` replays via
+:meth:`ad_hoc_diffractometer.AdHocDiffractometer.from_dict`:
+
+.. code-block:: python
+
+   # Suppose `diff` is an AdHoc-backed diffractometer with a
+   # custom mode added to its psic geometry at runtime.  See
+   # /path/to/mybeamline.yml for the full registration example
+   # above; here we focus on the round-trip pattern.
+   diff.export("diff.yaml")
+   ...
+   import hklpy2
+   diff2 = hklpy2.simulator_from_config("diff.yaml")
+   # The custom mode (and any other in-memory modifications to
+   # the geometry's modes table) is back in diff2's solver.
+
+Vanilla built-in geometries with no modifications round-trip
+cleanly without any extra payload in the YAML.
+
+.. note::
+
+   ``geometry_state`` carries the geometry structure (stages,
+   modes, basis, cut points, etc.) but omits the
+   ``samples``, ``active_sample``, and ``wavelength`` fields:
+   those are managed independently by hklpy2 and are restored
+   through the dedicated ``samples:`` / ``beam:`` blocks to
+   avoid double-restore.
+   :meth:`hklpy2.diffract.DiffractometerBase.restore` does *not*
+   re-create the underlying solver, so
+   :func:`~hklpy2.simulator_from_config` is the supported entry
+   point for full restoration.  ``hklpy2.Core`` also caches the
+   active mode; call ``diffractometer.forward(...)`` (or
+   ``diffractometer.core.update_solver()``) once after setting
+   ``core.mode`` before ``export()`` so the saved ``mode:`` field
+   reflects the current value.
+
 .. seealso::
 
    - :ref:`geometries.ad_hoc` — full reference for all geometries and modes

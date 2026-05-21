@@ -195,15 +195,41 @@ diffractometer's cached mode stays consistent with the solver:
    psic.core.mode = "bisect fixed_mu fixed_nu"
    solver.unregister_mode("fixed_delta fixed_eta fixed_chi")
 
-.. warning::
+Persistence across ``export()`` / ``simulator_from_config()``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   User-registered modes live only for the lifetime of the solver
-   instance.  ``Diffractometer.export()`` /
-   ``Diffractometer.restore()`` / ``simulator_from_config()`` do
-   not round-trip them through the YAML configuration, because
-   hklpy2's configuration schema has no solver-defined state slot
-   today.  Re-register your modes in any process that loads a
-   saved configuration.  Tracked in :issue:`108`.
+User-registered modes survive a save/restore cycle when the
+diffractometer is reconstructed via
+:func:`hklpy2.simulator_from_config` (see :issue:`108`).
+``DiffcalcSolver._metadata`` writes a ``user_modes`` entry into
+the ``solver:`` block of the YAML, and
+``simulator_from_config()`` forwards it as a ``solver_kwargs``
+entry that :meth:`DiffcalcSolver.__init__` replays via
+:meth:`~hklpy2_solvers.diffcalc_solver.DiffcalcSolver.register_mode`:
+
+.. code-block:: python
+
+   # The illustration below uses /path/to/mybeamline.yml as a
+   # stand-in for a real on-disk path you choose for your saved
+   # configuration.
+   psic.export("/path/to/mybeamline.yml")
+   ...
+   import hklpy2
+   psic2 = hklpy2.simulator_from_config("/path/to/mybeamline.yml")
+   # user modes are back in psic2.core.solver.modes, and the
+   # active mode (saved at export time) is restored.
+
+.. note::
+
+   :meth:`hklpy2.diffract.DiffractometerBase.restore` does *not*
+   re-create the underlying solver, so calling ``restore()`` on
+   an existing diffractometer cannot replay solver state.
+   :func:`~hklpy2.simulator_from_config` is the supported entry
+   point for full restoration.  ``hklpy2.Core`` also caches the
+   active mode; call ``diffractometer.forward(...)`` (or
+   ``diffractometer.core.update_solver()``) once after setting
+   ``core.mode`` before ``export()`` so the saved ``mode:`` field
+   reflects the current value.
 
 Compute motor positions (forward)
 ---------------------------------

@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../_static/documentation_options.js?v=f9dd07e8"></script>
+    <script src="../../_static/documentation_options.js?v=50db2971"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2_solvers/ad_hoc_solver';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.18.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.3.dev2+gdc84e4f7c';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.3.dev3+g544e081cd';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -459,6 +459,42 @@
 <span class="n">_INPUT_EXTRA_NAMES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;n_hat&quot;</span><span class="p">,</span> <span class="s2">&quot;psi&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_i&quot;</span><span class="p">,</span> <span class="s2">&quot;beta_out&quot;</span><span class="p">,</span> <span class="s2">&quot;h2&quot;</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">})</span>
 <span class="sd">&quot;&quot;&quot;Names of mode-extra parameters supplied by the user (vs. solver outputs).&quot;&quot;&quot;</span>
 
+<span class="c1"># ---------------------------------------------------------------------------</span>
+<span class="c1"># Solver-state persistence (:issue:`108`)</span>
+<span class="c1"># ---------------------------------------------------------------------------</span>
+
+<span class="n">_AD_HOC_BUILTIN_GEOMETRIES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;fivec&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;fourch&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;fourcv&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kappa4ch&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kappa4cv&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;kappa6c&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;psic&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;s2d2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sixc&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;zaxis&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Geometry names shipped by the installed ``ad_hoc_diffractometer``.</span>
+
+<span class="sd">Used to decide whether a geometry needs to be persisted in the</span>
+<span class="sd">solver&#39;s ``_metadata``: any name not in this set is treated as</span>
+<span class="sd">user-registered and is always persisted; names in this set are</span>
+<span class="sd">persisted only when the live geometry has been modified (modes</span>
+<span class="sd">added or removed) relative to a fresh reference instance.</span>
+
+<span class="sd">Guarded by :func:`tests.test_ad_hoc_solver.test_builtin_geometry_set`</span>
+<span class="sd">so an upstream addition fails CI rather than silently turning a</span>
+<span class="sd">shipped geometry into a &quot;user-registered&quot; one.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">_GEOMETRY_STATE_OMIT_KEYS</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;active_sample&quot;</span><span class="p">,</span> <span class="s2">&quot;samples&quot;</span><span class="p">,</span> <span class="s2">&quot;wavelength&quot;</span><span class="p">})</span>
+<span class="sd">&quot;&quot;&quot;Top-level keys in ``AdHocDiffractometer.to_dict()`` that hklpy2</span>
+<span class="sd">manages independently and must not round-trip through the solver</span>
+<span class="sd">state (avoids double-restore of samples and wavelength).&quot;&quot;&quot;</span>
+
 <span class="n">_REFERENCE_EXTRA_NAMES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;psi&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_i&quot;</span><span class="p">,</span> <span class="s2">&quot;beta_out&quot;</span><span class="p">})</span>
 <span class="sd">&quot;&quot;&quot;Reference-constraint scalar extras (set via ConstraintSet rebuild).&quot;&quot;&quot;</span>
 
@@ -497,11 +533,11 @@
     <span class="n">version</span> <span class="o">=</span> <span class="n">_BACKEND_VERSION</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">DEFAULT_GEOMETRY</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">available</span> <span class="o">=</span> <span class="n">ahd</span><span class="o">.</span><span class="n">list_geometries</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">geometry</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;AdHocSolver does not support geometry </span><span class="si">{</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2">.  Available: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">available</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
-            <span class="p">)</span>
+        <span class="c1"># Pop persistence kwargs delivered via ``solver_kwargs`` from</span>
+        <span class="c1"># a saved configuration (see :issue:`108`).  When present,</span>
+        <span class="c1"># ``geometry_state`` rebuilds the internal geometry from a</span>
+        <span class="c1"># serialised snapshot rather than calling ``make_geometry``.</span>
+        <span class="n">geometry_state</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;geometry_state&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="c1"># Extract factory kwargs that are not for SolverBase.  ``ad_hoc``</span>
         <span class="c1"># kappa factories take ``alpha_deg``; we accept the more explicit</span>
@@ -511,8 +547,21 @@
         <span class="k">if</span> <span class="s2">&quot;kappa_alpha_deg&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="n">factory_kwargs</span><span class="p">[</span><span class="s2">&quot;alpha_deg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;kappa_alpha_deg&quot;</span><span class="p">)</span>
 
-        <span class="c1"># Create the internal geometry object.</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span> <span class="o">=</span> <span class="n">ahd</span><span class="o">.</span><span class="n">make_geometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">factory_kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">geometry_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Replay path (:issue:`108`): rebuild the geometry from</span>
+            <span class="c1"># the persisted snapshot.  Validates the geometry name</span>
+            <span class="c1"># matches what the snapshot describes so a corrupted</span>
+            <span class="c1"># config does not silently produce a wrong-geometry</span>
+            <span class="c1"># solver.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_from_state</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">geometry_state</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">available</span> <span class="o">=</span> <span class="n">ahd</span><span class="o">.</span><span class="n">list_geometries</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">geometry</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;AdHocSolver does not support geometry </span><span class="si">{</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2">.  Available: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">available</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span>
+            <span class="c1"># Create the internal geometry object from the registry.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span> <span class="o">=</span> <span class="n">ahd</span><span class="o">.</span><span class="n">make_geometry</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">factory_kwargs</span><span class="p">)</span>
 
         <span class="c1"># Cache axis names from geometry stages (stable after creation).</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_real_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">s</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">sample_stages</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">detector_stages</span><span class="p">]</span>
@@ -533,6 +582,31 @@
             <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover - geometry always sets one</span>
                 <span class="n">default</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">modes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">default</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_geometry_from_state</span><span class="p">(</span><span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reconstruct an ``AdHocDiffractometer`` from a persisted snapshot.</span>
+
+<span class="sd">        Wraps :meth:`ad_hoc_diffractometer.AdHocDiffractometer.from_dict`</span>
+<span class="sd">        with hklpy2-side validation: the snapshot must be a dict and</span>
+<span class="sd">        its ``name`` field (when present) must match ``geometry``,</span>
+<span class="sd">        catching configs in which the ``geometry:`` field and the</span>
+<span class="sd">        persisted state have drifted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;geometry_state must be a dict, received </span><span class="si">{</span><span class="n">state</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="n">snapshot_name</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">snapshot_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">snapshot_name</span> <span class="o">!=</span> <span class="n">geometry</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;geometry_state name </span><span class="si">{</span><span class="n">snapshot_name</span><span class="si">!r}</span><span class="s2"> does not match the requested geometry </span><span class="si">{</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+        <span class="c1"># The omitted keys (samples, active_sample, wavelength) are</span>
+        <span class="c1"># restored by hklpy2&#39;s own mechanisms after construction.</span>
+        <span class="c1"># ``from_dict`` tolerates their absence — verified in tests.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ahd</span><span class="o">.</span><span class="n">AdHocDiffractometer</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># pragma: no cover - defensive</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;AdHocDiffractometer.from_dict failed for geometry </span><span class="si">{</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
     <span class="c1"># ------------------------------------------------------------------</span>
     <span class="c1"># Internal helpers</span>
@@ -923,6 +997,76 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">modes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;List of operating modes for this geometry.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">modes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Solver metadata extended with the active mode and geometry state.</span>
+
+<span class="sd">        Adds the following keys to the base :class:`SolverBase`</span>
+<span class="sd">        metadata:</span>
+
+<span class="sd">        * ``mode`` — the currently active operating mode name.  Read</span>
+<span class="sd">          back by :meth:`hklpy2.diffract.DiffractometerBase.restore`</span>
+<span class="sd">          (via ``restore_mode=True``).  Mirrors the precedent set by</span>
+<span class="sd">          :class:`hklpy2.backends.hkl_soleil.HklSolver._metadata`.</span>
+<span class="sd">        * ``geometry_state`` — only when the live geometry has</span>
+<span class="sd">          deviated from a fresh reference of the same name (either</span>
+<span class="sd">          a user-registered geometry, or a built-in geometry whose</span>
+<span class="sd">          mode list has been modified).  The snapshot is produced</span>
+<span class="sd">          by :meth:`ad_hoc_diffractometer.AdHocDiffractometer.to_dict`</span>
+<span class="sd">          with hklpy2-managed fields (``samples``, ``active_sample``,</span>
+<span class="sd">          ``wavelength``) stripped to avoid double-restore.</span>
+
+<span class="sd">        ``hklpy2.simulator_from_config()`` forwards every</span>
+<span class="sd">        non-reserved key under ``solver:`` as a ``solver_kwargs``</span>
+<span class="sd">        entry, where :meth:`__init__` consumes ``geometry_state``</span>
+<span class="sd">        and replays it via</span>
+<span class="sd">        :meth:`ad_hoc_diffractometer.AdHocDiffractometer.from_dict`.</span>
+<span class="sd">        See :issue:`108`.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           ``hklpy2.Core`` caches the active mode and pushes it to</span>
+<span class="sd">           the underlying solver only when the next ``forward()``</span>
+<span class="sd">           / ``inverse()`` runs (or when</span>
+<span class="sd">           :meth:`hklpy2.ops.Core.update_solver` is called</span>
+<span class="sd">           explicitly).  If a caller sets ``diffractometer.core.mode``</span>
+<span class="sd">           then immediately reads ``_metadata`` / calls</span>
+<span class="sd">           ``export()`` without an intervening calculation, the</span>
+<span class="sd">           saved ``mode`` may reflect the previous value.  This</span>
+<span class="sd">           caching behaviour is upstream and affects every solver</span>
+<span class="sd">           (including :class:`~hklpy2.backends.hkl_soleil.HklSolver`).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_metadata</span><span class="p">)</span>
+        <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_serialize_geometry_state</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;geometry_state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="k">return</span> <span class="n">meta</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_serialize_geometry_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a serialised geometry snapshot iff non-default.</span>
+
+<span class="sd">        Returns ``None`` for a vanilla built-in geometry (name in</span>
+<span class="sd">        :data:`_AD_HOC_BUILTIN_GEOMETRIES`, modes structurally</span>
+<span class="sd">        identical to a fresh reference).  Otherwise returns a YAML-</span>
+<span class="sd">        safe dict suitable for embedding in ``_metadata``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">live</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span> <span class="ow">in</span> <span class="n">_AD_HOC_BUILTIN_GEOMETRIES</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">reference</span> <span class="o">=</span> <span class="n">ahd</span><span class="o">.</span><span class="n">make_geometry</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">)</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pragma: no cover - defensive</span>
+                <span class="c1"># Failure to build a reference forces persistence</span>
+                <span class="c1"># so the user does not lose state silently.</span>
+                <span class="n">reference</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="n">reference</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">live</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;modes&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="n">reference</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;modes&quot;</span><span class="p">):</span>
+                <span class="c1"># Vanilla built-in geometry with unmodified modes:</span>
+                <span class="c1"># nothing solver-specific to persist.</span>
+                <span class="k">return</span> <span class="kc">None</span>
+        <span class="c1"># Strip fields hklpy2 manages independently to avoid</span>
+        <span class="c1"># double-restore (samples, wavelength, active_sample).</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">live</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_GEOMETRY_STATE_OMIT_KEYS</span><span class="p">}</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">pseudo_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>

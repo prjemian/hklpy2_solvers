@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="_static/documentation_options.js?v=f9dd07e8"></script>
+    <script src="_static/documentation_options.js?v=50db2971"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'guide_ad_hoc';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.18.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.3.dev2+gdc84e4f7c';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.3.dev3+g544e081cd';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -536,7 +536,7 @@ the full list.</p>
 solver’s <code class="docutils literal notranslate"><span class="pre">forward()</span></code> may return multiple solutions; the
 diffractometer picks one according to the policy assigned to
 <code class="docutils literal notranslate"><span class="pre">fourc._forward_solution</span></code> (defaults to
-<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/utils/index.html#hklpy2.utils.pick_first_solution" title="(in hklpy2 v0.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">hklpy2.utils.pick_first_solution()</span></code></a>).  The complete list of
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/utils/index.html#hklpy2.utils.pick_first_solution" title="(in hklpy2 v0.7)"><code class="xref py py-func docutils literal notranslate"><span class="pre">hklpy2.utils.pick_first_solution()</span></code></a>).  The complete list of
 solutions can be returned from <code class="docutils literal notranslate"><span class="pre">fourc.core.forward((1,</span> <span class="pre">0,</span> <span class="pre">0))</span></code>.
 See the upstream hklpy2 guide <a class="reference external" href="https://blueskyproject.io/hklpy2/guides/how_forward_solution.html">How to Choose the Default forward()
 Solution</a>
@@ -606,7 +606,7 @@ to reach into <code class="docutils literal notranslate"><span class="pre">solve
 </div>
 <p><code class="docutils literal notranslate"><span class="pre">angles</span></code> may be a dict keyed by real-axis name (any subset); <code class="docutils literal notranslate"><span class="pre">None</span></code>
 (default) uses the geometry’s current angles.  Unknown axis names raise
-<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.SolverError" title="(in hklpy2 v0.6)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverError</span></code></a>; a non-dict input raises
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.SolverError" title="(in hklpy2 v0.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverError</span></code></a>; a non-dict input raises
 <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>.</p>
 <p>The reference vectors <code class="docutils literal notranslate"><span class="pre">azimuthal_reference</span></code> and <code class="docutils literal notranslate"><span class="pre">surface_normal</span></code>
 are still configured on the underlying geometry object:</p>
@@ -740,6 +740,50 @@ for the YAML format.</p>
 <code class="docutils literal notranslate"><span class="pre">&quot;ad_hoc_diffractometer.geometries&quot;</span></code> entry-point group; those are
 discovered automatically the first time
 <code class="xref py py-func docutils literal notranslate"><span class="pre">ad_hoc_diffractometer.list_geometries()</span></code> is called.</p>
+</section>
+<section id="persistence-across-export-simulator-from-config">
+<h2>Persistence across <code class="docutils literal notranslate"><span class="pre">export()</span></code> / <code class="docutils literal notranslate"><span class="pre">simulator_from_config()</span></code><a class="headerlink" href="#persistence-across-export-simulator-from-config" title="Link to this heading">#</a></h2>
+<p>User-registered geometries and modifications to built-in
+geometries (e.g. modes added at runtime) survive a save/restore
+cycle when the diffractometer is reconstructed via
+<code class="xref py py-func docutils literal notranslate"><span class="pre">hklpy2.simulator_from_config()</span></code> (see <span class="issue">108</span>).
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">AdHocSolver._metadata</span></code> writes a
+<code class="docutils literal notranslate"><span class="pre">geometry_state</span></code> snapshot into the <code class="docutils literal notranslate"><span class="pre">solver:</span></code> block of the
+YAML when the live geometry differs from a fresh reference, and
+<code class="docutils literal notranslate"><span class="pre">simulator_from_config()</span></code> forwards it as a <code class="docutils literal notranslate"><span class="pre">solver_kwargs</span></code>
+entry that <code class="xref py py-meth docutils literal notranslate"><span class="pre">AdHocSolver.__init__()</span></code> replays via
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">ad_hoc_diffractometer.AdHocDiffractometer.from_dict()</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Suppose `diff` is an AdHoc-backed diffractometer with a</span>
+<span class="c1"># custom mode added to its psic geometry at runtime.  See</span>
+<span class="c1"># /path/to/mybeamline.yml for the full registration example</span>
+<span class="c1"># above; here we focus on the round-trip pattern.</span>
+<span class="n">diff</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;diff.yaml&quot;</span><span class="p">)</span>
+<span class="o">...</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
+<span class="n">diff2</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">simulator_from_config</span><span class="p">(</span><span class="s2">&quot;diff.yaml&quot;</span><span class="p">)</span>
+<span class="c1"># The custom mode (and any other in-memory modifications to</span>
+<span class="c1"># the geometry&#39;s modes table) is back in diff2&#39;s solver.</span>
+</pre></div>
+</div>
+<p>Vanilla built-in geometries with no modifications round-trip
+cleanly without any extra payload in the YAML.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">geometry_state</span></code> carries the geometry structure (stages,
+modes, basis, cut points, etc.) but omits the
+<code class="docutils literal notranslate"><span class="pre">samples</span></code>, <code class="docutils literal notranslate"><span class="pre">active_sample</span></code>, and <code class="docutils literal notranslate"><span class="pre">wavelength</span></code> fields:
+those are managed independently by hklpy2 and are restored
+through the dedicated <code class="docutils literal notranslate"><span class="pre">samples:</span></code> / <code class="docutils literal notranslate"><span class="pre">beam:</span></code> blocks to
+avoid double-restore.
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.restore" title="(in hklpy2 v0.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">hklpy2.diffract.DiffractometerBase.restore()</span></code></a> does <em>not</em>
+re-create the underlying solver, so
+<code class="xref py py-func docutils literal notranslate"><span class="pre">simulator_from_config()</span></code> is the supported entry
+point for full restoration.  <code class="docutils literal notranslate"><span class="pre">hklpy2.Core</span></code> also caches the
+active mode; call <code class="docutils literal notranslate"><span class="pre">diffractometer.forward(...)</span></code> (or
+<code class="docutils literal notranslate"><span class="pre">diffractometer.core.update_solver()</span></code>) once after setting
+<code class="docutils literal notranslate"><span class="pre">core.mode</span></code> before <code class="docutils literal notranslate"><span class="pre">export()</span></code> so the saved <code class="docutils literal notranslate"><span class="pre">mode:</span></code> field
+reflects the current value.</p>
+</div>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <ul class="simple">
@@ -809,6 +853,7 @@ hklpy2 documentation</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derived-quantities-i-out-n-az-omega">Derived quantities (ψ, α_i, β_out, n_az, OMEGA)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-geometries-at-a-glance">Available geometries at a glance</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#register-a-custom-yaml-geometry">Register a custom YAML geometry</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#persistence-across-export-simulator-from-config">Persistence across <code class="docutils literal notranslate"><span class="pre">export()</span></code> / <code class="docutils literal notranslate"><span class="pre">simulator_from_config()</span></code></a></li>
 </ul>
   </nav></div>
 

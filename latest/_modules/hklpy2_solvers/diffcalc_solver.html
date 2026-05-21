@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../_static/documentation_options.js?v=f9dd07e8"></script>
+    <script src="../../_static/documentation_options.js?v=50db2971"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2_solvers/diffcalc_solver';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.18.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.3.dev2+gdc84e4f7c';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.3.dev3+g544e081cd';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -546,6 +546,13 @@
                 <span class="sa">f</span><span class="s2">&quot;DiffcalcSolver supports only the </span><span class="si">{</span><span class="n">GEOMETRY_NAME</span><span class="si">!r}</span><span class="s2"> geometry, received </span><span class="si">{</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
+        <span class="c1"># Pop persistence kwargs delivered via ``solver_kwargs`` from</span>
+        <span class="c1"># a saved configuration (see :issue:`108`).  Replayed after</span>
+        <span class="c1"># the internal state is initialised but before any mode is</span>
+        <span class="c1"># applied so a saved ``mode:`` referencing a user-registered</span>
+        <span class="c1"># mode resolves via the normal setter.</span>
+        <span class="n">user_modes_state</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;user_modes&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
         <span class="c1"># Initialize internal state *before* super().__init__ which</span>
         <span class="c1"># may set mode via the setter.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ubcalc</span> <span class="o">=</span> <span class="n">UBCalculation</span><span class="p">(</span><span class="s2">&quot;default&quot;</span><span class="p">)</span>
@@ -554,14 +561,22 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_reflections</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">ReflectionDict</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wavelength</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lattice</span><span class="p">:</span> <span class="n">NamedFloatDict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="c1"># User-registered modes added at runtime via register_mode().</span>
-        <span class="c1"># Lives for this instance only; not persisted across instances</span>
-        <span class="c1"># or across hklpy2 save/restore.</span>
+        <span class="c1"># User-registered modes added at runtime via register_mode()</span>
+        <span class="c1"># or replayed from a persisted configuration via the</span>
+        <span class="c1"># ``user_modes`` kwarg.  Persisted across hklpy2</span>
+        <span class="c1"># ``export()`` / ``simulator_from_config()`` round-trips via</span>
+        <span class="c1"># the ``_metadata`` override (see :issue:`108`).</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_user_modes</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="c1"># Reverse index from token-set to user-mode display name,</span>
         <span class="c1"># mirroring ``_MODES_BY_TOKENS`` for built-ins.  Enables</span>
         <span class="c1"># order-independent matching (see :issue:`109`).</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_user_modes_by_tokens</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Replay persisted user modes (:issue:`108`) before</span>
+        <span class="c1"># ``super().__init__`` so a saved ``mode:`` set by the base</span>
+        <span class="c1"># class resolves cleanly.</span>
+        <span class="k">if</span> <span class="n">user_modes_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_replay_user_modes</span><span class="p">(</span><span class="n">user_modes_state</span><span class="p">)</span>
 
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -573,6 +588,28 @@
         <span class="c1"># geometries.rst for details.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">modes</span><span class="p">:</span>  <span class="c1"># pragma: no branch</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;bisect fixed_mu fixed_nu&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_replay_user_modes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Re-register user modes from a persisted ``user_modes`` dict.</span>
+
+<span class="sd">        Idempotent across re-restore: an entry whose token-set is</span>
+<span class="sd">        already registered is skipped (so loading the same config</span>
+<span class="sd">        twice does not raise).  Any other failure is propagated as</span>
+<span class="sd">        :class:`SolverError` naming the offending mode.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;user_modes must be a dict[str, dict], received </span><span class="si">{</span><span class="n">state</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">constraints</span> <span class="ow">in</span> <span class="n">state</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">token_key</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;user_modes key must be a string, received </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">.&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
+            <span class="k">if</span> <span class="n">token_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_modes_by_tokens</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">register_mode</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">constraints</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">SolverError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;user_modes replay failed for </span><span class="si">{</span><span class="n">name</span><span class="si">!r}</span><span class="s2">: </span><span class="si">{</span><span class="n">exc</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">exc</span>
 
     <span class="c1"># ------------------------------------------------------------------</span>
     <span class="c1"># Internal helpers</span>
@@ -941,6 +978,46 @@
 <span class="sd">        (see :meth:`register_mode`).</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_modes</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Solver metadata extended with the active mode and persisted user modes.</span>
+
+<span class="sd">        Adds the following keys to the base :class:`SolverBase`</span>
+<span class="sd">        metadata:</span>
+
+<span class="sd">        * ``mode`` — the currently active operating mode name.  Read</span>
+<span class="sd">          back by :meth:`hklpy2.diffract.DiffractometerBase.restore`</span>
+<span class="sd">          (via ``restore_mode=True``) and re-applied to the</span>
+<span class="sd">          reconstructed solver.  Mirrors the precedent set by</span>
+<span class="sd">          :class:`hklpy2.backends.hkl_soleil.HklSolver._metadata`.</span>
+<span class="sd">        * ``user_modes`` — only when non-empty.  Mapping of</span>
+<span class="sd">          user-registered mode names to their constraint dicts so</span>
+<span class="sd">          modes registered via :meth:`register_mode` survive</span>
+<span class="sd">          ``Diffractometer.export()`` →</span>
+<span class="sd">          :func:`hklpy2.run_utils.simulator_from_config` round-trips</span>
+<span class="sd">          (see :issue:`108`).  ``hklpy2.simulator_from_config()``</span>
+<span class="sd">          forwards every non-reserved key under ``solver:`` as a</span>
+<span class="sd">          ``solver_kwargs`` entry, where it is picked up by</span>
+<span class="sd">          :meth:`__init__` and replayed via :meth:`register_mode`.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">           ``hklpy2.Core`` caches the active mode and pushes it to</span>
+<span class="sd">           the underlying solver only when the next ``forward()``</span>
+<span class="sd">           / ``inverse()`` runs (or when</span>
+<span class="sd">           :meth:`hklpy2.ops.Core.update_solver` is called</span>
+<span class="sd">           explicitly).  If a caller sets ``diffractometer.core.mode``</span>
+<span class="sd">           then immediately reads ``_metadata`` / calls</span>
+<span class="sd">           ``export()`` without an intervening calculation, the</span>
+<span class="sd">           saved ``mode`` may reflect the previous value.  This</span>
+<span class="sd">           caching behaviour is upstream and affects every solver.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_metadata</span><span class="p">)</span>
+        <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;mode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mode</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_modes</span><span class="p">:</span>
+            <span class="n">meta</span><span class="p">[</span><span class="s2">&quot;user_modes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="nb">dict</span><span class="p">(</span><span class="n">constraints</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">constraints</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_user_modes</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">return</span> <span class="n">meta</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">pseudo_axis_names</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>

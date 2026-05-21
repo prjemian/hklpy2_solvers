@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="_static/documentation_options.js?v=f9dd07e8"></script>
+    <script src="_static/documentation_options.js?v=50db2971"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'howto_benchmark';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.18.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.3.dev2+gdc84e4f7c';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.3.dev3+g544e081cd';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -444,8 +444,8 @@
 <span id="howto-benchmark"></span><h1>How to benchmark a solver geometry<a class="headerlink" href="#how-to-benchmark-a-solver-geometry" title="Link to this heading">#</a></h1>
 <p>This guide shows how to measure the computational throughput of a solver
 geometry — how many
-<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="(in hklpy2 v0.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> and
-<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="(in hklpy2 v0.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> operations it can
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="(in hklpy2 v0.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> and
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="(in hklpy2 v0.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> operations it can
 perform per second — using
 <a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/utils/index.html#hklpy2.utils.benchmark">hklpy2.utils.benchmark</a>.</p>
 <p>Benchmarking is useful when:</p>
@@ -470,7 +470,7 @@ communicate with hardware, so it is safe to run on a live diffractometer.</p>
 <h2>Starting from a saved configuration<a class="headerlink" href="#starting-from-a-saved-configuration" title="Link to this heading">#</a></h2>
 <p>The easiest way to benchmark is to restore a simulator from a saved
 configuration file using
-<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/run_utils/index.html#hklpy2.run_utils.simulator_from_config" title="(in hklpy2 v0.6)"><code class="xref py py-func docutils literal notranslate"><span class="pre">simulator_from_config()</span></code></a>.
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/run_utils/index.html#hklpy2.run_utils.simulator_from_config" title="(in hklpy2 v0.7)"><code class="xref py py-func docutils literal notranslate"><span class="pre">simulator_from_config()</span></code></a>.
 Ready-to-use configurations are provided for each supported geometry:</p>
 <div class="pst-scrollable-table-container"><table class="table">
 <colgroup>
@@ -496,7 +496,7 @@ Ready-to-use configurations are provided for each supported geometry:</p>
 <p class="admonition-title">Note</p>
 <p>Configuration files for <code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver geometries are not yet
 provided.  You can create your own using the <a class="reference internal" href="guide_ad_hoc.html#guide-ad-hoc"><span class="std std-ref">How to use the ad_hoc solver</span></a>
-workflow and <a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.export" title="(in hklpy2 v0.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">export()</span></code></a>.</p>
+workflow and <a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.export" title="(in hklpy2 v0.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">export()</span></code></a>.</p>
 </div>
 <p>Download the file for your geometry, save it alongside your script, then
 run:</p>
@@ -529,7 +529,7 @@ target for this operation.</p>
 <p class="admonition-title">Note</p>
 <p>Some solvers perform iterative constraint solving and return multiple
 candidate solutions per
-<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="(in hklpy2 v0.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> call.  This can
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="(in hklpy2 v0.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> call.  This can
 result in a <code class="docutils literal notranslate"><span class="pre">FAIL</span></code> that reflects an upstream library limitation rather
 than a problem with the solver itself.  See the
 <a class="reference internal" href="geometries.html#geometries"><span class="std std-ref">Geometries</span></a> page for solver-specific notes.</p>
@@ -559,7 +559,7 @@ This guarantees no side effects on motor positions or solver state:</p>
 <h2>Saving your own configuration<a class="headerlink" href="#saving-your-own-configuration" title="Link to this heading">#</a></h2>
 <p>You can benchmark a diffractometer you have already set up in two ways.</p>
 <p><strong>From a file</strong> — export the current state using
-<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.export" title="(in hklpy2 v0.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">export()</span></code></a>, then create a new
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.export" title="(in hklpy2 v0.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">export()</span></code></a>, then create a new
 simulator and benchmark:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_diffractometer</span><span class="o">.</span><span class="n">export</span><span class="p">(</span><span class="s2">&quot;my_config.yml&quot;</span><span class="p">,</span> <span class="s2">&quot;benchmark configuration&quot;</span><span class="p">)</span>
 
@@ -568,7 +568,7 @@ simulator and benchmark:</p>
 </pre></div>
 </div>
 <p><strong>Without a file</strong> — pass the
-<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.configuration" title="(in hklpy2 v0.6)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">configuration</span></code></a> property
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.configuration" title="(in hklpy2 v0.7)"><code class="xref py py-attr docutils literal notranslate"><span class="pre">configuration</span></code></a> property
 directly, bypassing the file entirely:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
@@ -623,16 +623,16 @@ as a dict instead:</p>
 <td><p>Number of calls measured</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">forward_ops_per_sec</span></code></p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="(in hklpy2 v0.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> throughput (ops/sec)</p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="(in hklpy2 v0.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> throughput (ops/sec)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">forward_ms_per_call</span></code></p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="(in hklpy2 v0.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> latency (ms/call)</p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.forward" title="(in hklpy2 v0.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code></a> latency (ms/call)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">inverse_ops_per_sec</span></code></p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="(in hklpy2 v0.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> throughput (ops/sec)</p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="(in hklpy2 v0.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> throughput (ops/sec)</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">inverse_ms_per_call</span></code></p></td>
-<td><p><a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="(in hklpy2 v0.6)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> latency (ms/call)</p></td>
+<td><p><a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/diffract/index.html#hklpy2.diffract.DiffractometerBase.inverse" title="(in hklpy2 v0.7)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">inverse()</span></code></a> latency (ms/call)</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">target_ops_per_sec</span></code></p></td>
 <td><p>Minimum target (2,000 ops/sec)</p></td>

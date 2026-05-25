@@ -29,6 +29,11 @@ describe future plans.
 
     Expected release: tba
 
+    Maintenance
+    ~~~~~~~~~~~
+
+    * Unify copyright automation across hklpy2 family.  :issue:`112`
+
 0.3.3
 ######
 

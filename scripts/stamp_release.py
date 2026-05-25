@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2026 Pete Jemian <prjemian+hklpy2@gmail.com>
+# Copyright (c) 2025-2026 UChicago Argonne, LLC
 # SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """
 Prepare RELEASE_NOTES.rst for a new tagged release.

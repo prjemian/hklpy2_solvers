@@ -7,7 +7,6 @@ import os
 import pathlib
 import sys
 import tomllib
-from datetime import datetime
 from importlib.metadata import version as _version
 
 root_path = pathlib.Path(__file__).parent.parent.parent
@@ -21,7 +20,9 @@ sys.path.insert(0, str(root_path / "src"))
 
 project = _toml["project"]["name"]
 author = _toml["project"]["authors"][0]["name"]
-copyright = f"2025-{datetime.now().year}, Argonne National Laboratory"
+# Static year range; kept in sync with .copyright.txt and LICENSE by
+# scripts/update_copyright_year.py (registered as a pre-commit hook).
+copyright = "2025-2026, UChicago Argonne, LLC"
 github_url = _toml["project"]["urls"]["source"]
 
 release = _version("hklpy2-solvers")

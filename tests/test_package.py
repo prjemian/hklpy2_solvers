@@ -1,4 +1,4 @@
-# Copyright (c) 2026 Pete Jemian <prjemian+hklpy2@gmail.com>
+# Copyright (c) 2025-2026 UChicago Argonne, LLC
 # SPDX-License-Identifier: LicenseRef-UChicago-Argonne-LLC-License
 """Basic package tests."""
 

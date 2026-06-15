@@ -458,7 +458,8 @@ KNOWN_TTH_DISAGREEMENTS = {
 # and :issue:`77` (``ad_hoc/kappa6c bisecting_horizontal`` multi-sample
 # reflection set) was resolved upstream by ``ad_hoc_diffractometer >=
 # 0.11.0`` (PR #281 / issue #280: rotation-composition order, basis-
-# aware ``ub_identity``, BL1967 B-matrix orthogonalized frame); those
+# aware ``ub_identity``, BL1967 B-matrix orthogonalized frame), and the
+# fix remains in the current ``>=0.11.1`` floor (:issue:`114`); those
 # cases are now covered by ``does_not_raise()`` parametrizations in the
 # dedicated regression tests below.
 KNOWN_FORWARD_GAPS = {
@@ -474,10 +475,12 @@ KNOWN_FORWARD_GAPS = {
     # three ``ad_hoc`` horizontal-bisecting modes (``fourch bisecting``,
     # ``psic bisecting_vertical``, ``kappa6c bisecting_horizontal``)
     # decline the trigonal-rhombohedral reflection ``(1, 1, 0)`` on
-    # both ``ad_hoc_diffractometer 0.10.1`` and ``0.11.0``.  The
-    # ``hkl_soleil`` peers (``E4CH``, ``K6C``) solve the same
-    # reflection with ``|chi| ~ 51 deg`` / ``|kappa| ~ 97 deg``
-    # branches that the bisecting solvers do not enumerate.
+    # ``ad_hoc_diffractometer 0.10.1``, ``0.11.0``, and the current
+    # ``>=0.11.1`` floor (upstream #285 added a regression test in
+    # 0.11.1 confirming the gap is unfixed).  The ``hkl_soleil`` peers
+    # (``E4CH``, ``K6C``) solve the same reflection with
+    # ``|chi| ~ 51 deg`` / ``|kappa| ~ 97 deg`` branches that the
+    # bisecting solvers do not enumerate.
     ("euler_horizontal", "fourch", "trigonal_rhombohedral", (1, 1, 0)): "issue #69",
     ("euler_horizontal", "psic", "trigonal_rhombohedral", (1, 1, 0)): "issue #69",
     ("kappa_horizontal", "kappa6c", "trigonal_rhombohedral", (1, 1, 0)): "issue #69",
@@ -505,11 +508,12 @@ CI_ENV_DEPENDENT_GAPS = {
     ("kappa_horizontal", "k6c", "triclinic", (1, 1, 0)): "issue #83",
     ("kappa_horizontal", "kappa4ch", "triclinic", (1, 1, 0)): "issue #83",
     # https://github.com/prjemian/hklpy2_solvers/issues/99 — ``kappa6c
-    # bisecting_horizontal`` triclinic (1, 1, 0) now solves locally
-    # under ``ad_hoc_diffractometer >= 0.11.0`` but the conda-forge CI
-    # env hits the same K6C bootstrap fragility as the existing
-    # :issue:`83` entries; non-strict so the case xfails on CI and
-    # passes silently on local runs.
+    # bisecting_horizontal`` triclinic (1, 1, 0) solves locally under
+    # the current ``ad_hoc_diffractometer >= 0.11.1`` floor (fix landed
+    # in 0.11.0), but the conda-forge CI env hits the same K6C
+    # bootstrap fragility as the existing :issue:`83` entries;
+    # non-strict so the case xfails on CI and passes silently on local
+    # runs.
     ("kappa_horizontal", "kappa6c", "triclinic", (1, 1, 0)): "issue #99",
 }
 

@@ -4,6 +4,7 @@
 
 import math
 import re
+import warnings
 from contextlib import nullcontext as does_not_raise
 
 import pytest
@@ -2458,3 +2459,101 @@ def test_update_mode_constraints_is_observed_by_forward(parms, context):
             assert sol["chi"] == parms["new_chi"], (
                 f"chi expected {parms['new_chi']} got {sol['chi']} (mode override not applied)"
             )
+
+
+# ---------------------------------------------------------------------------
+# Adapter does not trip upstream n_hat placeholder warning (:issue:`114`)
+# ad_hoc_diffractometer >= 0.11.1 emits ``UserWarning`` when
+# ``cs.extras['n_hat']`` is overwritten (BCDA-APS#294).  The adapter
+# routes ``n_hat`` exclusively to ``geometry.surface_normal`` and never
+# writes the placeholder, so the warning must never fire from any
+# adapter-internal code path.
+# ---------------------------------------------------------------------------
+
+
+def _exercise_creator_extras_bootstrap(geometry: str) -> None:
+    """Build via ``hklpy2.creator`` (forces Core to push extras with ``n_hat``)."""
+    import hklpy2
+
+    sim = hklpy2.creator(solver="ad_hoc", geometry=geometry)
+    # Force ``update_solver()`` to run by reading core extras (which
+    # triggers the EXTRAS dirty push if any state is pending).
+    _ = sim.core.solver.extras
+
+
+def _exercise_direct_n_hat_write(geometry: str, mode: str) -> None:
+    """Write ``n_hat`` through the adapter's ``extras`` setter."""
+    solver = AdHocSolver(geometry)
+    solver.mode = mode
+    solver.extras = {"n_hat": (0.0, 0.0, 1.0)}
+
+
+def _exercise_psi_scalar_write(geometry: str, mode: str) -> None:
+    """Write a reference-constraint scalar (exercises C2 refactored path)."""
+    solver = AdHocSolver(geometry)
+    solver.mode = mode
+    solver.extras = {"psi": 30.0}
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(exercise=_exercise_creator_extras_bootstrap, args=("zaxis",)),
+            does_not_raise(),
+            id="creator bootstrap on zaxis (default mode exposes n_hat)",
+        ),
+        pytest.param(
+            dict(exercise=_exercise_creator_extras_bootstrap, args=("psic",)),
+            does_not_raise(),
+            id="creator bootstrap on psic",
+        ),
+        pytest.param(
+            dict(exercise=_exercise_direct_n_hat_write, args=("psic", "fixed_alpha_i_vertical")),
+            does_not_raise(),
+            id="adapter extras setter routes n_hat to surface_normal",
+        ),
+        pytest.param(
+            dict(exercise=_exercise_direct_n_hat_write, args=("fourcv", "fixed_psi")),
+            does_not_raise(),
+            id="adapter extras setter routes n_hat on fourcv fixed_psi",
+        ),
+        pytest.param(
+            dict(exercise=_exercise_psi_scalar_write, args=("fourcv", "fixed_psi")),
+            does_not_raise(),
+            id="extras setter psi scalar via with_constraint_values does not warn",
+        ),
+        pytest.param(
+            dict(exercise=_exercise_psi_scalar_write, args=("psic", "fixed_psi_vertical")),
+            does_not_raise(),
+            id="extras setter psi scalar on psic fixed_psi_vertical does not warn",
+        ),
+    ],
+)
+def test_adapter_does_not_emit_n_hat_placeholder_warning(parms, context):
+    """No adapter code path triggers the upstream n_hat placeholder warning.
+
+    ``ad_hoc_diffractometer >= 0.11.1`` (BCDA-APS#294) emits a
+    :class:`UserWarning` whenever ``ConstraintSet.extras['n_hat']`` is
+    overwritten with a real value, because the actual surface-normal
+    vector lives on the geometry attribute (``surface_normal`` or
+    ``azimuthal_reference``), not in the per-mode extras dict.
+
+    The adapter must never trip this warning from its own code: it
+    routes ``n_hat`` to ``geometry.surface_normal`` (see
+    :class:`~hklpy2_solvers.ad_hoc_solver.AdHocSolver.extras` setter)
+    and uses :meth:`ConstraintSet.with_constraint_values` (not direct
+    extras writes) for reference-constraint scalars.  This test
+    captures all warnings emitted during representative adapter
+    operations and asserts that none whose message names ``n_hat``
+    is a :class:`UserWarning`.
+    """
+    with context:
+        with warnings.catch_warnings(record=True) as caught:
+            warnings.simplefilter("always")
+            parms["exercise"](*parms["args"])
+        offending = [w for w in caught if issubclass(w.category, UserWarning) and "n_hat" in str(w.message)]
+        assert not offending, (
+            f"adapter unexpectedly tripped upstream n_hat placeholder warning(s): "
+            f"{[(w.category.__name__, str(w.message)) for w in offending]}"
+        )

@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
@@ -38,12 +38,12 @@
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=6ec9288d" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=0790524f97105ba85085"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="_static/documentation_options.js?v=b4854591"></script>
+    <script src="_static/documentation_options.js?v=f2ad9a9d"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,8 +51,8 @@
     <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'guide_ad_hoc';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.18.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.4.dev3+gc190c9465';
+        DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.4.dev16+g4df80e6d2';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -633,6 +633,140 @@ are still configured on the underlying geometry object:</p>
 <a class="reference external" href="https://bcda-aps.github.io/ad_hoc_diffractometer/latest/api/reference.html">ad_hoc_diffractometer.reference</a>
 module for the mathematical definitions.</p>
 </section>
+<section id="set-the-reference-vector-n">
+<span id="guide-ad-hoc-reference-vector"></span><h2>Set the reference vector (n̂)<a class="headerlink" href="#set-the-reference-vector-n" title="Link to this heading">#</a></h2>
+<p>Modes that involve a surface normal or an azimuthal reference (for
+example <code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code>, <code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_vertical</span></code>, <code class="docutils literal notranslate"><span class="pre">zaxis</span></code>,
+<code class="docutils literal notranslate"><span class="pre">reflectivity</span></code>) require an external direction vector.  In every
+per-mode table that vector is shown as <strong>n̂</strong> (rendered as the
+<code class="docutils literal notranslate"><span class="pre">n_hat</span></code> key in the mode’s <code class="docutils literal notranslate"><span class="pre">extras</span></code>), but <strong>n̂ is a documentation
+placeholder, not a settable input</strong>: the actual vector lives on the
+underlying geometry object, on one of two attributes selected by the
+mode’s reference constraint.</p>
+<div class="pst-scrollable-table-container"><table class="table" id="id2">
+<caption><span class="caption-text">Which geometry attribute does the active mode read?</span><a class="headerlink" href="#id2" title="Link to this table">#</a></caption>
+<colgroup>
+<col style="width: 35.0%" />
+<col style="width: 30.0%" />
+<col style="width: 35.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Mode reference constraint</p></th>
+<th class="head"><p>Geometry attribute</p></th>
+<th class="head"><p>Set with</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">alpha_i</span></code>, <code class="docutils literal notranslate"><span class="pre">beta_out</span></code>, <code class="docutils literal notranslate"><span class="pre">a_eq_b</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">surface_normal</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">solver._geom.surface_normal</span> <span class="pre">=</span> <span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">psi</span></code>, <code class="docutils literal notranslate"><span class="pre">naz</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">azimuthal_reference</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">solver._geom.azimuthal_reference</span> <span class="pre">=</span> <span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">omega</span></code> (SPEC pseudo-angle)</p></td>
+<td><p>(none required)</p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>To discover which attribute the active mode needs, ask the geometry
+directly:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;fixed_alpha_i_vertical&quot;</span>
+<span class="n">attr</span> <span class="o">=</span> <span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">required_reference_vector</span>
+<span class="c1"># attr is &#39;surface_normal&#39; for this mode; &#39;azimuthal_reference&#39;</span>
+<span class="c1"># for psi / naz modes; None when the active mode requires no</span>
+<span class="c1"># reference vector.</span>
+</pre></div>
+</div>
+<section id="two-ways-to-set-the-vector">
+<h3>Two ways to set the vector<a class="headerlink" href="#two-ways-to-set-the-vector" title="Link to this heading">#</a></h3>
+<p><strong>Through the</strong> <code class="docutils literal notranslate"><span class="pre">extras</span></code> <strong>dict</strong> — works only for <code class="docutils literal notranslate"><span class="pre">n_hat</span></code> and
+only for modes that consume <code class="docutils literal notranslate"><span class="pre">surface_normal</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;n_hat&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
+</pre></div>
+</div>
+<p><strong>Directly on the geometry</strong> — required for <code class="docutils literal notranslate"><span class="pre">azimuthal_reference</span></code>;
+also works for <code class="docutils literal notranslate"><span class="pre">surface_normal</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">surface_normal</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">azimuthal_reference</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The argument is a length-3 sequence of Miller indices.  <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>
+is rejected with <code class="docutils literal notranslate"><span class="pre">ValueError</span></code>; the default is <code class="docutils literal notranslate"><span class="pre">None</span></code> (not set).
+Clear an attribute by assigning <code class="docutils literal notranslate"><span class="pre">None</span></code>.</p>
+<div class="admonition caution">
+<p class="admonition-title">Caution</p>
+<p><code class="docutils literal notranslate"><span class="pre">ad_hoc_diffractometer</span> <span class="pre">&gt;=</span> <span class="pre">0.11.1</span></code> emits a <code class="docutils literal notranslate"><span class="pre">UserWarning</span></code> when
+<code class="docutils literal notranslate"><span class="pre">cs.extras[&quot;n_hat&quot;]</span></code> is overwritten directly with a real value
+(the assignment has no effect on <code class="xref py py-meth docutils literal notranslate"><span class="pre">forward()</span></code>).  Use one of the
+two recipes above instead; both bypass the placeholder.</p>
+</div>
+<p>See the upstream
+<a class="reference external" href="https://bcda-aps.github.io/ad_hoc_diffractometer/latest/howto/surface.html">Surface Geometry and the Reference Vector</a>
+how-to for the full mathematical background.</p>
+</section>
+</section>
+<section id="override-a-fixed-axis-default-value">
+<span id="guide-ad-hoc-constraint-overrides"></span><h2>Override a fixed-axis default value<a class="headerlink" href="#override-a-fixed-axis-default-value" title="Link to this heading">#</a></h2>
+<p>Each <code class="docutils literal notranslate"><span class="pre">fixed_&lt;axis&gt;</span></code> mode (for example <code class="docutils literal notranslate"><span class="pre">fourcv</span></code> <code class="docutils literal notranslate"><span class="pre">fixed_chi</span></code>,
+<code class="docutils literal notranslate"><span class="pre">psic</span></code> <code class="docutils literal notranslate"><span class="pre">fixed_chi_vertical</span></code>, <code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_fixed_chi_fixed_phi</span></code>)
+carries a default scalar value baked into the geometry’s YAML
+definition.  Constraint values are immutable, so changing a default
+replaces the underlying
+<code class="xref py py-class docutils literal notranslate"><span class="pre">ConstraintSet</span></code> rather than mutating
+it in place.</p>
+<p>Use <a class="reference internal" href="api/hklpy2_solvers/ad_hoc_solver/index.html#hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints" title="hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_mode_constraints()</span></code></a>
+to override one or more defaults without touching solver internals.</p>
+<p>Override a single sample-stage default:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">update_mode_constraints</span><span class="p">(</span><span class="s2">&quot;fixed_chi_vertical&quot;</span><span class="p">,</span> <span class="n">chi</span><span class="o">=</span><span class="mf">45.0</span><span class="p">)</span>
+<span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;fixed_chi_vertical&quot;</span>
+</pre></div>
+</div>
+<p>Override several stages at once on a multi-fix mode:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">update_mode_constraints</span><span class="p">(</span>
+    <span class="s2">&quot;fixed_alpha_i_fixed_chi_fixed_phi&quot;</span><span class="p">,</span>
+    <span class="n">chi</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">alpha_i</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Operate on the currently active mode by omitting <code class="docutils literal notranslate"><span class="pre">mode_name</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;fixed_chi_vertical&quot;</span>
+<span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">update_mode_constraints</span><span class="p">(</span><span class="n">chi</span><span class="o">=</span><span class="mf">10.0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>(Assigning to <code class="docutils literal notranslate"><span class="pre">psic2.core.solver.mode</span></code> updates the adapter
+synchronously, which the active-mode shortcut requires.
+<code class="docutils literal notranslate"><span class="pre">psic2.core.mode</span> <span class="pre">=</span> <span class="pre">...</span></code> is cached by hklpy2’s
+<a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/ops/index.html#hklpy2.ops.Core" title="(in hklpy2 v0.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Core</span></code></a> and pushed to the solver on the next
+<code class="docutils literal notranslate"><span class="pre">update_solver()</span></code>, so it is not seen by
+<code class="docutils literal notranslate"><span class="pre">update_mode_constraints</span></code> until a <code class="docutils literal notranslate"><span class="pre">forward()</span></code> runs.)</p>
+<p>Unknown mode names, unknown constraint names, and values rejected by
+the underlying library all raise <a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.SolverError" title="(in hklpy2 v0.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverError</span></code></a>
+with a descriptive message.</p>
+<section id="persistent-overrides-vs-per-call-reference-scalars">
+<h3>Persistent overrides vs. per-call reference scalars<a class="headerlink" href="#persistent-overrides-vs-per-call-reference-scalars" title="Link to this heading">#</a></h3>
+<p>Two distinct routes touch reference-constraint scalars
+(<code class="docutils literal notranslate"><span class="pre">psi</span></code>, <code class="docutils literal notranslate"><span class="pre">alpha_i</span></code>, <code class="docutils literal notranslate"><span class="pre">beta_out</span></code>) on modes that expose them:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="api/hklpy2_solvers/ad_hoc_solver/index.html#hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints" title="hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_mode_constraints()</span></code></a>
+is the <strong>persistent</strong> route — the new value becomes the mode’s
+default for every subsequent <code class="docutils literal notranslate"><span class="pre">forward()</span></code> call until overridden
+again.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">diff.core.extras</span> <span class="pre">=</span> <span class="pre">{&quot;psi&quot;:</span> <span class="pre">...}</span></code> setter is the <strong>per-call</strong>
+route — values come from hklpy2’s Core and are pushed to the solver
+on the next <code class="docutils literal notranslate"><span class="pre">update_solver()</span></code>.</p></li>
+</ul>
+<p>For sample-stage constraints (<code class="docutils literal notranslate"><span class="pre">chi</span></code>, <code class="docutils literal notranslate"><span class="pre">phi</span></code>, <code class="docutils literal notranslate"><span class="pre">mu</span></code>, <code class="docutils literal notranslate"><span class="pre">eta</span></code> …)
+<code class="docutils literal notranslate"><span class="pre">update_mode_constraints</span></code> is the only route; those names are not
+exposed through the <code class="docutils literal notranslate"><span class="pre">extras</span></code> interface.</p>
+<p>See the upstream
+<a class="reference external" href="https://bcda-aps.github.io/ad_hoc_diffractometer/latest/howto/constraints.html">Work with Constraints and Diffraction Modes</a>
+how-to for the full constraint-system background.</p>
+</section>
+</section>
 <section id="available-geometries-at-a-glance">
 <h2>Available geometries at a glance<a class="headerlink" href="#available-geometries-at-a-glance" title="Link to this heading">#</a></h2>
 <div class="pst-scrollable-table-container"><table class="table">
@@ -851,6 +985,14 @@ hklpy2 documentation</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-motor-positions-forward">Compute motor positions (forward)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-h-k-l-from-motor-positions-inverse">Compute (h, k, l) from motor positions (inverse)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derived-quantities-i-out-n-az-omega">Derived quantities (ψ, α_i, β_out, n_az, OMEGA)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-the-reference-vector-n">Set the reference vector (n̂)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-ways-to-set-the-vector">Two ways to set the vector</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#override-a-fixed-axis-default-value">Override a fixed-axis default value</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#persistent-overrides-vs-per-call-reference-scalars">Persistent overrides vs. per-call reference scalars</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#available-geometries-at-a-glance">Available geometries at a glance</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#register-a-custom-yaml-geometry">Register a custom YAML geometry</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#persistence-across-export-simulator-from-config">Persistence across <code class="docutils literal notranslate"><span class="pre">export()</span></code> / <code class="docutils literal notranslate"><span class="pre">simulator_from_config()</span></code></a></li>
@@ -879,8 +1021,8 @@ hklpy2 documentation</p></li>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=0790524f97105ba85085"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -914,7 +1056,7 @@ hklpy2 documentation</p></li>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.18.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
 </p></div>
       
     </div>

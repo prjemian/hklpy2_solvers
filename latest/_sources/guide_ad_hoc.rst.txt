@@ -208,6 +208,155 @@ See the upstream
 `ad_hoc_diffractometer.reference <https://bcda-aps.github.io/ad_hoc_diffractometer/latest/api/reference.html>`_
 module for the mathematical definitions.
 
+.. _guide_ad_hoc.reference_vector:
+
+Set the reference vector (n̂)
+------------------------------
+
+Modes that involve a surface normal or an azimuthal reference (for
+example ``fixed_psi``, ``fixed_alpha_i_vertical``, ``zaxis``,
+``reflectivity``) require an external direction vector.  In every
+per-mode table that vector is shown as **n̂** (rendered as the
+``n_hat`` key in the mode's ``extras``), but **n̂ is a documentation
+placeholder, not a settable input**: the actual vector lives on the
+underlying geometry object, on one of two attributes selected by the
+mode's reference constraint.
+
+.. list-table:: Which geometry attribute does the active mode read?
+   :header-rows: 1
+   :widths: 35 30 35
+
+   * - Mode reference constraint
+     - Geometry attribute
+     - Set with
+   * - ``alpha_i``, ``beta_out``, ``a_eq_b``
+     - ``surface_normal``
+     - ``solver._geom.surface_normal = (h, k, l)``
+   * - ``psi``, ``naz``
+     - ``azimuthal_reference``
+     - ``solver._geom.azimuthal_reference = (h, k, l)``
+   * - ``omega`` (SPEC pseudo-angle)
+     - (none required)
+     - —
+
+To discover which attribute the active mode needs, ask the geometry
+directly:
+
+.. code-block:: python
+
+   psic2.core.mode = "fixed_alpha_i_vertical"
+   attr = psic2.core.solver._geom.required_reference_vector
+   # attr is 'surface_normal' for this mode; 'azimuthal_reference'
+   # for psi / naz modes; None when the active mode requires no
+   # reference vector.
+
+Two ways to set the vector
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Through the** ``extras`` **dict** — works only for ``n_hat`` and
+only for modes that consume ``surface_normal``:
+
+.. code-block:: python
+
+   psic2.core.extras = {"n_hat": (0, 0, 1)}
+
+**Directly on the geometry** — required for ``azimuthal_reference``;
+also works for ``surface_normal``:
+
+.. code-block:: python
+
+   psic2.core.solver._geom.surface_normal = (0, 0, 1)
+   psic2.core.solver._geom.azimuthal_reference = (1, 0, 0)
+
+The argument is a length-3 sequence of Miller indices.  ``(0, 0, 0)``
+is rejected with ``ValueError``; the default is ``None`` (not set).
+Clear an attribute by assigning ``None``.
+
+.. caution::
+
+   ``ad_hoc_diffractometer >= 0.11.1`` emits a ``UserWarning`` when
+   ``cs.extras["n_hat"]`` is overwritten directly with a real value
+   (the assignment has no effect on :meth:`forward`).  Use one of the
+   two recipes above instead; both bypass the placeholder.
+
+See the upstream
+`Surface Geometry and the Reference Vector
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/howto/surface.html>`_
+how-to for the full mathematical background.
+
+.. _guide_ad_hoc.constraint_overrides:
+
+Override a fixed-axis default value
+------------------------------------
+
+Each ``fixed_<axis>`` mode (for example ``fourcv`` ``fixed_chi``,
+``psic`` ``fixed_chi_vertical``, ``fixed_alpha_i_fixed_chi_fixed_phi``)
+carries a default scalar value baked into the geometry's YAML
+definition.  Constraint values are immutable, so changing a default
+replaces the underlying
+:class:`~ad_hoc_diffractometer.mode.ConstraintSet` rather than mutating
+it in place.
+
+Use :meth:`~hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints`
+to override one or more defaults without touching solver internals.
+
+Override a single sample-stage default:
+
+.. code-block:: python
+
+   psic2.core.solver.update_mode_constraints("fixed_chi_vertical", chi=45.0)
+   psic2.core.mode = "fixed_chi_vertical"
+
+Override several stages at once on a multi-fix mode:
+
+.. code-block:: python
+
+   psic2.core.solver.update_mode_constraints(
+       "fixed_alpha_i_fixed_chi_fixed_phi",
+       chi=15.0, phi=30.0, alpha_i=5.0,
+   )
+
+Operate on the currently active mode by omitting ``mode_name``:
+
+.. code-block:: python
+
+   psic2.core.solver.mode = "fixed_chi_vertical"
+   psic2.core.solver.update_mode_constraints(chi=10.0)
+
+(Assigning to ``psic2.core.solver.mode`` updates the adapter
+synchronously, which the active-mode shortcut requires.
+``psic2.core.mode = ...`` is cached by hklpy2's
+:class:`~hklpy2.ops.Core` and pushed to the solver on the next
+``update_solver()``, so it is not seen by
+``update_mode_constraints`` until a ``forward()`` runs.)
+
+Unknown mode names, unknown constraint names, and values rejected by
+the underlying library all raise :class:`~hklpy2.exceptions.SolverError`
+with a descriptive message.
+
+Persistent overrides vs. per-call reference scalars
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Two distinct routes touch reference-constraint scalars
+(``psi``, ``alpha_i``, ``beta_out``) on modes that expose them:
+
+* :meth:`~hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints`
+  is the **persistent** route — the new value becomes the mode's
+  default for every subsequent ``forward()`` call until overridden
+  again.
+* The ``diff.core.extras = {"psi": ...}`` setter is the **per-call**
+  route — values come from hklpy2's Core and are pushed to the solver
+  on the next ``update_solver()``.
+
+For sample-stage constraints (``chi``, ``phi``, ``mu``, ``eta`` …)
+``update_mode_constraints`` is the only route; those names are not
+exposed through the ``extras`` interface.
+
+See the upstream
+`Work with Constraints and Diffraction Modes
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/howto/constraints.html>`_
+how-to for the full constraint-system background.
+
 Available geometries at a glance
 ---------------------------------
 

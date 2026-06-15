@@ -294,6 +294,65 @@ Module Contents
 
 
 
+   .. py:method:: update_mode_constraints(mode_name: str | None = None, **updates: float | bool) -> None
+
+      Override constraint values on a previously-registered user mode.
+
+      Sibling of :meth:`hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints`
+      for the diffcalc backend.  Replaces one or more constraint values
+      in an existing user-registered mode without changing the mode's
+      constraint names or structure.  Built-in modes are frozen and
+      cannot be modified — register a variant under a new name with
+      :meth:`register_mode` instead.
+
+      :param mode_name: Name of the mode to update.  ``None`` (default) operates on
+                        the active mode (:attr:`mode`).  Matched order-independently
+                        against registered constraint-name sets, so any permutation
+                        of the original name resolves to the same mode (see
+                        :issue:`109`).
+      :type mode_name: str, optional
+      :param \*\*updates: Mapping of constraint name → new value.  Each key must
+                          already exist as a constraint name in the resolved mode
+                          (this method does not add or remove constraints — use
+                          :meth:`unregister_mode` + :meth:`register_mode` for structural
+                          changes).  Float values pin the named axis at that value;
+                          ``True`` activates a boolean constraint (``a_eq_b``,
+                          ``bin_eq_bout``, ``bisect``).
+      :type \*\*updates: float or bool
+
+      :raises SolverError: If ``mode_name`` is unknown; if it names a built-in mode
+          (built-ins are frozen); if any kwarg names a constraint not
+          present in the mode; or if the resulting constraint
+          combination is rejected by diffcalc (same-category
+          collision, not-implemented, etc.).
+
+      .. rubric:: Notes
+
+      Mutates the user-mode dict in place and clears
+      :attr:`_applied_mode` so that a subsequent :meth:`forward` /
+      :meth:`inverse` rebuilds the diffcalc
+      :class:`~diffcalc.hkl.constraints.Constraints` object with the
+      new values.  The mode's display name is unchanged.
+
+      .. rubric:: Examples
+
+      Register a custom mode then later override one value::
+
+          solver.register_mode(
+              "fixed_delta fixed_eta fixed_chi",
+              {"delta": 0.0, "eta": 0.0, "chi": 0.0},
+          )
+          solver.update_mode_constraints(
+              "fixed_delta fixed_eta fixed_chi", chi=45.0,
+          )
+
+      Operate on the currently active mode::
+
+          solver.mode = "fixed_delta fixed_eta fixed_chi"
+          solver.update_mode_constraints(chi=45.0)
+
+
+
    .. py:attribute:: version
 
       Version of this Solver.

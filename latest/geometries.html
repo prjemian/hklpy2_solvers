@@ -27,8 +27,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=a95f357e85573c9b56d5" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
@@ -38,12 +38,12 @@
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=6ec9288d" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="_static/scripts/fontawesome.js?digest=0790524f97105ba85085"></script>
+  <script defer src="_static/scripts/fontawesome.js?digest=a95f357e85573c9b56d5"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="_static/documentation_options.js?v=b4854591"></script>
+    <script src="_static/documentation_options.js?v=f2ad9a9d"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,8 +51,8 @@
     <script src="_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'geometries';</script>
     <script>
-        DOCUMENTATION_OPTIONS.theme_version = '0.18.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.4.dev3+gc190c9465';
+        DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.4.dev16+g4df80e6d2';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -462,6 +462,14 @@ the solver when it is instantiated by hklpy2.</p>
 library.  All geometries registered in the
 library’s geometry registry (including via entry points) are
 automatically available.  The pseudo axes are always <code class="docutils literal notranslate"><span class="pre">h</span></code>, <code class="docutils literal notranslate"><span class="pre">k</span></code>, <code class="docutils literal notranslate"><span class="pre">l</span></code>.</p>
+<p>In the per-mode tables below the <code class="docutils literal notranslate"><span class="pre">extra(s)</span></code> column names the
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">surface_normal</span></code>
+or
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">azimuthal_reference</span></code>
+attribute that the mode reads (set on the underlying geometry object),
+followed by any per-call scalar extras (<code class="docutils literal notranslate"><span class="pre">psi</span></code>, <code class="docutils literal notranslate"><span class="pre">alpha_i</span></code>,
+<code class="docutils literal notranslate"><span class="pre">beta_out</span></code>).  See <a class="reference internal" href="guide_ad_hoc.html#guide-ad-hoc-reference-vector"><span class="std std-ref">Set the reference vector (n̂)</span></a> for the
+recipes.</p>
 <section id="fourcv">
 <span id="geometry-fourcv"></span><h3>fourcv<a class="headerlink" href="#fourcv" title="Link to this heading">#</a></h3>
 <p>Busing &amp; Levy (1967) four-circle Eulerian diffractometer
@@ -533,7 +541,7 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>omega, chi, phi, ttheta</p></td>
-<td><p>n_hat, psi</p></td>
+<td><p>azimuthal_reference, psi</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
 <td><p><em>(none)</em></p></td>
@@ -615,7 +623,7 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>omega, chi, phi, ttheta</p></td>
-<td><p>n_hat, psi</p></td>
+<td><p>azimuthal_reference, psi</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
 <td><p><em>(none)</em></p></td>
@@ -692,27 +700,27 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_vertical</span></code></p></td>
 <td><p>mu, nu</p></td>
 <td><p>eta, chi, phi, delta</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_beta_out_vertical</span></code></p></td>
 <td><p>mu, nu</p></td>
 <td><p>eta, chi, phi, delta</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alpha_eq_beta_vertical</span></code></p></td>
 <td><p>mu, nu</p></td>
 <td><p>eta, chi, phi, delta</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi_vertical</span></code></p></td>
 <td><p>mu, nu</p></td>
 <td><p>eta, chi, phi, delta</p></td>
-<td><p>n_hat, psi</p></td>
+<td><p>azimuthal_reference, psi</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_fixed_chi_fixed_phi</span></code></p></td>
 <td><p>chi, phi</p></td>
 <td><p>mu, eta, nu, delta</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_omega_vertical</span></code></p></td>
 <td><p>mu, nu</p></td>
@@ -742,22 +750,22 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_horizontal</span></code></p></td>
 <td><p>delta, eta</p></td>
 <td><p>mu, chi, phi, nu</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_beta_out_horizontal</span></code></p></td>
 <td><p>delta, eta</p></td>
 <td><p>mu, chi, phi, nu</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alpha_eq_beta_horizontal</span></code></p></td>
 <td><p>delta, eta</p></td>
 <td><p>mu, chi, phi, nu</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi_horizontal</span></code></p></td>
 <td><p>delta, eta</p></td>
 <td><p>mu, chi, phi, nu</p></td>
-<td><p>n_hat, psi</p></td>
+<td><p>azimuthal_reference, psi</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_omega_horizontal</span></code></p></td>
 <td><p>delta, eta</p></td>
@@ -863,17 +871,17 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_zaxis</span></code></p></td>
 <td><p>alpha, chi</p></td>
 <td><p>omega, phi, delta, gamma</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_beta_zaxis</span></code></p></td>
 <td><p>chi, gamma</p></td>
 <td><p>alpha, omega, phi, delta</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alpha_eq_beta_zaxis</span></code></p></td>
 <td><p>chi, phi</p></td>
 <td><p>alpha, omega, delta, gamma</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 </tbody>
 </table>
@@ -1030,7 +1038,7 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
-<td><p>n_hat, psi</p></td>
+<td><p>azimuthal_reference, psi</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
 <td><p><em>(none)</em></p></td>
@@ -1116,7 +1124,7 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
-<td><p>n_hat, psi</p></td>
+<td><p>azimuthal_reference, psi</p></td>
 </tr>
 </tbody>
 </table>
@@ -1213,12 +1221,12 @@ synchrotron).</p>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi_vertical</span></code></p></td>
 <td><p>mu, omega (virtual)</p></td>
 <td><p>komega, kappa, kphi, nu, delta</p></td>
-<td><p>n_hat, psi</p></td>
+<td><p>azimuthal_reference, psi</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi_horizontal</span></code></p></td>
 <td><p>komega, mu</p></td>
 <td><p>kappa, kphi, nu, delta</p></td>
-<td><p>n_hat, psi</p></td>
+<td><p>azimuthal_reference, psi</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_vertical</span></code></p></td>
 <td><p>mu, nu</p></td>
@@ -1295,12 +1303,12 @@ synchrotron).</p>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">zaxis</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>alpha, Z, delta, gamma</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reflectivity</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>alpha, Z, delta, gamma</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 </tbody>
 </table>
@@ -1362,7 +1370,7 @@ synchrotron).</p>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reflectivity</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>mu, Z, nu, delta</p></td>
-<td><p>n_hat, alpha_i, beta_out</p></td>
+<td><p>surface_normal, alpha_i, beta_out</p></td>
 </tr>
 </tbody>
 </table>
@@ -1765,8 +1773,8 @@ user’s perspective the mode list is not extensible.</p>
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=0790524f97105ba85085"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085"></script>
+  <script defer src="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1800,7 +1808,7 @@ user’s perspective the mode list is not extensible.</p>
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.18.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.19.0.
 </p></div>
       
     </div>

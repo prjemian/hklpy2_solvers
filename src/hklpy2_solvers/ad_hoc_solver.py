@@ -350,7 +350,11 @@ class AdHocSolver(SolverBase):
 
     @property
     def extras(self) -> dict[str, Any]:
-        """Current values of the mode's extra parameters."""
+        """Current values of the mode's extra parameters.
+
+        To discover which geometry attribute the active mode requires,
+        use ``solver._geom.required_reference_vector`` directly.
+        """
         out: dict[str, Any] = {}
         mode_obj = self._geom.mode
         if mode_obj is None:  # pragma: no cover - mode setter guarantees object
@@ -703,6 +707,9 @@ class AdHocSolver(SolverBase):
         :data:`_AD_HOC_BUILTIN_GEOMETRIES`, modes structurally
         identical to a fresh reference).  Otherwise returns a YAML-
         safe dict suitable for embedding in ``_metadata``.
+
+        The payload is the ``to_dict`` / ``from_dict`` dict shape; the
+        on-disk format is the public contract under :issue:`108`.
         """
         live = self._geom.to_dict()
         if self.geometry in _AD_HOC_BUILTIN_GEOMETRIES:

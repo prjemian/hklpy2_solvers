@@ -29,6 +29,11 @@ describe future plans.
 
     Expected release: tba
 
+    Enhancements
+    ~~~~~~~~~~~~
+
+    * Use ``ConstraintSet.with_constraint_values()`` in ``AdHocSolver.extras`` setter.  :issue:`114`
+
     Maintenance
     ~~~~~~~~~~~
 

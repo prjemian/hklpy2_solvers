@@ -23,7 +23,6 @@ import numpy as np
 from ad_hoc_diffractometer.mode import (
     OPTIONAL,
     REQUIRED,
-    ConstraintSet,
     ConstraintViolation,
     EwaldSphereViolation,
 )
@@ -92,7 +91,7 @@ manages independently and must not round-trip through the solver
 state (avoids double-restore of samples and wavelength)."""
 
 _REFERENCE_EXTRA_NAMES: frozenset[str] = frozenset({"psi", "alpha_i", "beta_out"})
-"""Reference-constraint scalar extras (set via ConstraintSet rebuild)."""
+"""Reference-constraint scalar extras (set via ``ConstraintSet.with_constraint_values``)."""
 
 _DOUBLE_DIFF_EXTRA_NAMES: tuple[str, ...] = ("h2", "k2", "l2")
 """Double-diffraction Miller indices stored directly in mode.extras."""
@@ -380,8 +379,10 @@ class AdHocSolver(SolverBase):
         * ``n_hat``  -> ``geometry.surface_normal`` (length-3 sequence or
           ``None``).
         * ``psi``, ``alpha_i``, ``beta_out`` -> rebuild the active
-          :class:`ConstraintSet` via ``to_dict``/``from_dict`` so the
-          :class:`ReferenceConstraint` carries the new scalar value.
+          :class:`ConstraintSet` via
+          :meth:`~ad_hoc_diffractometer.mode.ConstraintSet.with_constraint_values`
+          so the :class:`ReferenceConstraint` carries the new scalar
+          value.
         * ``h2``, ``k2``, ``l2`` -> written directly into the mode's
           ``extras`` dict (used by double-diffraction modes).
 
@@ -412,20 +413,14 @@ class AdHocSolver(SolverBase):
                     self._geom.surface_normal = None
 
         # Reference-constraint scalar (psi / alpha_i / beta_out).
+        # ``ConstraintSet.with_constraint_values`` (upstream
+        # ad_hoc_diffractometer >= 0.11.1, :issue:`114`) returns a fresh
+        # ConstraintSet with the named scalar replaced, preserving order,
+        # extras, and cut_points.  Replace the per-mode ConstraintSet and
+        # re-select so that ``self._geom.mode`` returns the new object.
         rc = getattr(mode_obj, "reference_constraint", None)
         if rc is not None and rc.name in _REFERENCE_EXTRA_NAMES and rc.name in values:
-            new_value = float(values[rc.name])
-            cs_dict = mode_obj.to_dict()
-            # The ReferenceConstraint is guaranteed to be present because
-            # ``rc`` came from ``mode_obj.reference_constraint``; the loop
-            # always finds it and ``break``s.
-            for c in cs_dict.get("constraints", []):  # pragma: no branch
-                if c.get("type") == "ReferenceConstraint" and c.get("name") == rc.name:
-                    c["value"] = new_value
-                    break
-            new_cs = ConstraintSet.from_dict(cs_dict)
-            # Replace the per-mode ConstraintSet and re-select so that
-            # ``self._geom.mode`` returns the new object.
+            new_cs = mode_obj.with_constraint_values(**{rc.name: float(values[rc.name])})
             self._geom._modes[self._mode] = new_cs
             self._geom.mode_name = self._mode
 

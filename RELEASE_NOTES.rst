@@ -29,6 +29,12 @@ describe future plans.
 
     Expected release: tba
 
+    New Features
+    ~~~~~~~~~~~~
+
+    * Add ``AdHocSolver.update_mode_constraints`` for fixed-axis defaults.  :issue:`114`
+    * Add ``DiffcalcSolver.update_mode_constraints`` for user-mode value overrides.  :issue:`114`
+
     Enhancements
     ~~~~~~~~~~~~
 

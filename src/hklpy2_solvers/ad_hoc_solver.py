@@ -430,6 +430,84 @@ class AdHocSolver(SolverBase):
                 # Refresh mode_obj because rebuild above may have replaced it.
                 self._geom.mode.extras[k] = float(values[k])
 
+    def update_mode_constraints(self, mode_name: str | None = None, **updates: float | bool) -> None:
+        """Override default values of one or more constraints on a mode.
+
+        Each ``fixed_<axis>`` mode (e.g. ``fourcv`` ``fixed_chi``, ``psic``
+        ``fixed_alpha_i_vertical``) carries a default scalar value baked
+        into the geometry's YAML definition.  Constraint values are
+        immutable; this method replaces the named mode's
+        :class:`~ad_hoc_diffractometer.mode.ConstraintSet` with a fresh
+        instance produced by
+        :meth:`~ad_hoc_diffractometer.mode.ConstraintSet.with_constraint_values`,
+        leaving constraint order, :attr:`computed`, :attr:`extras`, and
+        :attr:`cut_points` unchanged.
+
+        Parameters
+        ----------
+        mode_name : str, optional
+            Name of the mode to update.  ``None`` (default) operates on
+            the active mode (:attr:`mode`).
+        **updates : float or bool
+            Mapping of constraint name → new value, where each key matches
+            the ``.name`` attribute of an existing
+            :class:`~ad_hoc_diffractometer.mode.SampleConstraint`,
+            :class:`~ad_hoc_diffractometer.mode.DetectorConstraint`, or
+            :class:`~ad_hoc_diffractometer.mode.ReferenceConstraint` in
+            the mode.  Reference-constraint scalars (``psi``, ``alpha_i``,
+            ``beta_out``) can also be updated through the per-call
+            :attr:`extras` setter; this method is the route for persistent
+            overrides of fixed-axis defaults.
+
+        Raises
+        ------
+        SolverError
+            If ``mode_name`` is unknown, if any kwarg names a constraint
+            not present in the mode, or if a value cannot be converted to
+            the expected numeric type.
+
+        Examples
+        --------
+        Override a single sample-stage default::
+
+            solver.update_mode_constraints("fixed_chi", chi=45.0)
+
+        Override several stages at once on a multi-fix mode::
+
+            solver.update_mode_constraints(
+                "fixed_alpha_i_fixed_chi_fixed_phi",
+                chi=15.0, phi=30.0, alpha_i=5.0,
+            )
+
+        Operate on the currently active mode::
+
+            solver.mode = "fixed_chi"
+            solver.update_mode_constraints(chi=45.0)
+        """
+        target_mode = self._mode if mode_name is None else mode_name
+        try:
+            cs = self._geom.modes[target_mode]
+        except KeyError as exc:
+            available = sorted(self._geom.modes.keys())
+            raise SolverError(f"Unknown mode {target_mode!r}; available modes: {available}") from exc
+        try:
+            new_cs = cs.with_constraint_values(**updates)
+        except KeyError as exc:
+            # ``with_constraint_values`` raises KeyError for unknown
+            # constraint names; surface as SolverError with the upstream
+            # message preserved.
+            raise SolverError(f"update_mode_constraints({target_mode!r}, **{updates!r}): {exc.args[0]}") from exc
+        except (TypeError, ValueError) as exc:
+            # ``with_constraint_values`` calls ``float(value)`` on each
+            # update; bad types raise TypeError, bad strings raise
+            # ValueError.  Both indicate caller error.
+            raise SolverError(f"update_mode_constraints({target_mode!r}, **{updates!r}): {exc}") from exc
+        self._geom._modes[target_mode] = new_cs
+        # Re-select the mode if it is the active one so that
+        # ``self._geom.mode`` returns the new ConstraintSet object.
+        if target_mode == self._mode:
+            self._geom.mode_name = self._mode
+
     @property
     def _summary_dict(self) -> KeyValueMap:
         """Return a summary of the geometry (modes, axes).

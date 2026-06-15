@@ -29,9 +29,27 @@ describe future plans.
 
     Expected release: tba
 
+    New Features
+    ~~~~~~~~~~~~
+
+    * Add ``AdHocSolver.update_mode_constraints`` for fixed-axis defaults.  :issue:`114`
+    * Add ``DiffcalcSolver.update_mode_constraints`` for user-mode value overrides.  :issue:`114`
+
+    Enhancements
+    ~~~~~~~~~~~~
+
+    * Use ``ConstraintSet.with_constraint_values()`` in ``AdHocSolver.extras`` setter.  :issue:`114`
+
+    Documentation
+    ~~~~~~~~~~~~~
+
+    * Document how to override fixed-axis default values in the ``ad_hoc`` guide.  :issue:`114`
+    * Document how to set the reference vector (n̂) in the ``ad_hoc`` guide.  :issue:`114`
+
     Maintenance
     ~~~~~~~~~~~
 
+    * Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.1``.  :issue:`114`
     * Unify copyright automation across hklpy2 family.  :issue:`112`
 
 0.3.3

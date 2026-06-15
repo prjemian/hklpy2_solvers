@@ -2065,6 +2065,166 @@ def test_modes_list_unchanged_by_permutations(parms, context):
 
 
 # ---------------------------------------------------------------------------
+# Override constraint values on a registered user mode (:issue:`114`)
+# update_mode_constraints sibling of AdHocSolver.update_mode_constraints.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                preregister=True,
+                preselect=False,
+                target_mode=RUNTIME_MODE_NAME,
+                updates={"chi": 45.0},
+                expected_value=("chi", 45.0),
+            ),
+            does_not_raise(),
+            id="override single value on named user mode",
+        ),
+        pytest.param(
+            dict(
+                preregister=True,
+                preselect=True,
+                target_mode=None,  # active-mode shortcut
+                updates={"chi": 30.0},
+                expected_value=("chi", 30.0),
+            ),
+            does_not_raise(),
+            id="override default on active mode via None shortcut",
+        ),
+        pytest.param(
+            dict(
+                preregister=True,
+                preselect=False,
+                target_mode="fixed_chi fixed_delta fixed_eta",  # permutation of RUNTIME_MODE_NAME
+                updates={"eta": 12.0, "chi": 7.0},
+                expected_value=("eta", 12.0),
+            ),
+            does_not_raise(),
+            id="multi-value override resolves permuted name",
+        ),
+        pytest.param(
+            dict(
+                preregister=True,
+                preselect=False,
+                target_mode="bisect fixed_mu fixed_nu",  # built-in
+                updates={"mu": 5.0},
+                expected_value=None,
+            ),
+            pytest.raises(SolverError, match=re.escape("Cannot modify built-in mode")),
+            id="reject modification of built-in mode",
+        ),
+        pytest.param(
+            dict(
+                preregister=False,
+                preselect=False,
+                target_mode="never_registered",
+                updates={"mu": 0.0},
+                expected_value=None,
+            ),
+            pytest.raises(SolverError, match=re.escape("is not registered")),
+            id="reject unknown user mode name",
+        ),
+        pytest.param(
+            dict(
+                preregister=True,
+                preselect=False,
+                target_mode=RUNTIME_MODE_NAME,
+                updates={"bogus_axis": 1.0},
+                expected_value=None,
+            ),
+            pytest.raises(SolverError, match=re.escape("not present in this mode")),
+            id="reject constraint name not present in this mode",
+        ),
+        pytest.param(
+            dict(
+                preregister=True,
+                preselect=False,
+                target_mode=RUNTIME_MODE_NAME,
+                # Replace the chi sample constraint with mu would introduce a
+                # second sample-axis pin in a category diffcalc collapses.
+                # Use a non-string value to drive diffcalc rejection instead.
+                updates={"chi": "not_a_number"},
+                expected_value=None,
+            ),
+            pytest.raises(SolverError, match=re.escape("diffcalc rejected updated constraints")),
+            id="reject value rejected by diffcalc",
+        ),
+        pytest.param(
+            dict(
+                preregister=False,
+                preselect=False,
+                target_mode=123,  # non-string
+                updates={"chi": 0.0},
+                expected_value=None,
+            ),
+            pytest.raises(SolverError, match=re.escape("Mode name must be a string")),
+            id="reject non-string mode name",
+        ),
+    ],
+)
+def test_update_mode_constraints(parms, context):
+    """``update_mode_constraints`` overrides user-mode constraint values.
+
+    Sibling of
+    :func:`hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints`
+    for the diffcalc backend.  Built-in modes are frozen (mirroring
+    :meth:`unregister_mode`); user modes mutate in place and the
+    ``_applied_mode`` cache is invalidated so subsequent forward/inverse
+    calls use the new values.  Permuted mode names resolve to the
+    registered display name (issue #109 token-set rule).
+    """
+    solver = DiffcalcSolver()
+    if parms["preregister"]:
+        solver.register_mode(RUNTIME_MODE_NAME, dict(RUNTIME_MODE_CONSTRAINTS))
+    if parms["preselect"]:
+        solver.mode = RUNTIME_MODE_NAME
+    with context:
+        solver.update_mode_constraints(parms["target_mode"], **parms["updates"])
+        # Success path only: verify the value landed and the cache was
+        # invalidated.
+        name = solver._resolve_mode_name(parms["target_mode"]) if parms["target_mode"] is not None else solver.mode
+        stored = solver._user_modes[name]
+        axis, expected = parms["expected_value"]
+        assert stored[axis] == expected, f"{axis!r} expected {expected!r} got {stored[axis]!r}"
+        assert solver._applied_mode is None, "applied-mode cache not invalidated"
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(new_chi=45.0),
+            does_not_raise(),
+            id="update is observed by next inverse() via rebuilt Constraints",
+        ),
+    ],
+)
+def test_update_mode_constraints_is_observed_by_inverse(parms, context):
+    """The new constraint value reaches diffcalc on the next ``inverse()``.
+
+    Ensures ``_applied_mode = None`` actually triggers a
+    :class:`~diffcalc.hkl.constraints.Constraints` rebuild and that the
+    updated value lands in the live diffcalc state.
+    """
+    solver = DiffcalcSolver()
+    solver.register_mode(RUNTIME_MODE_NAME, dict(RUNTIME_MODE_CONSTRAINTS))
+    solver.mode = RUNTIME_MODE_NAME
+    with context:
+        solver.update_mode_constraints(chi=parms["new_chi"])
+        # ``_apply_mode_constraints`` runs lazily through inverse() /
+        # forward(); calling it directly is the smallest assertion.
+        solver._apply_mode_constraints()
+        live = solver._constraints.asdict
+        assert live["chi"] == parms["new_chi"], (
+            f"diffcalc.Constraints['chi'] expected {parms['new_chi']} got {live.get('chi')}"
+        )
+
+
+# ---------------------------------------------------------------------------
 # Persist solver-defined state through export/restore (:issue:`108`)
 # ---------------------------------------------------------------------------
 

@@ -28,6 +28,15 @@ library.  All geometries registered in the
 library's geometry registry (including via entry points) are
 automatically available.  The pseudo axes are always ``h``, ``k``, ``l``.
 
+In the per-mode tables below the ``extra(s)`` column names the
+:attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.surface_normal`
+or
+:attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuthal_reference`
+attribute that the mode reads (set on the underlying geometry object),
+followed by any per-call scalar extras (``psi``, ``alpha_i``,
+``beta_out``).  See :ref:`guide_ad_hoc.reference_vector` for the
+recipes.
+
 .. _geometry.fourcv:
 
 fourcv
@@ -81,7 +90,7 @@ See `ad_hoc_diffractometer fourcv
    * - ``fixed_psi``
      - *(none)*
      - omega, chi, phi, ttheta
-     - n_hat, psi
+     - azimuthal_reference, psi
    * - ``double_diffraction``
      - *(none)*
      - omega, chi, phi, ttheta
@@ -140,7 +149,7 @@ See `ad_hoc_diffractometer fourch
    * - ``fixed_psi``
      - *(none)*
      - omega, chi, phi, ttheta
-     - n_hat, psi
+     - azimuthal_reference, psi
    * - ``double_diffraction``
      - *(none)*
      - omega, chi, phi, ttheta
@@ -195,23 +204,23 @@ See `ad_hoc_diffractometer psic
    * - ``fixed_alpha_i_vertical``
      - mu, nu
      - eta, chi, phi, delta
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
    * - ``fixed_beta_out_vertical``
      - mu, nu
      - eta, chi, phi, delta
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
    * - ``alpha_eq_beta_vertical``
      - mu, nu
      - eta, chi, phi, delta
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
    * - ``fixed_psi_vertical``
      - mu, nu
      - eta, chi, phi, delta
-     - n_hat, psi
+     - azimuthal_reference, psi
    * - ``fixed_alpha_i_fixed_chi_fixed_phi``
      - chi, phi
      - mu, eta, nu, delta
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
    * - ``fixed_omega_vertical``
      - mu, nu
      - eta, chi, phi, delta
@@ -235,19 +244,19 @@ See `ad_hoc_diffractometer psic
    * - ``fixed_alpha_i_horizontal``
      - delta, eta
      - mu, chi, phi, nu
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
    * - ``fixed_beta_out_horizontal``
      - delta, eta
      - mu, chi, phi, nu
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
    * - ``alpha_eq_beta_horizontal``
      - delta, eta
      - mu, chi, phi, nu
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
    * - ``fixed_psi_horizontal``
      - delta, eta
      - mu, chi, phi, nu
-     - n_hat, psi
+     - azimuthal_reference, psi
    * - ``fixed_omega_horizontal``
      - delta, eta
      - mu, chi, phi, nu
@@ -325,15 +334,15 @@ See `ad_hoc_diffractometer sixc
    * - ``fixed_alpha_zaxis``
      - alpha, chi
      - omega, phi, delta, gamma
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
    * - ``fixed_beta_zaxis``
      - chi, gamma
      - alpha, omega, phi, delta
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
    * - ``alpha_eq_beta_zaxis``
      - chi, phi
      - alpha, omega, delta, gamma
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
 
 .. _geometry.fivec:
 
@@ -445,7 +454,7 @@ See `ad_hoc_diffractometer kappa4cv
    * - ``fixed_psi``
      - *(none)*
      - komega, kappa, kphi, ttheta
-     - n_hat, psi
+     - azimuthal_reference, psi
    * - ``double_diffraction``
      - *(none)*
      - komega, kappa, kphi, ttheta
@@ -507,7 +516,7 @@ See `ad_hoc_diffractometer kappa4ch
    * - ``fixed_psi``
      - *(none)*
      - komega, kappa, kphi, ttheta
-     - n_hat, psi
+     - azimuthal_reference, psi
 
 .. _geometry.kappa6c:
 
@@ -578,11 +587,11 @@ See `ad_hoc_diffractometer kappa6c
    * - ``fixed_psi_vertical``
      - mu, omega (virtual)
      - komega, kappa, kphi, nu, delta
-     - n_hat, psi
+     - azimuthal_reference, psi
    * - ``fixed_psi_horizontal``
      - komega, mu
      - kappa, kphi, nu, delta
-     - n_hat, psi
+     - azimuthal_reference, psi
    * - ``double_diffraction_vertical``
      - mu, nu
      - komega, kappa, kphi, delta
@@ -637,11 +646,11 @@ See `ad_hoc_diffractometer zaxis
    * - ``zaxis``
      - *(none)*
      - alpha, Z, delta, gamma
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
    * - ``reflectivity``
      - *(none)*
      - alpha, Z, delta, gamma
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
 
 .. _geometry.s2d2:
 
@@ -684,7 +693,7 @@ See `ad_hoc_diffractometer s2d2
    * - ``reflectivity``
      - *(none)*
      - mu, Z, nu, delta
-     - n_hat, alpha_i, beta_out
+     - surface_normal, alpha_i, beta_out
 
 Kappa geometries
 ~~~~~~~~~~~~~~~~

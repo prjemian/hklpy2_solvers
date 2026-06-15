@@ -821,6 +821,124 @@ class DiffcalcSolver(SolverBase):
             self._mode = ""
             self._applied_mode = None
 
+    def update_mode_constraints(self, mode_name: str | None = None, **updates: float | bool) -> None:
+        """Override constraint values on a previously-registered user mode.
+
+        Sibling of :meth:`hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints`
+        for the diffcalc backend.  Replaces one or more constraint values
+        in an existing user-registered mode without changing the mode's
+        constraint names or structure.  Built-in modes are frozen and
+        cannot be modified — register a variant under a new name with
+        :meth:`register_mode` instead.
+
+        Parameters
+        ----------
+        mode_name : str, optional
+            Name of the mode to update.  ``None`` (default) operates on
+            the active mode (:attr:`mode`).  Matched order-independently
+            against registered constraint-name sets, so any permutation
+            of the original name resolves to the same mode (see
+            :issue:`109`).
+        **updates : float or bool
+            Mapping of constraint name → new value.  Each key must
+            already exist as a constraint name in the resolved mode
+            (this method does not add or remove constraints — use
+            :meth:`unregister_mode` + :meth:`register_mode` for structural
+            changes).  Float values pin the named axis at that value;
+            ``True`` activates a boolean constraint (``a_eq_b``,
+            ``bin_eq_bout``, ``bisect``).
+
+        Raises
+        ------
+        SolverError
+            If ``mode_name`` is unknown; if it names a built-in mode
+            (built-ins are frozen); if any kwarg names a constraint not
+            present in the mode; or if the resulting constraint
+            combination is rejected by diffcalc (same-category
+            collision, not-implemented, etc.).
+
+        Notes
+        -----
+        Mutates the user-mode dict in place and clears
+        :attr:`_applied_mode` so that a subsequent :meth:`forward` /
+        :meth:`inverse` rebuilds the diffcalc
+        :class:`~diffcalc.hkl.constraints.Constraints` object with the
+        new values.  The mode's display name is unchanged.
+
+        Examples
+        --------
+        Register a custom mode then later override one value::
+
+            solver.register_mode(
+                "fixed_delta fixed_eta fixed_chi",
+                {"delta": 0.0, "eta": 0.0, "chi": 0.0},
+            )
+            solver.update_mode_constraints(
+                "fixed_delta fixed_eta fixed_chi", chi=45.0,
+            )
+
+        Operate on the currently active mode::
+
+            solver.mode = "fixed_delta fixed_eta fixed_chi"
+            solver.update_mode_constraints(chi=45.0)
+        """
+        target_input = self._mode if mode_name is None else mode_name
+        if not isinstance(target_input, str):
+            raise SolverError(f"Mode name must be a string, received {target_input!r}.")
+        token_key = frozenset(target_input.split())
+        if token_key in _MODES_BY_TOKENS:
+            existing = _MODES_BY_TOKENS[token_key]
+            raise SolverError(
+                f"Cannot modify built-in mode {existing!r}; register a variant under a new name instead."
+            )
+        if token_key not in self._user_modes_by_tokens:
+            raise SolverError(f"User mode {target_input!r} is not registered.")
+        canonical = self._user_modes_by_tokens[token_key]
+        existing_constraints = self._user_modes[canonical]
+        unknown = sorted(set(updates) - set(existing_constraints))
+        if unknown:
+            raise SolverError(
+                f"update_mode_constraints({canonical!r}): constraint(s) "
+                f"{unknown!r} not present in this mode; available: "
+                f"{sorted(existing_constraints)}."
+            )
+        # Build the prospective constraint dict and validate it through
+        # diffcalc the same way ``register_mode`` does, so any value-side
+        # error (bad type, same-category collision, not-implemented) is
+        # caught before mutation.
+        candidate = {**existing_constraints, **updates}
+        try:
+            probe = Constraints(candidate)
+        except (DiffcalcException, ValueError) as exc:
+            raise SolverError(f"diffcalc rejected updated constraints for {canonical!r}: {exc}") from exc
+        # Defensive: same-category collapse and not-implemented are
+        # structurally unreachable here because ``register_mode``
+        # already validated the constraint *name set* at registration
+        # time, and this method only mutates values (never adds or
+        # removes keys).  Kept for parity with ``register_mode`` and
+        # to guard against any future diffcalc value-dependent
+        # implementation gate.
+        if set(probe.asdict) != set(candidate):  # pragma: no cover - defensive
+            dropped = sorted(set(candidate) - set(probe.asdict))
+            raise SolverError(
+                f"update_mode_constraints({canonical!r}): constraints "
+                f"{dropped!r} were dropped by diffcalc (same-category "
+                f"conflict)."
+            )
+        try:
+            implemented = probe.is_current_mode_implemented()
+        except (DiffcalcException, ValueError) as exc:  # pragma: no cover - defensive
+            raise SolverError(f"diffcalc validation failed for {canonical!r}: {exc}") from exc
+        if not implemented:  # pragma: no cover - defensive
+            raise SolverError(
+                f"update_mode_constraints({canonical!r}): updated "
+                f"constraint combination is not implemented by diffcalc-core."
+            )
+        self._user_modes[canonical] = candidate
+        # Invalidate the applied-mode cache so the next forward()/inverse()
+        # rebuilds the diffcalc ``Constraints`` object with the new values.
+        self._applied_mode = None
+
     @property
     def wavelength(self) -> float | None:
         """Wavelength in Angstroms, for forward() and inverse()."""

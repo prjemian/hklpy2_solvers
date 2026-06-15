@@ -23,7 +23,6 @@ import numpy as np
 from ad_hoc_diffractometer.mode import (
     OPTIONAL,
     REQUIRED,
-    ConstraintSet,
     ConstraintViolation,
     EwaldSphereViolation,
 )
@@ -92,7 +91,7 @@ manages independently and must not round-trip through the solver
 state (avoids double-restore of samples and wavelength)."""
 
 _REFERENCE_EXTRA_NAMES: frozenset[str] = frozenset({"psi", "alpha_i", "beta_out"})
-"""Reference-constraint scalar extras (set via ConstraintSet rebuild)."""
+"""Reference-constraint scalar extras (set via ``ConstraintSet.with_constraint_values``)."""
 
 _DOUBLE_DIFF_EXTRA_NAMES: tuple[str, ...] = ("h2", "k2", "l2")
 """Double-diffraction Miller indices stored directly in mode.extras."""
@@ -351,7 +350,11 @@ class AdHocSolver(SolverBase):
 
     @property
     def extras(self) -> dict[str, Any]:
-        """Current values of the mode's extra parameters."""
+        """Current values of the mode's extra parameters.
+
+        To discover which geometry attribute the active mode requires,
+        use ``solver._geom.required_reference_vector`` directly.
+        """
         out: dict[str, Any] = {}
         mode_obj = self._geom.mode
         if mode_obj is None:  # pragma: no cover - mode setter guarantees object
@@ -380,8 +383,10 @@ class AdHocSolver(SolverBase):
         * ``n_hat``  -> ``geometry.surface_normal`` (length-3 sequence or
           ``None``).
         * ``psi``, ``alpha_i``, ``beta_out`` -> rebuild the active
-          :class:`ConstraintSet` via ``to_dict``/``from_dict`` so the
-          :class:`ReferenceConstraint` carries the new scalar value.
+          :class:`ConstraintSet` via
+          :meth:`~ad_hoc_diffractometer.mode.ConstraintSet.with_constraint_values`
+          so the :class:`ReferenceConstraint` carries the new scalar
+          value.
         * ``h2``, ``k2``, ``l2`` -> written directly into the mode's
           ``extras`` dict (used by double-diffraction modes).
 
@@ -412,20 +417,14 @@ class AdHocSolver(SolverBase):
                     self._geom.surface_normal = None
 
         # Reference-constraint scalar (psi / alpha_i / beta_out).
+        # ``ConstraintSet.with_constraint_values`` (upstream
+        # ad_hoc_diffractometer >= 0.11.1, :issue:`114`) returns a fresh
+        # ConstraintSet with the named scalar replaced, preserving order,
+        # extras, and cut_points.  Replace the per-mode ConstraintSet and
+        # re-select so that ``self._geom.mode`` returns the new object.
         rc = getattr(mode_obj, "reference_constraint", None)
         if rc is not None and rc.name in _REFERENCE_EXTRA_NAMES and rc.name in values:
-            new_value = float(values[rc.name])
-            cs_dict = mode_obj.to_dict()
-            # The ReferenceConstraint is guaranteed to be present because
-            # ``rc`` came from ``mode_obj.reference_constraint``; the loop
-            # always finds it and ``break``s.
-            for c in cs_dict.get("constraints", []):  # pragma: no branch
-                if c.get("type") == "ReferenceConstraint" and c.get("name") == rc.name:
-                    c["value"] = new_value
-                    break
-            new_cs = ConstraintSet.from_dict(cs_dict)
-            # Replace the per-mode ConstraintSet and re-select so that
-            # ``self._geom.mode`` returns the new object.
+            new_cs = mode_obj.with_constraint_values(**{rc.name: float(values[rc.name])})
             self._geom._modes[self._mode] = new_cs
             self._geom.mode_name = self._mode
 
@@ -434,6 +433,84 @@ class AdHocSolver(SolverBase):
             if k in values:
                 # Refresh mode_obj because rebuild above may have replaced it.
                 self._geom.mode.extras[k] = float(values[k])
+
+    def update_mode_constraints(self, mode_name: str | None = None, **updates: float | bool) -> None:
+        """Override default values of one or more constraints on a mode.
+
+        Each ``fixed_<axis>`` mode (e.g. ``fourcv`` ``fixed_chi``, ``psic``
+        ``fixed_alpha_i_vertical``) carries a default scalar value baked
+        into the geometry's YAML definition.  Constraint values are
+        immutable; this method replaces the named mode's
+        :class:`~ad_hoc_diffractometer.mode.ConstraintSet` with a fresh
+        instance produced by
+        :meth:`~ad_hoc_diffractometer.mode.ConstraintSet.with_constraint_values`,
+        leaving constraint order, :attr:`computed`, :attr:`extras`, and
+        :attr:`cut_points` unchanged.
+
+        Parameters
+        ----------
+        mode_name : str, optional
+            Name of the mode to update.  ``None`` (default) operates on
+            the active mode (:attr:`mode`).
+        **updates : float or bool
+            Mapping of constraint name → new value, where each key matches
+            the ``.name`` attribute of an existing
+            :class:`~ad_hoc_diffractometer.mode.SampleConstraint`,
+            :class:`~ad_hoc_diffractometer.mode.DetectorConstraint`, or
+            :class:`~ad_hoc_diffractometer.mode.ReferenceConstraint` in
+            the mode.  Reference-constraint scalars (``psi``, ``alpha_i``,
+            ``beta_out``) can also be updated through the per-call
+            :attr:`extras` setter; this method is the route for persistent
+            overrides of fixed-axis defaults.
+
+        Raises
+        ------
+        SolverError
+            If ``mode_name`` is unknown, if any kwarg names a constraint
+            not present in the mode, or if a value cannot be converted to
+            the expected numeric type.
+
+        Examples
+        --------
+        Override a single sample-stage default::
+
+            solver.update_mode_constraints("fixed_chi", chi=45.0)
+
+        Override several stages at once on a multi-fix mode::
+
+            solver.update_mode_constraints(
+                "fixed_alpha_i_fixed_chi_fixed_phi",
+                chi=15.0, phi=30.0, alpha_i=5.0,
+            )
+
+        Operate on the currently active mode::
+
+            solver.mode = "fixed_chi"
+            solver.update_mode_constraints(chi=45.0)
+        """
+        target_mode = self._mode if mode_name is None else mode_name
+        try:
+            cs = self._geom.modes[target_mode]
+        except KeyError as exc:
+            available = sorted(self._geom.modes.keys())
+            raise SolverError(f"Unknown mode {target_mode!r}; available modes: {available}") from exc
+        try:
+            new_cs = cs.with_constraint_values(**updates)
+        except KeyError as exc:
+            # ``with_constraint_values`` raises KeyError for unknown
+            # constraint names; surface as SolverError with the upstream
+            # message preserved.
+            raise SolverError(f"update_mode_constraints({target_mode!r}, **{updates!r}): {exc.args[0]}") from exc
+        except (TypeError, ValueError) as exc:
+            # ``with_constraint_values`` calls ``float(value)`` on each
+            # update; bad types raise TypeError, bad strings raise
+            # ValueError.  Both indicate caller error.
+            raise SolverError(f"update_mode_constraints({target_mode!r}, **{updates!r}): {exc}") from exc
+        self._geom._modes[target_mode] = new_cs
+        # Re-select the mode if it is the active one so that
+        # ``self._geom.mode`` returns the new ConstraintSet object.
+        if target_mode == self._mode:
+            self._geom.mode_name = self._mode
 
     @property
     def _summary_dict(self) -> KeyValueMap:
@@ -630,6 +707,9 @@ class AdHocSolver(SolverBase):
         :data:`_AD_HOC_BUILTIN_GEOMETRIES`, modes structurally
         identical to a fresh reference).  Otherwise returns a YAML-
         safe dict suitable for embedding in ``_metadata``.
+
+        The payload is the ``to_dict`` / ``from_dict`` dict shape; the
+        on-disk format is the public contract under :issue:`108`.
         """
         live = self._geom.to_dict()
         if self.geometry in _AD_HOC_BUILTIN_GEOMETRIES:

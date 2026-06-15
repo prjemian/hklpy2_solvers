@@ -32,6 +32,7 @@ describe future plans.
     Maintenance
     ~~~~~~~~~~~
 
+    * Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.1``.  :issue:`114`
     * Unify copyright automation across hklpy2 family.  :issue:`112`
 
 0.3.3

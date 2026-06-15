@@ -208,6 +208,82 @@ See the upstream
 `ad_hoc_diffractometer.reference <https://bcda-aps.github.io/ad_hoc_diffractometer/latest/api/reference.html>`_
 module for the mathematical definitions.
 
+.. _guide_ad_hoc.reference_vector:
+
+Set the reference vector (n̂)
+------------------------------
+
+Modes that involve a surface normal or an azimuthal reference (for
+example ``fixed_psi``, ``fixed_alpha_i_vertical``, ``zaxis``,
+``reflectivity``) require an external direction vector.  In every
+per-mode table that vector is shown as **n̂** (rendered as the
+``n_hat`` key in the mode's ``extras``), but **n̂ is a documentation
+placeholder, not a settable input**: the actual vector lives on the
+underlying geometry object, on one of two attributes selected by the
+mode's reference constraint.
+
+.. list-table:: Which geometry attribute does the active mode read?
+   :header-rows: 1
+   :widths: 35 30 35
+
+   * - Mode reference constraint
+     - Geometry attribute
+     - Set with
+   * - ``alpha_i``, ``beta_out``, ``a_eq_b``
+     - ``surface_normal``
+     - ``solver._geom.surface_normal = (h, k, l)``
+   * - ``psi``, ``naz``
+     - ``azimuthal_reference``
+     - ``solver._geom.azimuthal_reference = (h, k, l)``
+   * - ``omega`` (SPEC pseudo-angle)
+     - (none required)
+     - —
+
+To discover which attribute the active mode needs, ask the geometry
+directly:
+
+.. code-block:: python
+
+   psic2.core.mode = "fixed_alpha_i_vertical"
+   attr = psic2.core.solver._geom.required_reference_vector
+   # attr is 'surface_normal' for this mode; 'azimuthal_reference'
+   # for psi / naz modes; None when the active mode requires no
+   # reference vector.
+
+Two ways to set the vector
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Through the** ``extras`` **dict** — works only for ``n_hat`` and
+only for modes that consume ``surface_normal``:
+
+.. code-block:: python
+
+   psic2.core.extras = {"n_hat": (0, 0, 1)}
+
+**Directly on the geometry** — required for ``azimuthal_reference``;
+also works for ``surface_normal``:
+
+.. code-block:: python
+
+   psic2.core.solver._geom.surface_normal = (0, 0, 1)
+   psic2.core.solver._geom.azimuthal_reference = (1, 0, 0)
+
+The argument is a length-3 sequence of Miller indices.  ``(0, 0, 0)``
+is rejected with ``ValueError``; the default is ``None`` (not set).
+Clear an attribute by assigning ``None``.
+
+.. caution::
+
+   ``ad_hoc_diffractometer >= 0.11.1`` emits a ``UserWarning`` when
+   ``cs.extras["n_hat"]`` is overwritten directly with a real value
+   (the assignment has no effect on :meth:`forward`).  Use one of the
+   two recipes above instead; both bypass the placeholder.
+
+See the upstream
+`Surface Geometry and the Reference Vector
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/howto/surface.html>`_
+how-to for the full mathematical background.
+
 Available geometries at a glance
 ---------------------------------
 

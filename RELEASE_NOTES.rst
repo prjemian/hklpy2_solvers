@@ -40,6 +40,11 @@ describe future plans.
 
     * Use ``ConstraintSet.with_constraint_values()`` in ``AdHocSolver.extras`` setter.  :issue:`114`
 
+    Documentation
+    ~~~~~~~~~~~~~
+
+    * Document how to set the reference vector (n̂) in the ``ad_hoc`` guide.  :issue:`114`
+
     Maintenance
     ~~~~~~~~~~~
 

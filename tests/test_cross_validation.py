@@ -462,16 +462,13 @@ KNOWN_TTH_DISAGREEMENTS = {
 # cases are now covered by ``does_not_raise()`` parametrizations in the
 # dedicated regression tests below.
 KNOWN_FORWARD_GAPS = {
-    # https://github.com/prjemian/hklpy2_solvers/issues/99 — tracked
-    # while an upstream issue is opened.  ``ad_hoc`` kappa-vertical
-    # bisecting modes (``kappa4cv bisecting``, ``kappa6c
-    # bisecting_vertical``) decline the sapphire asymmetric reflection
-    # ``(0, 1, 2)`` under ``ad_hoc_diffractometer >= 0.11.0``; the
-    # same parameter cases pass under ``0.10.1``.  The other
-    # kappa-vertical peer (``hkl_soleil/K4CV bissector``) and every
-    # other reflection in the sapphire scan still solve.
-    ("kappa_vertical", "kappa4cv", "sapphire", (0, 1, 2)): "issue #99",
-    ("kappa_vertical", "kappa6c", "sapphire", (0, 1, 2)): "issue #99",
+    # The kappa-vertical sapphire ``(0, 1, 2)`` gap previously tracked
+    # under :issue:`99` (``kappa4cv bisecting``, ``kappa6c
+    # bisecting_vertical``) was fixed upstream in
+    # ``ad_hoc_diffractometer >= 0.11.1`` by BCDA-APS PR #286 (issue
+    # #284: kappa equivalent-Eulerian chi axis now matches
+    # fourcv/fourch/psic).  Those two cases now solve and are covered
+    # by the default ``does_not_raise()`` parametrizations.
     # https://github.com/prjemian/hklpy2_solvers/issues/69 and upstream
     # https://github.com/BCDA-APS/ad_hoc_diffractometer/issues/285 -
     # three ``ad_hoc`` horizontal-bisecting modes (``fourch bisecting``,

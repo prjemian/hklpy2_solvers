@@ -43,6 +43,7 @@ describe future plans.
     Documentation
     ~~~~~~~~~~~~~
 
+    * Document how to override fixed-axis default values in the ``ad_hoc`` guide.  :issue:`114`
     * Document how to set the reference vector (n̂) in the ``ad_hoc`` guide.  :issue:`114`
 
     Maintenance

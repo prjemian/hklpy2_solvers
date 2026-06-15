@@ -284,6 +284,79 @@ See the upstream
 <https://bcda-aps.github.io/ad_hoc_diffractometer/latest/howto/surface.html>`_
 how-to for the full mathematical background.
 
+.. _guide_ad_hoc.constraint_overrides:
+
+Override a fixed-axis default value
+------------------------------------
+
+Each ``fixed_<axis>`` mode (for example ``fourcv`` ``fixed_chi``,
+``psic`` ``fixed_chi_vertical``, ``fixed_alpha_i_fixed_chi_fixed_phi``)
+carries a default scalar value baked into the geometry's YAML
+definition.  Constraint values are immutable, so changing a default
+replaces the underlying
+:class:`~ad_hoc_diffractometer.mode.ConstraintSet` rather than mutating
+it in place.
+
+Use :meth:`~hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints`
+to override one or more defaults without touching solver internals.
+
+Override a single sample-stage default:
+
+.. code-block:: python
+
+   psic2.core.solver.update_mode_constraints("fixed_chi_vertical", chi=45.0)
+   psic2.core.mode = "fixed_chi_vertical"
+
+Override several stages at once on a multi-fix mode:
+
+.. code-block:: python
+
+   psic2.core.solver.update_mode_constraints(
+       "fixed_alpha_i_fixed_chi_fixed_phi",
+       chi=15.0, phi=30.0, alpha_i=5.0,
+   )
+
+Operate on the currently active mode by omitting ``mode_name``:
+
+.. code-block:: python
+
+   psic2.core.solver.mode = "fixed_chi_vertical"
+   psic2.core.solver.update_mode_constraints(chi=10.0)
+
+(Assigning to ``psic2.core.solver.mode`` updates the adapter
+synchronously, which the active-mode shortcut requires.
+``psic2.core.mode = ...`` is cached by hklpy2's
+:class:`~hklpy2.ops.Core` and pushed to the solver on the next
+``update_solver()``, so it is not seen by
+``update_mode_constraints`` until a ``forward()`` runs.)
+
+Unknown mode names, unknown constraint names, and values rejected by
+the underlying library all raise :class:`~hklpy2.exceptions.SolverError`
+with a descriptive message.
+
+Persistent overrides vs. per-call reference scalars
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Two distinct routes touch reference-constraint scalars
+(``psi``, ``alpha_i``, ``beta_out``) on modes that expose them:
+
+* :meth:`~hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints`
+  is the **persistent** route — the new value becomes the mode's
+  default for every subsequent ``forward()`` call until overridden
+  again.
+* The ``diff.core.extras = {"psi": ...}`` setter is the **per-call**
+  route — values come from hklpy2's Core and are pushed to the solver
+  on the next ``update_solver()``.
+
+For sample-stage constraints (``chi``, ``phi``, ``mu``, ``eta`` …)
+``update_mode_constraints`` is the only route; those names are not
+exposed through the ``extras`` interface.
+
+See the upstream
+`Work with Constraints and Diffraction Modes
+<https://bcda-aps.github.io/ad_hoc_diffractometer/latest/howto/constraints.html>`_
+how-to for the full constraint-system background.
+
 Available geometries at a glance
 ---------------------------------
 

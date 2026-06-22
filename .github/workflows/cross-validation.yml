@@ -84,8 +84,13 @@ jobs:
         # If a conda-forge feedstock later falls behind the
         # ``pyproject.toml`` floor, add ``pip install --upgrade`` lines
         # for the affected packages here.
+        #
+        # ``ad-hoc-diffractometer`` is upgraded from PyPI because the
+        # conda-forge feedstock trails the ``pyproject.toml`` floor
+        # (>=0.11.2); remove once conda-forge catches up (:issue:`117`).
         run: |
           pip install diffcalc-core
+          pip install --upgrade "ad_hoc_diffractometer>=0.11.2"
 
       - name: Install hklpy2_solvers (editable, no deps)
         # Use --no-deps because all runtime deps are already provided

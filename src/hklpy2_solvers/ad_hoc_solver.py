@@ -26,7 +26,7 @@ from ad_hoc_diffractometer.mode import (
     ConstraintViolation,
     EwaldSphereViolation,
 )
-from ad_hoc_diffractometer.reference import exit_angle as _ref_exit_angle
+from ad_hoc_diffractometer.reference import emergence_angle as _ref_emergence_angle
 from ad_hoc_diffractometer.reference import incidence_angle as _ref_incidence_angle
 from ad_hoc_diffractometer.reference import natural_psi as _ref_natural_psi
 from ad_hoc_diffractometer.reference import naz_angle as _ref_naz_angle
@@ -51,7 +51,7 @@ try:
 except PackageNotFoundError:  # pragma: no cover - defensive
     _BACKEND_VERSION = "unknown"
 
-_INPUT_EXTRA_NAMES: frozenset[str] = frozenset({"n_hat", "psi", "alpha_i", "beta_out", "h2", "k2", "l2"})
+_INPUT_EXTRA_NAMES: frozenset[str] = frozenset({"n_hat", "psi", "incidence", "emergence", "h2", "k2", "l2"})
 """Names of mode-extra parameters supplied by the user (vs. solver outputs)."""
 
 # ---------------------------------------------------------------------------
@@ -90,7 +90,7 @@ _GEOMETRY_STATE_OMIT_KEYS: frozenset[str] = frozenset({"active_sample", "samples
 manages independently and must not round-trip through the solver
 state (avoids double-restore of samples and wavelength)."""
 
-_REFERENCE_EXTRA_NAMES: frozenset[str] = frozenset({"psi", "alpha_i", "beta_out"})
+_REFERENCE_EXTRA_NAMES: frozenset[str] = frozenset({"psi", "incidence", "emergence"})
 """Reference-constraint scalar extras (set via ``ConstraintSet.with_constraint_values``)."""
 
 _DOUBLE_DIFF_EXTRA_NAMES: tuple[str, ...] = ("h2", "k2", "l2")
@@ -319,7 +319,7 @@ class AdHocSolver(SolverBase):
 
         Drawn from the underlying mode's ``extras`` dict (filtered to the
         names the user is expected to supply: ``n_hat``, ``psi``,
-        ``alpha_i``, ``beta_out``, ``h2``, ``k2``, ``l2``) plus the
+        ``incidence``, ``emergence``, ``h2``, ``k2``, ``l2``) plus the
         scalar name of the active :class:`ReferenceConstraint` if it
         names one of those inputs and is not already listed.
 
@@ -382,7 +382,7 @@ class AdHocSolver(SolverBase):
 
         * ``n_hat``  -> ``geometry.surface_normal`` (length-3 sequence or
           ``None``).
-        * ``psi``, ``alpha_i``, ``beta_out`` -> rebuild the active
+        * ``psi``, ``incidence``, ``emergence`` -> rebuild the active
           :class:`ConstraintSet` via
           :meth:`~ad_hoc_diffractometer.mode.ConstraintSet.with_constraint_values`
           so the :class:`ReferenceConstraint` carries the new scalar
@@ -416,7 +416,7 @@ class AdHocSolver(SolverBase):
                 except TypeError:
                     self._geom.surface_normal = None
 
-        # Reference-constraint scalar (psi / alpha_i / beta_out).
+        # Reference-constraint scalar (psi / incidence / emergence).
         # ``ConstraintSet.with_constraint_values`` (upstream
         # ad_hoc_diffractometer >= 0.11.1, :issue:`114`) returns a fresh
         # ConstraintSet with the named scalar replaced, preserving order,
@@ -438,7 +438,7 @@ class AdHocSolver(SolverBase):
         """Override default values of one or more constraints on a mode.
 
         Each ``fixed_<axis>`` mode (e.g. ``fourcv`` ``fixed_chi``, ``psic``
-        ``fixed_alpha_i_vertical``) carries a default scalar value baked
+        ``fixed_incidence_vertical``) carries a default scalar value baked
         into the geometry's YAML definition.  Constraint values are
         immutable; this method replaces the named mode's
         :class:`~ad_hoc_diffractometer.mode.ConstraintSet` with a fresh
@@ -458,8 +458,8 @@ class AdHocSolver(SolverBase):
             :class:`~ad_hoc_diffractometer.mode.SampleConstraint`,
             :class:`~ad_hoc_diffractometer.mode.DetectorConstraint`, or
             :class:`~ad_hoc_diffractometer.mode.ReferenceConstraint` in
-            the mode.  Reference-constraint scalars (``psi``, ``alpha_i``,
-            ``beta_out``) can also be updated through the per-call
+            the mode.  Reference-constraint scalars (``psi``, ``incidence``,
+            ``emergence``) can also be updated through the per-call
             :attr:`extras` setter; this method is the route for persistent
             overrides of fixed-axis defaults.
 
@@ -479,8 +479,8 @@ class AdHocSolver(SolverBase):
         Override several stages at once on a multi-fix mode::
 
             solver.update_mode_constraints(
-                "fixed_alpha_i_fixed_chi_fixed_phi",
-                chi=15.0, phi=30.0, alpha_i=5.0,
+                "fixed_incidence_fixed_chi_fixed_phi",
+                chi=15.0, phi=30.0, incidence=5.0,
             )
 
         Operate on the currently active mode::
@@ -796,8 +796,8 @@ class AdHocSolver(SolverBase):
     # "Derived quantities" section of the AdHoc user guide.
     # ------------------------------------------------------------------
 
-    def exit_angle(self, angles: dict[str, float] | None = None) -> float:
-        """Exit angle β_out (deg).
+    def emergence_angle(self, angles: dict[str, float] | None = None) -> float:
+        """Emergence angle (deg).
 
         Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.surface_normal`
         to be set on the underlying geometry.
@@ -808,10 +808,10 @@ class AdHocSolver(SolverBase):
             Motor angles in degrees keyed by real-axis name.  ``None``
             (default) means use the geometry's current angles.
         """
-        return float(_ref_exit_angle(self._geom, angles=self._normalize_angles(angles)))
+        return float(_ref_emergence_angle(self._geom, angles=self._normalize_angles(angles)))
 
     def incidence_angle(self, angles: dict[str, float] | None = None) -> float:
-        """Incidence angle α_i (deg).
+        """Incidence angle (deg).
 
         Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.surface_normal`
         to be set on the underlying geometry.
@@ -827,11 +827,11 @@ class AdHocSolver(SolverBase):
     def natural_psi(self, h: float, k: float, l: float) -> float | None:  # noqa: E741
         """Natural azimuthal angle ψ (deg) for reflection ``(h, k, l)`` from UB.
 
-        Uses ``UB @ (h, k, l)`` and ``UB @ azimuthal_reference``; **no
+        Uses ``UB @ (h, k, l)`` and ``UB @ azimuth``; **no
         motor angles enter the calculation**.  Returns ``None`` when the
-        reflection is parallel to the azimuthal reference (ψ undefined).
+        reflection is parallel to the azimuth reference (ψ undefined).
 
-        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuthal_reference`
+        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuth`
         to be set on the underlying geometry.
         """
         result = _ref_natural_psi(self._geom, float(h), float(k), float(l))
@@ -865,7 +865,7 @@ class AdHocSolver(SolverBase):
     def psi_angle(self, angles: dict[str, float] | None = None) -> float:
         """Azimuthal angle ψ (deg) from motor positions.
 
-        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuthal_reference`
+        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuth`
         to be set on the underlying geometry.
 
         PARAMETERS

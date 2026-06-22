@@ -29,38 +29,43 @@ describe future plans.
 
     Expected release: tba
 
-    Breaking Changes
-    ~~~~~~~~~~~~~~~~
+0.3.4
+######
 
-    * Rename ``AdHocSolver.exit_angle`` to ``emergence_angle``.  :issue:`117`
-    * Rename ad_hoc ``alpha_i``/``beta_out`` extras to ``incidence``/``emergence``.  :issue:`117`
-    * Rename ad_hoc surface modes to ``fixed_incidence_*``/``fixed_emergence_*``/``specular_*``.  :issue:`117`
+Released 2026-06-22.
 
-    New Features
-    ~~~~~~~~~~~~
+Breaking Changes
+~~~~~~~~~~~~~~~~
 
-    * Add ``AdHocSolver.update_mode_constraints`` for fixed-axis defaults.  :issue:`114`
-    * Add ``DiffcalcSolver.update_mode_constraints`` for user-mode value overrides.  :issue:`114`
+* Rename ``AdHocSolver.exit_angle`` to ``emergence_angle``.  :issue:`117`
+* Rename ad_hoc ``alpha_i``/``beta_out`` extras to ``incidence``/``emergence``.  :issue:`117`
+* Rename ad_hoc surface modes to ``fixed_incidence_*``/``fixed_emergence_*``/``specular_*``.  :issue:`117`
 
-    Enhancements
-    ~~~~~~~~~~~~
+New Features
+~~~~~~~~~~~~
 
-    * Use ``ConstraintSet.with_constraint_values()`` in ``AdHocSolver.extras`` setter.  :issue:`114`
+* Add ``AdHocSolver.update_mode_constraints`` for fixed-axis defaults.  :issue:`114`
+* Add ``DiffcalcSolver.update_mode_constraints`` for user-mode value overrides.  :issue:`114`
 
-    Documentation
-    ~~~~~~~~~~~~~
+Enhancements
+~~~~~~~~~~~~
 
-    * Document how to override fixed-axis default values in the ``ad_hoc`` guide.  :issue:`114`
-    * Document how to set the reference vector (n̂) in the ``ad_hoc`` guide.  :issue:`114`
-    * Refresh ``ad_hoc`` guide and geometry tables for ad_hoc v0.11.2 naming.  :issue:`117`
+* Use ``ConstraintSet.with_constraint_values()`` in ``AdHocSolver.extras`` setter.  :issue:`114`
 
-    Maintenance
-    ~~~~~~~~~~~
+Documentation
+~~~~~~~~~~~~~
 
-    * Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.1``.  :issue:`114`
-    * Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.2``.  :issue:`117`
-    * Upgrade ``ad_hoc_diffractometer`` from PyPI in cross-validation CI.  :issue:`117`
-    * Unify copyright automation across hklpy2 family.  :issue:`112`
+* Document how to override fixed-axis default values in the ``ad_hoc`` guide.  :issue:`114`
+* Document how to set the reference vector (n̂) in the ``ad_hoc`` guide.  :issue:`114`
+* Refresh ``ad_hoc`` guide and geometry tables for ad_hoc v0.11.2 naming.  :issue:`117`
+
+Maintenance
+~~~~~~~~~~~
+
+* Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.1``.  :issue:`114`
+* Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.2``.  :issue:`117`
+* Upgrade ``ad_hoc_diffractometer`` from PyPI in cross-validation CI.  :issue:`117`
+* Unify copyright automation across hklpy2 family.  :issue:`112`
 
 0.3.3
 ######

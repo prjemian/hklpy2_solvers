@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="_static/documentation_options.js?v=a7501d5a"></script>
+    <script src="_static/documentation_options.js?v=ffb7e818"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'guide_ad_hoc';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.4.dev18+g8d00f0057';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.4.dev21+g3422da5db';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -559,8 +559,8 @@ motor positions.  <code class="docutils literal notranslate"><span class="pre">f
 all real axes; pass a different set of values to compute <code class="docutils literal notranslate"><span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code>
 at a hypothetical position instead.</p>
 </section>
-<section id="derived-quantities-i-out-n-az-omega">
-<h2>Derived quantities (ψ, α_i, β_out, n_az, OMEGA)<a class="headerlink" href="#derived-quantities-i-out-n-az-omega" title="Link to this heading">#</a></h2>
+<section id="derived-quantities-incidence-emergence-n-az-omega">
+<h2>Derived quantities (ψ, incidence, emergence, n_az, OMEGA)<a class="headerlink" href="#derived-quantities-incidence-emergence-n-az-omega" title="Link to this heading">#</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">AdHocSolver</span></code> exposes the six derived-quantity helpers from
 <code class="docutils literal notranslate"><span class="pre">ad_hoc_diffractometer.reference</span></code> as methods, so users do not need
 to reach into <code class="docutils literal notranslate"><span class="pre">solver._geom</span></code>:</p>
@@ -579,14 +579,14 @@ to reach into <code class="docutils literal notranslate"><span class="pre">solve
 <tbody>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">psi_angle(angles=None)</span></code></p></td>
 <td><p>Azimuthal angle ψ (deg) from motors</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">azimuthal_reference</span></code> set</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">azimuth</span></code> set</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">incidence_angle(angles=None)</span></code></p></td>
-<td><p>Incidence angle α_i (deg)</p></td>
+<td><p>Incidence angle (deg)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">surface_normal</span></code> set</p></td>
 </tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">exit_angle(angles=None)</span></code></p></td>
-<td><p>Exit angle β_out (deg)</p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">emergence_angle(angles=None)</span></code></p></td>
+<td><p>Emergence angle (deg)</p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">surface_normal</span></code> set</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">naz_angle(angles=None)</span></code></p></td>
@@ -599,7 +599,7 @@ to reach into <code class="docutils literal notranslate"><span class="pre">solve
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">natural_psi(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code></p></td>
 <td><p>Natural ψ (deg) from UB; <code class="docutils literal notranslate"><span class="pre">None</span></code> if undefined</p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">azimuthal_reference</span></code> set</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">azimuth</span></code> set</p></td>
 </tr>
 </tbody>
 </table>
@@ -608,13 +608,13 @@ to reach into <code class="docutils literal notranslate"><span class="pre">solve
 (default) uses the geometry’s current angles.  Unknown axis names raise
 <a class="reference external" href="https://blueskyproject.io/hklpy2/autoapi/hklpy2/exceptions/index.html#hklpy2.exceptions.SolverError" title="(in hklpy2 v0.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">SolverError</span></code></a>; a non-dict input raises
 <code class="docutils literal notranslate"><span class="pre">TypeError</span></code>.</p>
-<p>The reference vectors <code class="docutils literal notranslate"><span class="pre">azimuthal_reference</span></code> and <code class="docutils literal notranslate"><span class="pre">surface_normal</span></code>
+<p>The reference vectors <code class="docutils literal notranslate"><span class="pre">azimuth</span></code> and <code class="docutils literal notranslate"><span class="pre">surface_normal</span></code>
 are still configured on the underlying geometry object:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">hklpy2</span>
 
 <span class="n">psic2</span> <span class="o">=</span> <span class="n">hklpy2</span><span class="o">.</span><span class="n">creator</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;psic2&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="s2">&quot;psic&quot;</span><span class="p">,</span> <span class="n">solver</span><span class="o">=</span><span class="s2">&quot;ad_hoc&quot;</span><span class="p">)</span>
 <span class="n">solver</span> <span class="o">=</span> <span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span>
-<span class="n">solver</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">azimuthal_reference</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">solver</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">azimuth</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">solver</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">surface_normal</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
 <span class="n">solver</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">wavelength</span> <span class="o">=</span> <span class="mf">1.0</span>
 
@@ -622,8 +622,8 @@ are still configured on the underlying geometry object:</p>
 <span class="n">solver</span><span class="o">.</span><span class="n">set_reals</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
 
 <span class="n">psi</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">psi_angle</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
-<span class="n">alpha_i</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">incidence_angle</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
-<span class="n">beta_out</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">exit_angle</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+<span class="n">incidence</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">incidence_angle</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
+<span class="n">emergence</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">emergence_angle</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
 <span class="n">naz</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">naz_angle</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
 <span class="n">omega</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">omega_pseudo</span><span class="p">(</span><span class="n">angles</span><span class="p">)</span>
 <span class="n">natural</span> <span class="o">=</span> <span class="n">solver</span><span class="o">.</span><span class="n">natural_psi</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -636,7 +636,7 @@ module for the mathematical definitions.</p>
 <section id="set-the-reference-vector-n">
 <span id="guide-ad-hoc-reference-vector"></span><h2>Set the reference vector (n̂)<a class="headerlink" href="#set-the-reference-vector-n" title="Link to this heading">#</a></h2>
 <p>Modes that involve a surface normal or an azimuthal reference (for
-example <code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code>, <code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_vertical</span></code>, <code class="docutils literal notranslate"><span class="pre">zaxis</span></code>,
+example <code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code>, <code class="docutils literal notranslate"><span class="pre">fixed_incidence_vertical</span></code>, <code class="docutils literal notranslate"><span class="pre">zaxis</span></code>,
 <code class="docutils literal notranslate"><span class="pre">reflectivity</span></code>) require an external direction vector.  In every
 per-mode table that vector is shown as <strong>n̂</strong> (rendered as the
 <code class="docutils literal notranslate"><span class="pre">n_hat</span></code> key in the mode’s <code class="docutils literal notranslate"><span class="pre">extras</span></code>), but <strong>n̂ is a documentation
@@ -657,13 +657,13 @@ mode’s reference constraint.</p>
 </tr>
 </thead>
 <tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">alpha_i</span></code>, <code class="docutils literal notranslate"><span class="pre">beta_out</span></code>, <code class="docutils literal notranslate"><span class="pre">a_eq_b</span></code></p></td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">incidence</span></code>, <code class="docutils literal notranslate"><span class="pre">emergence</span></code>, <code class="docutils literal notranslate"><span class="pre">specular</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">surface_normal</span></code></p></td>
 <td><p><code class="docutils literal notranslate"><span class="pre">solver._geom.surface_normal</span> <span class="pre">=</span> <span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code></p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">psi</span></code>, <code class="docutils literal notranslate"><span class="pre">naz</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">azimuthal_reference</span></code></p></td>
-<td><p><code class="docutils literal notranslate"><span class="pre">solver._geom.azimuthal_reference</span> <span class="pre">=</span> <span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">azimuth</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">solver._geom.azimuth</span> <span class="pre">=</span> <span class="pre">(h,</span> <span class="pre">k,</span> <span class="pre">l)</span></code></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">omega</span></code> (SPEC pseudo-angle)</p></td>
 <td><p>(none required)</p></td>
@@ -674,9 +674,9 @@ mode’s reference constraint.</p>
 </div>
 <p>To discover which attribute the active mode needs, ask the geometry
 directly:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;fixed_alpha_i_vertical&quot;</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="s2">&quot;fixed_incidence_vertical&quot;</span>
 <span class="n">attr</span> <span class="o">=</span> <span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">required_reference_vector</span>
-<span class="c1"># attr is &#39;surface_normal&#39; for this mode; &#39;azimuthal_reference&#39;</span>
+<span class="c1"># attr is &#39;surface_normal&#39; for this mode; &#39;azimuth&#39;</span>
 <span class="c1"># for psi / naz modes; None when the active mode requires no</span>
 <span class="c1"># reference vector.</span>
 </pre></div>
@@ -688,10 +688,10 @@ only for modes that consume <code class="docutils literal notranslate"><span cla
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;n_hat&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
 </pre></div>
 </div>
-<p><strong>Directly on the geometry</strong> — required for <code class="docutils literal notranslate"><span class="pre">azimuthal_reference</span></code>;
+<p><strong>Directly on the geometry</strong> — required for <code class="docutils literal notranslate"><span class="pre">azimuth</span></code>;
 also works for <code class="docutils literal notranslate"><span class="pre">surface_normal</span></code>:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">surface_normal</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">azimuthal_reference</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">azimuth</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The argument is a length-3 sequence of Miller indices.  <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></code>
@@ -712,7 +712,7 @@ how-to for the full mathematical background.</p>
 <section id="override-a-fixed-axis-default-value">
 <span id="guide-ad-hoc-constraint-overrides"></span><h2>Override a fixed-axis default value<a class="headerlink" href="#override-a-fixed-axis-default-value" title="Link to this heading">#</a></h2>
 <p>Each <code class="docutils literal notranslate"><span class="pre">fixed_&lt;axis&gt;</span></code> mode (for example <code class="docutils literal notranslate"><span class="pre">fourcv</span></code> <code class="docutils literal notranslate"><span class="pre">fixed_chi</span></code>,
-<code class="docutils literal notranslate"><span class="pre">psic</span></code> <code class="docutils literal notranslate"><span class="pre">fixed_chi_vertical</span></code>, <code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_fixed_chi_fixed_phi</span></code>)
+<code class="docutils literal notranslate"><span class="pre">psic</span></code> <code class="docutils literal notranslate"><span class="pre">fixed_chi_vertical</span></code>, <code class="docutils literal notranslate"><span class="pre">fixed_incidence_fixed_chi_fixed_phi</span></code>)
 carries a default scalar value baked into the geometry’s YAML
 definition.  Constraint values are immutable, so changing a default
 replaces the underlying
@@ -727,8 +727,8 @@ to override one or more defaults without touching solver internals.</p>
 </div>
 <p>Override several stages at once on a multi-fix mode:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">solver</span><span class="o">.</span><span class="n">update_mode_constraints</span><span class="p">(</span>
-    <span class="s2">&quot;fixed_alpha_i_fixed_chi_fixed_phi&quot;</span><span class="p">,</span>
-    <span class="n">chi</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">alpha_i</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+    <span class="s2">&quot;fixed_incidence_fixed_chi_fixed_phi&quot;</span><span class="p">,</span>
+    <span class="n">chi</span><span class="o">=</span><span class="mf">15.0</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mf">30.0</span><span class="p">,</span> <span class="n">incidence</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
@@ -749,7 +749,7 @@ with a descriptive message.</p>
 <section id="persistent-overrides-vs-per-call-reference-scalars">
 <h3>Persistent overrides vs. per-call reference scalars<a class="headerlink" href="#persistent-overrides-vs-per-call-reference-scalars" title="Link to this heading">#</a></h3>
 <p>Two distinct routes touch reference-constraint scalars
-(<code class="docutils literal notranslate"><span class="pre">psi</span></code>, <code class="docutils literal notranslate"><span class="pre">alpha_i</span></code>, <code class="docutils literal notranslate"><span class="pre">beta_out</span></code>) on modes that expose them:</p>
+(<code class="docutils literal notranslate"><span class="pre">psi</span></code>, <code class="docutils literal notranslate"><span class="pre">incidence</span></code>, <code class="docutils literal notranslate"><span class="pre">emergence</span></code>) on modes that expose them:</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="api/hklpy2_solvers/ad_hoc_solver/index.html#hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints" title="hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints"><code class="xref py py-meth docutils literal notranslate"><span class="pre">update_mode_constraints()</span></code></a>
 is the <strong>persistent</strong> route — the new value becomes the mode’s
@@ -984,7 +984,7 @@ hklpy2 documentation</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choose-an-operating-mode">Choose an operating mode</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-motor-positions-forward">Compute motor positions (forward)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compute-h-k-l-from-motor-positions-inverse">Compute (h, k, l) from motor positions (inverse)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derived-quantities-i-out-n-az-omega">Derived quantities (ψ, α_i, β_out, n_az, OMEGA)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#derived-quantities-incidence-emergence-n-az-omega">Derived quantities (ψ, incidence, emergence, n_az, OMEGA)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#set-the-reference-vector-n">Set the reference vector (n̂)</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#two-ways-to-set-the-vector">Two ways to set the vector</a></li>
 </ul>

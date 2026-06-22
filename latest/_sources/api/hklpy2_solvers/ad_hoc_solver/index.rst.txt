@@ -101,9 +101,9 @@ Module Contents
 
 
 
-   .. py:method:: exit_angle(angles: dict[str, float] | None = None) -> float
+   .. py:method:: emergence_angle(angles: dict[str, float] | None = None) -> float
 
-      Exit angle β_out (deg).
+      Emergence angle (deg).
 
       Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.surface_normal`
       to be set on the underlying geometry.
@@ -124,7 +124,7 @@ Module Contents
 
       Drawn from the underlying mode's ``extras`` dict (filtered to the
       names the user is expected to supply: ``n_hat``, ``psi``,
-      ``alpha_i``, ``beta_out``, ``h2``, ``k2``, ``l2``) plus the
+      ``incidence``, ``emergence``, ``h2``, ``k2``, ``l2``) plus the
       scalar name of the active :class:`ReferenceConstraint` if it
       names one of those inputs and is not already listed.
 
@@ -161,7 +161,7 @@ Module Contents
 
    .. py:method:: incidence_angle(angles: dict[str, float] | None = None) -> float
 
-      Incidence angle α_i (deg).
+      Incidence angle (deg).
 
       Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.surface_normal`
       to be set on the underlying geometry.
@@ -215,11 +215,11 @@ Module Contents
 
       Natural azimuthal angle ψ (deg) for reflection ``(h, k, l)`` from UB.
 
-      Uses ``UB @ (h, k, l)`` and ``UB @ azimuthal_reference``; **no
+      Uses ``UB @ (h, k, l)`` and ``UB @ azimuth``; **no
       motor angles enter the calculation**.  Returns ``None`` when the
-      reflection is parallel to the azimuthal reference (ψ undefined).
+      reflection is parallel to the azimuth reference (ψ undefined).
 
-      Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuthal_reference`
+      Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuth`
       to be set on the underlying geometry.
 
 
@@ -262,7 +262,7 @@ Module Contents
 
       Azimuthal angle ψ (deg) from motor positions.
 
-      Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuthal_reference`
+      Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuth`
       to be set on the underlying geometry.
 
       PARAMETERS
@@ -306,7 +306,7 @@ Module Contents
       Override default values of one or more constraints on a mode.
 
       Each ``fixed_<axis>`` mode (e.g. ``fourcv`` ``fixed_chi``, ``psic``
-      ``fixed_alpha_i_vertical``) carries a default scalar value baked
+      ``fixed_incidence_vertical``) carries a default scalar value baked
       into the geometry's YAML definition.  Constraint values are
       immutable; this method replaces the named mode's
       :class:`~ad_hoc_diffractometer.mode.ConstraintSet` with a fresh
@@ -323,8 +323,8 @@ Module Contents
                           :class:`~ad_hoc_diffractometer.mode.SampleConstraint`,
                           :class:`~ad_hoc_diffractometer.mode.DetectorConstraint`, or
                           :class:`~ad_hoc_diffractometer.mode.ReferenceConstraint` in
-                          the mode.  Reference-constraint scalars (``psi``, ``alpha_i``,
-                          ``beta_out``) can also be updated through the per-call
+                          the mode.  Reference-constraint scalars (``psi``, ``incidence``,
+                          ``emergence``) can also be updated through the per-call
                           :attr:`extras` setter; this method is the route for persistent
                           overrides of fixed-axis defaults.
       :type \*\*updates: float or bool
@@ -342,8 +342,8 @@ Module Contents
       Override several stages at once on a multi-fix mode::
 
           solver.update_mode_constraints(
-              "fixed_alpha_i_fixed_chi_fixed_phi",
-              chi=15.0, phi=30.0, alpha_i=5.0,
+              "fixed_incidence_fixed_chi_fixed_phi",
+              chi=15.0, phi=30.0, incidence=5.0,
           )
 
       Operate on the currently active mode::

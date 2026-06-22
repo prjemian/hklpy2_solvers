@@ -31,10 +31,10 @@ automatically available.  The pseudo axes are always ``h``, ``k``, ``l``.
 In the per-mode tables below the ``extra(s)`` column names the
 :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.surface_normal`
 or
-:attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuthal_reference`
+:attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuth`
 attribute that the mode reads (set on the underlying geometry object),
-followed by any per-call scalar extras (``psi``, ``alpha_i``,
-``beta_out``).  See :ref:`guide_ad_hoc.reference_vector` for the
+followed by any per-call scalar extras (``psi``, ``incidence``,
+``emergence``).  See :ref:`guide_ad_hoc.reference_vector` for the
 recipes.
 
 .. _geometry.fourcv:
@@ -90,7 +90,7 @@ See `ad_hoc_diffractometer fourcv
    * - ``fixed_psi``
      - *(none)*
      - omega, chi, phi, ttheta
-     - azimuthal_reference, psi
+     - azimuth, psi
    * - ``double_diffraction``
      - *(none)*
      - omega, chi, phi, ttheta
@@ -149,7 +149,7 @@ See `ad_hoc_diffractometer fourch
    * - ``fixed_psi``
      - *(none)*
      - omega, chi, phi, ttheta
-     - azimuthal_reference, psi
+     - azimuth, psi
    * - ``double_diffraction``
      - *(none)*
      - omega, chi, phi, ttheta
@@ -201,26 +201,26 @@ See `ad_hoc_diffractometer psic
      - chi, mu, nu
      - eta, phi, delta
      -
-   * - ``fixed_alpha_i_vertical``
-     - mu, nu
-     - eta, chi, phi, delta
-     - surface_normal, alpha_i, beta_out
-   * - ``fixed_beta_out_vertical``
-     - mu, nu
-     - eta, chi, phi, delta
-     - surface_normal, alpha_i, beta_out
-   * - ``alpha_eq_beta_vertical``
-     - mu, nu
-     - eta, chi, phi, delta
-     - surface_normal, alpha_i, beta_out
+   * - ``fixed_incidence_vertical``
+      - mu, nu
+      - eta, chi, phi, delta
+      - surface_normal, incidence, emergence
+   * - ``fixed_emergence_vertical``
+      - mu, nu
+      - eta, chi, phi, delta
+      - surface_normal, incidence, emergence
+   * - ``specular_vertical``
+      - mu, nu
+      - eta, chi, phi, delta
+      - surface_normal, incidence, emergence
    * - ``fixed_psi_vertical``
      - mu, nu
      - eta, chi, phi, delta
-     - azimuthal_reference, psi
-   * - ``fixed_alpha_i_fixed_chi_fixed_phi``
-     - chi, phi
-     - mu, eta, nu, delta
-     - surface_normal, alpha_i, beta_out
+     - azimuth, psi
+   * - ``fixed_incidence_fixed_chi_fixed_phi``
+      - chi, phi
+      - mu, eta, nu, delta
+      - surface_normal, incidence, emergence
    * - ``fixed_omega_vertical``
      - mu, nu
      - eta, chi, phi, delta
@@ -241,22 +241,22 @@ See `ad_hoc_diffractometer psic
      - chi, delta, eta
      - mu, phi, nu
      -
-   * - ``fixed_alpha_i_horizontal``
-     - delta, eta
-     - mu, chi, phi, nu
-     - surface_normal, alpha_i, beta_out
-   * - ``fixed_beta_out_horizontal``
-     - delta, eta
-     - mu, chi, phi, nu
-     - surface_normal, alpha_i, beta_out
-   * - ``alpha_eq_beta_horizontal``
-     - delta, eta
-     - mu, chi, phi, nu
-     - surface_normal, alpha_i, beta_out
+   * - ``fixed_incidence_horizontal``
+      - delta, eta
+      - mu, chi, phi, nu
+      - surface_normal, incidence, emergence
+   * - ``fixed_emergence_horizontal``
+      - delta, eta
+      - mu, chi, phi, nu
+      - surface_normal, incidence, emergence
+   * - ``specular_horizontal``
+      - delta, eta
+      - mu, chi, phi, nu
+      - surface_normal, incidence, emergence
    * - ``fixed_psi_horizontal``
      - delta, eta
      - mu, chi, phi, nu
-     - azimuthal_reference, psi
+     - azimuth, psi
    * - ``fixed_omega_horizontal``
      - delta, eta
      - mu, chi, phi, nu
@@ -331,18 +331,18 @@ See `ad_hoc_diffractometer sixc
      - alpha, gamma, omega
      - chi, phi, delta
      -
-   * - ``fixed_alpha_zaxis``
-     - alpha, chi
-     - omega, phi, delta, gamma
-     - surface_normal, alpha_i, beta_out
-   * - ``fixed_beta_zaxis``
-     - chi, gamma
-     - alpha, omega, phi, delta
-     - surface_normal, alpha_i, beta_out
-   * - ``alpha_eq_beta_zaxis``
-     - chi, phi
-     - alpha, omega, delta, gamma
-     - surface_normal, alpha_i, beta_out
+   * - ``fixed_incidence_zaxis``
+      - alpha, chi
+      - omega, phi, delta, gamma
+      - surface_normal, incidence, emergence
+   * - ``fixed_emergence_zaxis``
+      - chi, gamma
+      - alpha, omega, phi, delta
+      - surface_normal, incidence, emergence
+   * - ``specular_zaxis``
+      - chi, phi
+      - alpha, omega, delta, gamma
+      - surface_normal, incidence, emergence
 
 .. _geometry.fivec:
 
@@ -454,7 +454,7 @@ See `ad_hoc_diffractometer kappa4cv
    * - ``fixed_psi``
      - *(none)*
      - komega, kappa, kphi, ttheta
-     - azimuthal_reference, psi
+     - azimuth, psi
    * - ``double_diffraction``
      - *(none)*
      - komega, kappa, kphi, ttheta
@@ -516,7 +516,7 @@ See `ad_hoc_diffractometer kappa4ch
    * - ``fixed_psi``
      - *(none)*
      - komega, kappa, kphi, ttheta
-     - azimuthal_reference, psi
+     - azimuth, psi
 
 .. _geometry.kappa6c:
 
@@ -587,11 +587,11 @@ See `ad_hoc_diffractometer kappa6c
    * - ``fixed_psi_vertical``
      - mu, omega (virtual)
      - komega, kappa, kphi, nu, delta
-     - azimuthal_reference, psi
+     - azimuth, psi
    * - ``fixed_psi_horizontal``
      - komega, mu
      - kappa, kphi, nu, delta
-     - azimuthal_reference, psi
+     - azimuth, psi
    * - ``double_diffraction_vertical``
      - mu, nu
      - komega, kappa, kphi, delta
@@ -646,11 +646,11 @@ See `ad_hoc_diffractometer zaxis
    * - ``zaxis``
      - *(none)*
      - alpha, Z, delta, gamma
-     - surface_normal, alpha_i, beta_out
+     - surface_normal, incidence, emergence
    * - ``reflectivity``
      - *(none)*
      - alpha, Z, delta, gamma
-     - surface_normal, alpha_i, beta_out
+     - surface_normal, incidence, emergence
 
 .. _geometry.s2d2:
 
@@ -693,7 +693,7 @@ See `ad_hoc_diffractometer s2d2
    * - ``reflectivity``
      - *(none)*
      - mu, Z, nu, delta
-     - surface_normal, alpha_i, beta_out
+     - surface_normal, incidence, emergence
 
 Kappa geometries
 ~~~~~~~~~~~~~~~~

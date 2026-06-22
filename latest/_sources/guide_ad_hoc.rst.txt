@@ -143,8 +143,8 @@ motor positions.  ``fourc.real_position`` is the current readout of
 all real axes; pass a different set of values to compute ``(h, k, l)``
 at a hypothetical position instead.
 
-Derived quantities (ψ, α_i, β_out, n_az, OMEGA)
-------------------------------------------------
+Derived quantities (ψ, incidence, emergence, n_az, OMEGA)
+---------------------------------------------------------
 
 ``AdHocSolver`` exposes the six derived-quantity helpers from
 ``ad_hoc_diffractometer.reference`` as methods, so users do not need
@@ -159,12 +159,12 @@ to reach into ``solver._geom``:
      - Geometry prerequisite
    * - ``psi_angle(angles=None)``
      - Azimuthal angle ψ (deg) from motors
-     - ``azimuthal_reference`` set
+     - ``azimuth`` set
    * - ``incidence_angle(angles=None)``
-     - Incidence angle α_i (deg)
+     - Incidence angle (deg)
      - ``surface_normal`` set
-   * - ``exit_angle(angles=None)``
-     - Exit angle β_out (deg)
+   * - ``emergence_angle(angles=None)``
+     - Emergence angle (deg)
      - ``surface_normal`` set
    * - ``naz_angle(angles=None)``
      - Lab-frame azimuthal angle of n̂ (deg)
@@ -174,14 +174,14 @@ to reach into ``solver._geom``:
      - none
    * - ``natural_psi(h, k, l)``
      - Natural ψ (deg) from UB; ``None`` if undefined
-     - ``azimuthal_reference`` set
+     - ``azimuth`` set
 
 ``angles`` may be a dict keyed by real-axis name (any subset); ``None``
 (default) uses the geometry's current angles.  Unknown axis names raise
 :class:`~hklpy2.exceptions.SolverError`; a non-dict input raises
 ``TypeError``.
 
-The reference vectors ``azimuthal_reference`` and ``surface_normal``
+The reference vectors ``azimuth`` and ``surface_normal``
 are still configured on the underlying geometry object:
 
 .. code-block:: python
@@ -190,7 +190,7 @@ are still configured on the underlying geometry object:
 
    psic2 = hklpy2.creator(name="psic2", geometry="psic", solver="ad_hoc")
    solver = psic2.core.solver
-   solver._geom.azimuthal_reference = (0, 0, 1)
+   solver._geom.azimuth = (0, 0, 1)
    solver._geom.surface_normal = (1, 1, 6)
    solver._geom.wavelength = 1.0
 
@@ -198,8 +198,8 @@ are still configured on the underlying geometry object:
    solver.set_reals(angles)
 
    psi = solver.psi_angle(angles)
-   alpha_i = solver.incidence_angle(angles)
-   beta_out = solver.exit_angle(angles)
+   incidence = solver.incidence_angle(angles)
+   emergence = solver.emergence_angle(angles)
    naz = solver.naz_angle(angles)
    omega = solver.omega_pseudo(angles)
    natural = solver.natural_psi(1, 1, 1)
@@ -214,7 +214,7 @@ Set the reference vector (n̂)
 ------------------------------
 
 Modes that involve a surface normal or an azimuthal reference (for
-example ``fixed_psi``, ``fixed_alpha_i_vertical``, ``zaxis``,
+example ``fixed_psi``, ``fixed_incidence_vertical``, ``zaxis``,
 ``reflectivity``) require an external direction vector.  In every
 per-mode table that vector is shown as **n̂** (rendered as the
 ``n_hat`` key in the mode's ``extras``), but **n̂ is a documentation
@@ -229,12 +229,12 @@ mode's reference constraint.
    * - Mode reference constraint
      - Geometry attribute
      - Set with
-   * - ``alpha_i``, ``beta_out``, ``a_eq_b``
+   * - ``incidence``, ``emergence``, ``specular``
      - ``surface_normal``
      - ``solver._geom.surface_normal = (h, k, l)``
    * - ``psi``, ``naz``
-     - ``azimuthal_reference``
-     - ``solver._geom.azimuthal_reference = (h, k, l)``
+     - ``azimuth``
+     - ``solver._geom.azimuth = (h, k, l)``
    * - ``omega`` (SPEC pseudo-angle)
      - (none required)
      - —
@@ -244,9 +244,9 @@ directly:
 
 .. code-block:: python
 
-   psic2.core.mode = "fixed_alpha_i_vertical"
+   psic2.core.mode = "fixed_incidence_vertical"
    attr = psic2.core.solver._geom.required_reference_vector
-   # attr is 'surface_normal' for this mode; 'azimuthal_reference'
+   # attr is 'surface_normal' for this mode; 'azimuth'
    # for psi / naz modes; None when the active mode requires no
    # reference vector.
 
@@ -260,13 +260,13 @@ only for modes that consume ``surface_normal``:
 
    psic2.core.extras = {"n_hat": (0, 0, 1)}
 
-**Directly on the geometry** — required for ``azimuthal_reference``;
+**Directly on the geometry** — required for ``azimuth``;
 also works for ``surface_normal``:
 
 .. code-block:: python
 
    psic2.core.solver._geom.surface_normal = (0, 0, 1)
-   psic2.core.solver._geom.azimuthal_reference = (1, 0, 0)
+   psic2.core.solver._geom.azimuth = (1, 0, 0)
 
 The argument is a length-3 sequence of Miller indices.  ``(0, 0, 0)``
 is rejected with ``ValueError``; the default is ``None`` (not set).
@@ -290,7 +290,7 @@ Override a fixed-axis default value
 ------------------------------------
 
 Each ``fixed_<axis>`` mode (for example ``fourcv`` ``fixed_chi``,
-``psic`` ``fixed_chi_vertical``, ``fixed_alpha_i_fixed_chi_fixed_phi``)
+``psic`` ``fixed_chi_vertical``, ``fixed_incidence_fixed_chi_fixed_phi``)
 carries a default scalar value baked into the geometry's YAML
 definition.  Constraint values are immutable, so changing a default
 replaces the underlying
@@ -312,8 +312,8 @@ Override several stages at once on a multi-fix mode:
 .. code-block:: python
 
    psic2.core.solver.update_mode_constraints(
-       "fixed_alpha_i_fixed_chi_fixed_phi",
-       chi=15.0, phi=30.0, alpha_i=5.0,
+       "fixed_incidence_fixed_chi_fixed_phi",
+       chi=15.0, phi=30.0, incidence=5.0,
    )
 
 Operate on the currently active mode by omitting ``mode_name``:
@@ -338,7 +338,7 @@ Persistent overrides vs. per-call reference scalars
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Two distinct routes touch reference-constraint scalars
-(``psi``, ``alpha_i``, ``beta_out``) on modes that expose them:
+(``psi``, ``incidence``, ``emergence``) on modes that expose them:
 
 * :meth:`~hklpy2_solvers.ad_hoc_solver.AdHocSolver.update_mode_constraints`
   is the **persistent** route — the new value becomes the mode's

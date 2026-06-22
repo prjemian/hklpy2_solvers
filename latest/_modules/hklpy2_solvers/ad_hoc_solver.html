@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../_static/documentation_options.js?v=f2ad9a9d"></script>
+    <script src="../../_static/documentation_options.js?v=ffb7e818"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2_solvers/ad_hoc_solver';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.4.dev16+g4df80e6d2';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.4.dev21+g3422da5db';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -430,7 +430,7 @@
     <span class="n">ConstraintViolation</span><span class="p">,</span>
     <span class="n">EwaldSphereViolation</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.reference</span><span class="w"> </span><span class="kn">import</span> <span class="n">exit_angle</span> <span class="k">as</span> <span class="n">_ref_exit_angle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.reference</span><span class="w"> </span><span class="kn">import</span> <span class="n">emergence_angle</span> <span class="k">as</span> <span class="n">_ref_emergence_angle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.reference</span><span class="w"> </span><span class="kn">import</span> <span class="n">incidence_angle</span> <span class="k">as</span> <span class="n">_ref_incidence_angle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.reference</span><span class="w"> </span><span class="kn">import</span> <span class="n">natural_psi</span> <span class="k">as</span> <span class="n">_ref_natural_psi</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.reference</span><span class="w"> </span><span class="kn">import</span> <span class="n">naz_angle</span> <span class="k">as</span> <span class="n">_ref_naz_angle</span>
@@ -455,7 +455,7 @@
 <span class="k">except</span> <span class="n">PackageNotFoundError</span><span class="p">:</span>  <span class="c1"># pragma: no cover - defensive</span>
     <span class="n">_BACKEND_VERSION</span> <span class="o">=</span> <span class="s2">&quot;unknown&quot;</span>
 
-<span class="n">_INPUT_EXTRA_NAMES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;n_hat&quot;</span><span class="p">,</span> <span class="s2">&quot;psi&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_i&quot;</span><span class="p">,</span> <span class="s2">&quot;beta_out&quot;</span><span class="p">,</span> <span class="s2">&quot;h2&quot;</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">})</span>
+<span class="n">_INPUT_EXTRA_NAMES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;n_hat&quot;</span><span class="p">,</span> <span class="s2">&quot;psi&quot;</span><span class="p">,</span> <span class="s2">&quot;incidence&quot;</span><span class="p">,</span> <span class="s2">&quot;emergence&quot;</span><span class="p">,</span> <span class="s2">&quot;h2&quot;</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">})</span>
 <span class="sd">&quot;&quot;&quot;Names of mode-extra parameters supplied by the user (vs. solver outputs).&quot;&quot;&quot;</span>
 
 <span class="c1"># ---------------------------------------------------------------------------</span>
@@ -494,7 +494,7 @@
 <span class="sd">manages independently and must not round-trip through the solver</span>
 <span class="sd">state (avoids double-restore of samples and wavelength).&quot;&quot;&quot;</span>
 
-<span class="n">_REFERENCE_EXTRA_NAMES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;psi&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha_i&quot;</span><span class="p">,</span> <span class="s2">&quot;beta_out&quot;</span><span class="p">})</span>
+<span class="n">_REFERENCE_EXTRA_NAMES</span><span class="p">:</span> <span class="nb">frozenset</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">({</span><span class="s2">&quot;psi&quot;</span><span class="p">,</span> <span class="s2">&quot;incidence&quot;</span><span class="p">,</span> <span class="s2">&quot;emergence&quot;</span><span class="p">})</span>
 <span class="sd">&quot;&quot;&quot;Reference-constraint scalar extras (set via ``ConstraintSet.with_constraint_values``).&quot;&quot;&quot;</span>
 
 <span class="n">_DOUBLE_DIFF_EXTRA_NAMES</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;h2&quot;</span><span class="p">,</span> <span class="s2">&quot;k2&quot;</span><span class="p">,</span> <span class="s2">&quot;l2&quot;</span><span class="p">)</span>
@@ -731,7 +731,7 @@
 
 <span class="sd">        Drawn from the underlying mode&#39;s ``extras`` dict (filtered to the</span>
 <span class="sd">        names the user is expected to supply: ``n_hat``, ``psi``,</span>
-<span class="sd">        ``alpha_i``, ``beta_out``, ``h2``, ``k2``, ``l2``) plus the</span>
+<span class="sd">        ``incidence``, ``emergence``, ``h2``, ``k2``, ``l2``) plus the</span>
 <span class="sd">        scalar name of the active :class:`ReferenceConstraint` if it</span>
 <span class="sd">        names one of those inputs and is not already listed.</span>
 
@@ -794,7 +794,7 @@
 
 <span class="sd">        * ``n_hat``  -&gt; ``geometry.surface_normal`` (length-3 sequence or</span>
 <span class="sd">          ``None``).</span>
-<span class="sd">        * ``psi``, ``alpha_i``, ``beta_out`` -&gt; rebuild the active</span>
+<span class="sd">        * ``psi``, ``incidence``, ``emergence`` -&gt; rebuild the active</span>
 <span class="sd">          :class:`ConstraintSet` via</span>
 <span class="sd">          :meth:`~ad_hoc_diffractometer.mode.ConstraintSet.with_constraint_values`</span>
 <span class="sd">          so the :class:`ReferenceConstraint` carries the new scalar</span>
@@ -828,7 +828,7 @@
                 <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">surface_normal</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="c1"># Reference-constraint scalar (psi / alpha_i / beta_out).</span>
+        <span class="c1"># Reference-constraint scalar (psi / incidence / emergence).</span>
         <span class="c1"># ``ConstraintSet.with_constraint_values`` (upstream</span>
         <span class="c1"># ad_hoc_diffractometer &gt;= 0.11.1, :issue:`114`) returns a fresh</span>
         <span class="c1"># ConstraintSet with the named scalar replaced, preserving order,</span>
@@ -852,7 +852,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Override default values of one or more constraints on a mode.</span>
 
 <span class="sd">        Each ``fixed_&lt;axis&gt;`` mode (e.g. ``fourcv`` ``fixed_chi``, ``psic``</span>
-<span class="sd">        ``fixed_alpha_i_vertical``) carries a default scalar value baked</span>
+<span class="sd">        ``fixed_incidence_vertical``) carries a default scalar value baked</span>
 <span class="sd">        into the geometry&#39;s YAML definition.  Constraint values are</span>
 <span class="sd">        immutable; this method replaces the named mode&#39;s</span>
 <span class="sd">        :class:`~ad_hoc_diffractometer.mode.ConstraintSet` with a fresh</span>
@@ -872,8 +872,8 @@
 <span class="sd">            :class:`~ad_hoc_diffractometer.mode.SampleConstraint`,</span>
 <span class="sd">            :class:`~ad_hoc_diffractometer.mode.DetectorConstraint`, or</span>
 <span class="sd">            :class:`~ad_hoc_diffractometer.mode.ReferenceConstraint` in</span>
-<span class="sd">            the mode.  Reference-constraint scalars (``psi``, ``alpha_i``,</span>
-<span class="sd">            ``beta_out``) can also be updated through the per-call</span>
+<span class="sd">            the mode.  Reference-constraint scalars (``psi``, ``incidence``,</span>
+<span class="sd">            ``emergence``) can also be updated through the per-call</span>
 <span class="sd">            :attr:`extras` setter; this method is the route for persistent</span>
 <span class="sd">            overrides of fixed-axis defaults.</span>
 
@@ -893,8 +893,8 @@
 <span class="sd">        Override several stages at once on a multi-fix mode::</span>
 
 <span class="sd">            solver.update_mode_constraints(</span>
-<span class="sd">                &quot;fixed_alpha_i_fixed_chi_fixed_phi&quot;,</span>
-<span class="sd">                chi=15.0, phi=30.0, alpha_i=5.0,</span>
+<span class="sd">                &quot;fixed_incidence_fixed_chi_fixed_phi&quot;,</span>
+<span class="sd">                chi=15.0, phi=30.0, incidence=5.0,</span>
 <span class="sd">            )</span>
 
 <span class="sd">        Operate on the currently active mode::</span>
@@ -1229,10 +1229,10 @@
     <span class="c1"># &quot;Derived quantities&quot; section of the AdHoc user guide.</span>
     <span class="c1"># ------------------------------------------------------------------</span>
 
-<div class="viewcode-block" id="AdHocSolver.exit_angle">
-<a class="viewcode-back" href="../../api/hklpy2_solvers/ad_hoc_solver/index.html#hklpy2_solvers.ad_hoc_solver.AdHocSolver.exit_angle">[docs]</a>
-    <span class="k">def</span><span class="w"> </span><span class="nf">exit_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Exit angle β_out (deg).</span>
+<div class="viewcode-block" id="AdHocSolver.emergence_angle">
+<a class="viewcode-back" href="../../api/hklpy2_solvers/ad_hoc_solver/index.html#hklpy2_solvers.ad_hoc_solver.AdHocSolver.emergence_angle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">emergence_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Emergence angle (deg).</span>
 
 <span class="sd">        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.surface_normal`</span>
 <span class="sd">        to be set on the underlying geometry.</span>
@@ -1243,13 +1243,13 @@
 <span class="sd">            Motor angles in degrees keyed by real-axis name.  ``None``</span>
 <span class="sd">            (default) means use the geometry&#39;s current angles.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">_ref_exit_angle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalize_angles</span><span class="p">(</span><span class="n">angles</span><span class="p">)))</span></div>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">_ref_emergence_angle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="p">,</span> <span class="n">angles</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_normalize_angles</span><span class="p">(</span><span class="n">angles</span><span class="p">)))</span></div>
 
 
 <div class="viewcode-block" id="AdHocSolver.incidence_angle">
 <a class="viewcode-back" href="../../api/hklpy2_solvers/ad_hoc_solver/index.html#hklpy2_solvers.ad_hoc_solver.AdHocSolver.incidence_angle">[docs]</a>
     <span class="k">def</span><span class="w"> </span><span class="nf">incidence_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;Incidence angle α_i (deg).</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Incidence angle (deg).</span>
 
 <span class="sd">        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.surface_normal`</span>
 <span class="sd">        to be set on the underlying geometry.</span>
@@ -1268,11 +1268,11 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">natural_psi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">l</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># noqa: E741</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Natural azimuthal angle ψ (deg) for reflection ``(h, k, l)`` from UB.</span>
 
-<span class="sd">        Uses ``UB @ (h, k, l)`` and ``UB @ azimuthal_reference``; **no</span>
+<span class="sd">        Uses ``UB @ (h, k, l)`` and ``UB @ azimuth``; **no</span>
 <span class="sd">        motor angles enter the calculation**.  Returns ``None`` when the</span>
-<span class="sd">        reflection is parallel to the azimuthal reference (ψ undefined).</span>
+<span class="sd">        reflection is parallel to the azimuth reference (ψ undefined).</span>
 
-<span class="sd">        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuthal_reference`</span>
+<span class="sd">        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuth`</span>
 <span class="sd">        to be set on the underlying geometry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="n">_ref_natural_psi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="p">,</span> <span class="nb">float</span><span class="p">(</span><span class="n">h</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">))</span>
@@ -1315,7 +1315,7 @@
     <span class="k">def</span><span class="w"> </span><span class="nf">psi_angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angles</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Azimuthal angle ψ (deg) from motor positions.</span>
 
-<span class="sd">        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuthal_reference`</span>
+<span class="sd">        Requires :attr:`~ad_hoc_diffractometer.diffractometer.AdHocDiffractometer.azimuth`</span>
 <span class="sd">        to be set on the underlying geometry.</span>
 
 <span class="sd">        PARAMETERS</span>

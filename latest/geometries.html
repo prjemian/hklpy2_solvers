@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="_static/documentation_options.js?v=a7501d5a"></script>
+    <script src="_static/documentation_options.js?v=ffb7e818"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'geometries';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.4.dev18+g8d00f0057';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.4.dev21+g3422da5db';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -448,12 +448,12 @@ the solver when it is instantiated by hklpy2.</p>
 <nav class="contents local" id="on-this-page">
 <p class="topic-title">On this page</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="#ad-hoc-solver" id="id26"><code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver</a></p></li>
-<li><p><a class="reference internal" href="#diffcalc-solver" id="id27"><code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver</a></p></li>
+<li><p><a class="reference internal" href="#ad-hoc-solver" id="id24"><code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver</a></p></li>
+<li><p><a class="reference internal" href="#diffcalc-solver" id="id25"><code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver</a></p></li>
 </ul>
 </nav>
 <section id="ad-hoc-solver">
-<span id="geometries-ad-hoc"></span><h2><a class="toc-backref" href="#id26" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver</a><a class="headerlink" href="#ad-hoc-solver" title="Link to this heading">#</a></h2>
+<span id="geometries-ad-hoc"></span><h2><a class="toc-backref" href="#id24" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">ad_hoc</span></code> solver</a><a class="headerlink" href="#ad-hoc-solver" title="Link to this heading">#</a></h2>
 <p><a class="reference internal" href="api/hklpy2_solvers/ad_hoc_solver/index.html#hklpy2_solvers.ad_hoc_solver.AdHocSolver" title="hklpy2_solvers.ad_hoc_solver.AdHocSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">AdHocSolver</span></code></a></p>
 <p>Wraps <a class="reference external" href="https://github.com/bcda-aps/ad_hoc_diffractometer">ad_hoc_diffractometer</a>
 (Jemian 2026).</p>
@@ -465,10 +465,10 @@ automatically available.  The pseudo axes are always <code class="docutils liter
 <p>In the per-mode tables below the <code class="docutils literal notranslate"><span class="pre">extra(s)</span></code> column names the
 <code class="xref py py-attr docutils literal notranslate"><span class="pre">surface_normal</span></code>
 or
-<code class="xref py py-attr docutils literal notranslate"><span class="pre">azimuthal_reference</span></code>
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">azimuth</span></code>
 attribute that the mode reads (set on the underlying geometry object),
-followed by any per-call scalar extras (<code class="docutils literal notranslate"><span class="pre">psi</span></code>, <code class="docutils literal notranslate"><span class="pre">alpha_i</span></code>,
-<code class="docutils literal notranslate"><span class="pre">beta_out</span></code>).  See <a class="reference internal" href="guide_ad_hoc.html#guide-ad-hoc-reference-vector"><span class="std std-ref">Set the reference vector (n̂)</span></a> for the
+followed by any per-call scalar extras (<code class="docutils literal notranslate"><span class="pre">psi</span></code>, <code class="docutils literal notranslate"><span class="pre">incidence</span></code>,
+<code class="docutils literal notranslate"><span class="pre">emergence</span></code>).  See <a class="reference internal" href="guide_ad_hoc.html#guide-ad-hoc-reference-vector"><span class="std std-ref">Set the reference vector (n̂)</span></a> for the
 recipes.</p>
 <section id="fourcv">
 <span id="geometry-fourcv"></span><h3>fourcv<a class="headerlink" href="#fourcv" title="Link to this heading">#</a></h3>
@@ -541,7 +541,7 @@ recipes.</p>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>omega, chi, phi, ttheta</p></td>
-<td><p>azimuthal_reference, psi</p></td>
+<td><p>azimuth, psi</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
 <td><p><em>(none)</em></p></td>
@@ -623,7 +623,7 @@ recipes.</p>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>omega, chi, phi, ttheta</p></td>
-<td><p>azimuthal_reference, psi</p></td>
+<td><p>azimuth, psi</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
 <td><p><em>(none)</em></p></td>
@@ -666,152 +666,13 @@ recipes.</p>
 </tbody>
 </table>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id10">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">psic</span></code> operating modes</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
-<colgroup>
-<col style="width: 25.0%" />
-<col style="width: 20.0%" />
-<col style="width: 25.0%" />
-<col style="width: 30.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Mode name</p></th>
-<th class="head"><p>Constant stages</p></th>
-<th class="head"><p>writable(s)</p></th>
-<th class="head"><p>extra(s)</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_vertical</span></code></p></td>
-<td><p>eta, mu, nu</p></td>
-<td><p>chi, phi, delta</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_phi_vertical</span></code></p></td>
-<td><p>mu, nu, phi</p></td>
-<td><p>eta, chi, delta</p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi_vertical</span></code></p></td>
-<td><p>chi, mu, nu</p></td>
-<td><p>eta, phi, delta</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_vertical</span></code></p></td>
-<td><p>mu, nu</p></td>
-<td><p>eta, chi, phi, delta</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_beta_out_vertical</span></code></p></td>
-<td><p>mu, nu</p></td>
-<td><p>eta, chi, phi, delta</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alpha_eq_beta_vertical</span></code></p></td>
-<td><p>mu, nu</p></td>
-<td><p>eta, chi, phi, delta</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi_vertical</span></code></p></td>
-<td><p>mu, nu</p></td>
-<td><p>eta, chi, phi, delta</p></td>
-<td><p>azimuthal_reference, psi</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_fixed_chi_fixed_phi</span></code></p></td>
-<td><p>chi, phi</p></td>
-<td><p>mu, eta, nu, delta</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_omega_vertical</span></code></p></td>
-<td><p>mu, nu</p></td>
-<td><p>eta, chi, phi, delta</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_vertical</span></code></p></td>
-<td><p>mu, nu</p></td>
-<td><p>eta, chi, phi, delta</p></td>
-<td><p>h2, k2, l2</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_horizontal</span></code></p></td>
-<td><p>delta, eta, mu</p></td>
-<td><p>chi, phi, nu</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_phi_horizontal</span></code></p></td>
-<td><p>delta, eta, phi</p></td>
-<td><p>mu, chi, nu</p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_chi_horizontal</span></code></p></td>
-<td><p>chi, delta, eta</p></td>
-<td><p>mu, phi, nu</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_i_horizontal</span></code></p></td>
-<td><p>delta, eta</p></td>
-<td><p>mu, chi, phi, nu</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_beta_out_horizontal</span></code></p></td>
-<td><p>delta, eta</p></td>
-<td><p>mu, chi, phi, nu</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alpha_eq_beta_horizontal</span></code></p></td>
-<td><p>delta, eta</p></td>
-<td><p>mu, chi, phi, nu</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi_horizontal</span></code></p></td>
-<td><p>delta, eta</p></td>
-<td><p>mu, chi, phi, nu</p></td>
-<td><p>azimuthal_reference, psi</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_omega_horizontal</span></code></p></td>
-<td><p>delta, eta</p></td>
-<td><p>mu, chi, phi, nu</p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_horizontal</span></code></p></td>
-<td><p>delta, eta</p></td>
-<td><p>mu, chi, phi, nu</p></td>
-<td><p>h2, k2, l2</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">zone_vertical</span></code></p></td>
-<td><p>mu, nu</p></td>
-<td><p>eta, chi, phi, delta</p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">zone_horizontal</span></code></p></td>
-<td><p>delta, eta</p></td>
-<td><p>mu, chi, phi, nu</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_phi</span></code></p></td>
-<td><p>chi, eta, mu</p></td>
-<td><p>phi, nu, delta</p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_mu</span></code></p></td>
-<td><p>chi, eta, phi</p></td>
-<td><p>mu, nu, delta</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">lifting_detector_eta</span></code></p></td>
-<td><p>chi, mu, phi</p></td>
-<td><p>eta, nu, delta</p></td>
-<td></td>
-</tr>
-</tbody>
-</table>
-</div>
 </section>
 <section id="sixc">
 <span id="geometry-sixc"></span><h3>sixc<a class="headerlink" href="#sixc" title="Link to this heading">#</a></h3>
 <p>Lohmeier &amp; Vlieg (1993) six-circle surface diffractometer.</p>
 <p>See <a class="reference external" href="https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/sixc.html">ad_hoc_diffractometer sixc</a>.</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id11">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">sixc</span></code> geometry</span><a class="headerlink" href="#id11" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id10">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">sixc</span></code> geometry</span><a class="headerlink" href="#id10" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -837,62 +698,13 @@ recipes.</p>
 </tbody>
 </table>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id12">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">sixc</span></code> operating modes</span><a class="headerlink" href="#id12" title="Link to this table">#</a></caption>
-<colgroup>
-<col style="width: 25.0%" />
-<col style="width: 20.0%" />
-<col style="width: 25.0%" />
-<col style="width: 30.0%" />
-</colgroup>
-<thead>
-<tr class="row-odd"><th class="head"><p>Mode name</p></th>
-<th class="head"><p>Constant stages</p></th>
-<th class="head"><p>writable(s)</p></th>
-<th class="head"><p>extra(s)</p></th>
-</tr>
-</thead>
-<tbody>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">bisecting_4c</span></code></p></td>
-<td><p>alpha, gamma, omega</p></td>
-<td><p>chi, phi, delta</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_gamma_5c</span></code></p></td>
-<td><p>alpha, gamma, omega</p></td>
-<td><p>chi, phi, delta</p></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_5c</span></code></p></td>
-<td><p>alpha, gamma, omega</p></td>
-<td><p>chi, phi, delta</p></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_alpha_zaxis</span></code></p></td>
-<td><p>alpha, chi</p></td>
-<td><p>omega, phi, delta, gamma</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_beta_zaxis</span></code></p></td>
-<td><p>chi, gamma</p></td>
-<td><p>alpha, omega, phi, delta</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">alpha_eq_beta_zaxis</span></code></p></td>
-<td><p>chi, phi</p></td>
-<td><p>alpha, omega, delta, gamma</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
-</tr>
-</tbody>
-</table>
-</div>
 </section>
 <section id="fivec">
 <span id="geometry-fivec"></span><h3>fivec<a class="headerlink" href="#fivec" title="Link to this heading">#</a></h3>
 <p>Five-circle geometry (four-circle with additional mu tilt).</p>
 <p>See <a class="reference external" href="https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/fivec.html">ad_hoc_diffractometer fivec</a>.</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id13">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">fivec</span></code> geometry</span><a class="headerlink" href="#id13" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id11">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">fivec</span></code> geometry</span><a class="headerlink" href="#id11" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -918,8 +730,8 @@ recipes.</p>
 </tbody>
 </table>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id14">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">fivec</span></code> operating modes</span><a class="headerlink" href="#id14" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id12">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">fivec</span></code> operating modes</span><a class="headerlink" href="#id12" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 20.0%" />
@@ -967,8 +779,8 @@ recipes.</p>
 <span id="geometry-kappa4cv"></span><h3>kappa4cv<a class="headerlink" href="#kappa4cv" title="Link to this heading">#</a></h3>
 <p>Kappa four-circle vertical-scattering geometry.</p>
 <p>See <a class="reference external" href="https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/kappa4cv.html">ad_hoc_diffractometer kappa4cv</a>.</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id15">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa4cv</span></code> geometry</span><a class="headerlink" href="#id15" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id13">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa4cv</span></code> geometry</span><a class="headerlink" href="#id13" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -994,8 +806,8 @@ recipes.</p>
 </tbody>
 </table>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id16">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa4cv</span></code> operating modes</span><a class="headerlink" href="#id16" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id14">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa4cv</span></code> operating modes</span><a class="headerlink" href="#id14" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 20.0%" />
@@ -1038,7 +850,7 @@ recipes.</p>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
-<td><p>azimuthal_reference, psi</p></td>
+<td><p>azimuth, psi</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction</span></code></p></td>
 <td><p><em>(none)</em></p></td>
@@ -1053,8 +865,8 @@ recipes.</p>
 <span id="geometry-kappa4ch"></span><h3>kappa4ch<a class="headerlink" href="#kappa4ch" title="Link to this heading">#</a></h3>
 <p>Kappa four-circle horizontal-scattering geometry.</p>
 <p>See <a class="reference external" href="https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/kappa4ch.html">ad_hoc_diffractometer kappa4ch</a>.</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id17">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa4ch</span></code> geometry</span><a class="headerlink" href="#id17" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id15">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa4ch</span></code> geometry</span><a class="headerlink" href="#id15" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -1080,8 +892,8 @@ recipes.</p>
 </tbody>
 </table>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id18">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa4ch</span></code> operating modes</span><a class="headerlink" href="#id18" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id16">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa4ch</span></code> operating modes</span><a class="headerlink" href="#id16" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 20.0%" />
@@ -1124,7 +936,7 @@ recipes.</p>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>komega, kappa, kphi, ttheta</p></td>
-<td><p>azimuthal_reference, psi</p></td>
+<td><p>azimuth, psi</p></td>
 </tr>
 </tbody>
 </table>
@@ -1135,8 +947,8 @@ recipes.</p>
 <p>Kappa six-circle geometry (psic-style outer axes, transverse detector,
 synchrotron).</p>
 <p>See <a class="reference external" href="https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/kappa6c.html">ad_hoc_diffractometer kappa6c</a>.</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id19">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa6c</span></code> geometry</span><a class="headerlink" href="#id19" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id17">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa6c</span></code> geometry</span><a class="headerlink" href="#id17" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -1162,8 +974,8 @@ synchrotron).</p>
 </tbody>
 </table>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id20">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa6c</span></code> operating modes</span><a class="headerlink" href="#id20" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id18">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">kappa6c</span></code> operating modes</span><a class="headerlink" href="#id18" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 20.0%" />
@@ -1221,12 +1033,12 @@ synchrotron).</p>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi_vertical</span></code></p></td>
 <td><p>mu, omega (virtual)</p></td>
 <td><p>komega, kappa, kphi, nu, delta</p></td>
-<td><p>azimuthal_reference, psi</p></td>
+<td><p>azimuth, psi</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">fixed_psi_horizontal</span></code></p></td>
 <td><p>komega, mu</p></td>
 <td><p>kappa, kphi, nu, delta</p></td>
-<td><p>azimuthal_reference, psi</p></td>
+<td><p>azimuth, psi</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">double_diffraction_vertical</span></code></p></td>
 <td><p>mu, nu</p></td>
@@ -1257,8 +1069,8 @@ synchrotron).</p>
 <p>Z-axis four-circle surface diffraction geometry
 (Bloch 1985).</p>
 <p>See <a class="reference external" href="https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/zaxis.html">ad_hoc_diffractometer zaxis</a>.</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id21">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">zaxis</span></code> geometry</span><a class="headerlink" href="#id21" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id19">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">zaxis</span></code> geometry</span><a class="headerlink" href="#id19" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -1284,8 +1096,8 @@ synchrotron).</p>
 </tbody>
 </table>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id22">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">zaxis</span></code> operating modes</span><a class="headerlink" href="#id22" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id20">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">zaxis</span></code> operating modes</span><a class="headerlink" href="#id20" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 20.0%" />
@@ -1303,12 +1115,12 @@ synchrotron).</p>
 <tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">zaxis</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>alpha, Z, delta, gamma</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
+<td><p>surface_normal, incidence, emergence</p></td>
 </tr>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reflectivity</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>alpha, Z, delta, gamma</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
+<td><p>surface_normal, incidence, emergence</p></td>
 </tr>
 </tbody>
 </table>
@@ -1319,8 +1131,8 @@ synchrotron).</p>
 <p>Two-sample / two-detector surface diffraction geometry
 (Evans-Lutterodt &amp; Tang 1995).</p>
 <p>See <a class="reference external" href="https://bcda-aps.github.io/ad_hoc_diffractometer/latest/geometries/s2d2.html">ad_hoc_diffractometer s2d2</a>.</p>
-<div class="pst-scrollable-table-container"><table class="table" id="id23">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">s2d2</span></code> geometry</span><a class="headerlink" href="#id23" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id21">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">s2d2</span></code> geometry</span><a class="headerlink" href="#id21" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />
@@ -1346,8 +1158,8 @@ synchrotron).</p>
 </tbody>
 </table>
 </div>
-<div class="pst-scrollable-table-container"><table class="table" id="id24">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">s2d2</span></code> operating modes</span><a class="headerlink" href="#id24" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id22">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">s2d2</span></code> operating modes</span><a class="headerlink" href="#id22" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 25.0%" />
 <col style="width: 20.0%" />
@@ -1370,7 +1182,7 @@ synchrotron).</p>
 <tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">reflectivity</span></code></p></td>
 <td><p><em>(none)</em></p></td>
 <td><p>mu, Z, nu, delta</p></td>
-<td><p>surface_normal, alpha_i, beta_out</p></td>
+<td><p>surface_normal, incidence, emergence</p></td>
 </tr>
 </tbody>
 </table>
@@ -1398,7 +1210,7 @@ without changes to the solver code.</p>
 </section>
 </section>
 <section id="diffcalc-solver">
-<span id="geometry-diffcalc-4s-2d"></span><h2><a class="toc-backref" href="#id27" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver</a><a class="headerlink" href="#diffcalc-solver" title="Link to this heading">#</a></h2>
+<span id="geometry-diffcalc-4s-2d"></span><h2><a class="toc-backref" href="#id25" role="doc-backlink"><code class="docutils literal notranslate"><span class="pre">diffcalc</span></code> solver</a><a class="headerlink" href="#diffcalc-solver" title="Link to this heading">#</a></h2>
 <p><a class="reference internal" href="api/hklpy2_solvers/diffcalc_solver/index.html#hklpy2_solvers.diffcalc_solver.DiffcalcSolver" title="hklpy2_solvers.diffcalc_solver.DiffcalcSolver"><code class="xref py py-class docutils literal notranslate"><span class="pre">DiffcalcSolver</span></code></a></p>
 <p>Wraps <a class="reference external" href="https://github.com/DiamondLightSource/diffcalc-core">diffcalc-core</a>
 (You 1999).
@@ -1409,8 +1221,8 @@ for full details of the underlying library.</p>
 <ol class="upperalpha simple" start="8">
 <li><p>You, <em>J. Appl. Cryst.</em> <strong>32</strong>, 614 (1999) six-circle geometry.</p></li>
 </ol>
-<div class="pst-scrollable-table-container"><table class="table" id="id25">
-<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">diffcalc_4S_2D</span></code> geometry</span><a class="headerlink" href="#id25" title="Link to this table">#</a></caption>
+<div class="pst-scrollable-table-container"><table class="table" id="id23">
+<caption><span class="caption-text"><code class="docutils literal notranslate"><span class="pre">diffcalc_4S_2D</span></code> geometry</span><a class="headerlink" href="#id23" title="Link to this table">#</a></caption>
 <colgroup>
 <col style="width: 20.0%" />
 <col style="width: 80.0%" />

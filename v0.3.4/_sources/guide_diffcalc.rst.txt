@@ -1,0 +1,293 @@
+.. _guide_diffcalc:
+
+==========================================
+How to use the ``diffcalc`` solver
+==========================================
+
+This guide shows how to create a diffractometer with the ``diffcalc``
+solver, orient a crystalline sample, and compute reciprocal-space
+positions.  It assumes you have already :ref:`installed <install>` the
+package.
+
+The ``diffcalc`` solver wraps `diffcalc-core
+<https://github.com/DiamondLightSource/diffcalc-core>`_.  This library provides a single
+six-circle geometry, :ref:`diffcalc_4S_2D <geometry.diffcalc_4S_2D>` (the
+``psic`` geometry described by You 1999),
+with 23 operating modes.
+
+Create a diffractometer
+-----------------------
+
+.. code-block:: python
+
+   import hklpy2
+
+   psic = hklpy2.creator(
+       solver="diffcalc",
+       geometry="diffcalc_4S_2D",
+       name="psic",
+   )
+
+The object ``psic`` has six real axes (``mu``, ``delta``, ``nu``,
+``eta``, ``chi``, ``phi``) and three pseudo axes (``h``, ``k``, ``l``).
+
+Set the crystal lattice
+-----------------------
+
+.. code-block:: python
+
+   psic.add_sample(name="silicon", a=hklpy2.SI_LATTICE_PARAMETER)
+   psic.beam.wavelength.put(1.54)
+
+Add orientation reflections
+---------------------------
+
+Provide two reflections measured at known motor positions:
+
+.. code-block:: python
+
+   r1 = psic.add_reflection(
+       pseudos={"h": 4, "k": 0, "l": 0},
+       reals={"mu": 0, "delta": 69.0966, "nu": 0, "eta": 34.5483, "chi": 0, "phi": 0},
+       wavelength=1.54,
+       name="r1",
+   )
+   r2 = psic.add_reflection(
+       pseudos={"h": 0, "k": 4, "l": 0},
+       reals={"mu": 0, "delta": 69.0966, "nu": 0, "eta": 34.5483, "chi": 0, "phi": 90},
+       wavelength=1.54,
+       name="r2",
+   )
+
+Calculate the UB matrix
+-----------------------
+
+.. code-block:: python
+
+   psic.core.calc_UB(r1, r2)
+
+Choose an operating mode
+------------------------
+
+The default mode is ``bisect fixed_mu fixed_nu`` (canonical
+``bisecting_vertical``: ``mu=0``, ``nu=0``; ``delta`` and ``eta`` acting as
+ttheta and ttheta/2, respectively).  To choose a different mode:
+
+.. code-block:: python
+
+   psic.core.mode = "fixed_mu fixed_chi fixed_phi"
+
+See :ref:`geometry.diffcalc_4S_2D` for the full list of 23 modes.
+
+Mode names are order-independent
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The mode name is the set of three diffcalc constraints that
+define the mode; the order in which those constraints are written
+does not matter.  These assignments all select the same mode:
+
+.. code-block:: python
+
+   psic.core.mode = "bisect fixed_mu fixed_nu"     # canonical form
+   psic.core.mode = "fixed_mu bisect fixed_nu"     # equivalent
+   psic.core.mode = "fixed_nu fixed_mu bisect"     # equivalent
+
+After assignment, reading ``psic.core.mode`` always returns the
+canonical (registered) form — in the example above,
+``"bisect fixed_mu fixed_nu"``.  The same equivalence applies to
+:meth:`~hklpy2_solvers.diffcalc_solver.DiffcalcSolver.register_mode`
+and :meth:`~hklpy2_solvers.diffcalc_solver.DiffcalcSolver.unregister_mode`:
+re-registering a permutation of an existing mode name is rejected
+as a duplicate, and unregistering a permutation of a registered
+user mode removes the original.  See :issue:`109`.
+
+Cross-reference to common conventions
+-------------------------------------
+
+Mode names use diffcalc's constraint vocabulary directly
+(``fixed_<axis>``, ``bisect``, ``a_eq_b``, …) rather than the
+``bisecting_vertical`` / ``lifting_detector_<axis>`` /
+``double_diffraction`` vocabulary used by ``hkl_soleil`` and
+``ad_hoc`` solvers.  The table below maps the most common
+conventions onto the equivalent diffcalc mode:
+
+.. list-table::
+   :header-rows: 1
+   :widths: 35 35 30
+
+   * - Common-convention name
+     - Equivalent diffcalc mode
+     - Notes
+   * - ``bisecting_vertical``
+     - ``bisect fixed_mu fixed_nu``
+     - Vertical bisector: ``mu=0``, ``nu=0``.  ``delta`` swings the
+       detector vertically; ``eta`` is the bisecting sample axis.
+       Default.
+   * - ``bisecting_horizontal``
+     - ``bisect fixed_eta fixed_delta``
+     - Horizontal bisector: ``eta=0``, ``delta=0``.  ``nu`` swings
+       the detector horizontally; ``mu`` is the bisecting sample axis.
+   * - ``lifting_detector_mu``
+     - ``fixed_eta fixed_chi fixed_phi``
+     - All three sample-stage axes other than ``mu`` are pinned;
+       ``mu``, ``delta``, ``nu`` move.
+   * - ``lifting_detector_eta``
+     - ``fixed_mu fixed_chi fixed_phi``
+     - Equivalent of E6C ``lifting_detector_omega`` (diffcalc's
+       ``eta`` is the same physical axis as ``hkl_soleil``'s
+       ``omega``).
+   * - ``lifting_detector_phi``
+     - ``fixed_mu fixed_eta fixed_chi``
+     - Sample ``phi`` carries the motion together with the detector.
+   * - ``constant_chi`` / ``constant_phi``
+     - 2-sample-fixed modes such as ``fixed_delta fixed_chi fixed_phi``
+     - Pick the ``fixed_*`` mode whose suffix names the two sample
+       axes you want held constant plus the desired pinned detector.
+   * - ``double_diffraction``
+     - n/a in diffcalc-core
+     - diffcalc-core does not implement a double-diffraction
+       constraint; use the ``ad_hoc`` or ``hkl_soleil`` solvers for
+       that engine.
+   * - ``psi_constant``
+     - ``fixed_nu fixed_psi fixed_phi``
+     - Reference-azimuth pinned to a fixed value (here 0).
+
+The diffcalc constraint categories are documented in
+:class:`diffcalc.hkl.constraints.Constraints` (see the
+`diffcalc-core documentation <https://diffcalc-core.readthedocs.io>`_).
+A valid combination is **at most one** detector constraint, **at
+most one** reference constraint, and **one to three** sample
+constraints, totalling three constraints overall.
+
+Register a runtime mode
+-----------------------
+
+The 23 built-in modes do not exhaust the constraint combinations
+that diffcalc-core implements.  Use
+:meth:`~hklpy2_solvers.diffcalc_solver.DiffcalcSolver.register_mode`
+to add a new mode at runtime without forking the package:
+
+.. code-block:: python
+
+   solver = psic.core.solver
+   solver.register_mode(
+       "fixed_delta fixed_eta fixed_chi",
+       {"delta": 0.0, "eta": 0.0, "chi": 0.0},
+   )
+   psic.core.mode = "fixed_delta fixed_eta fixed_chi"
+
+The mode is validated against
+:class:`diffcalc.hkl.constraints.Constraints` before acceptance:
+the name cannot clash with a built-in, the dict must have exactly
+three diffcalc-recognised constraints with no same-category
+conflicts, and the combination must satisfy
+``is_current_mode_implemented()``.  Otherwise
+:class:`~hklpy2.exceptions.SolverError` is raised with a message
+naming the offending input.
+
+Remove a user mode with
+:meth:`~hklpy2_solvers.diffcalc_solver.DiffcalcSolver.unregister_mode`.
+Switch away first if the mode is currently active, so the
+diffractometer's cached mode stays consistent with the solver:
+
+.. code-block:: python
+
+   psic.core.mode = "bisect fixed_mu fixed_nu"
+   solver.unregister_mode("fixed_delta fixed_eta fixed_chi")
+
+Persistence across ``export()`` / ``simulator_from_config()``
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+User-registered modes survive a save/restore cycle when the
+diffractometer is reconstructed via
+:func:`hklpy2.simulator_from_config` (see :issue:`108`).
+``DiffcalcSolver._metadata`` writes a ``user_modes`` entry into
+the ``solver:`` block of the YAML, and
+``simulator_from_config()`` forwards it as a ``solver_kwargs``
+entry that :meth:`DiffcalcSolver.__init__` replays via
+:meth:`~hklpy2_solvers.diffcalc_solver.DiffcalcSolver.register_mode`:
+
+.. code-block:: python
+
+   # The illustration below uses /path/to/mybeamline.yml as a
+   # stand-in for a real on-disk path you choose for your saved
+   # configuration.
+   psic.export("/path/to/mybeamline.yml")
+   ...
+   import hklpy2
+   psic2 = hklpy2.simulator_from_config("/path/to/mybeamline.yml")
+   # user modes are back in psic2.core.solver.modes, and the
+   # active mode (saved at export time) is restored.
+
+.. note::
+
+   :meth:`hklpy2.diffract.DiffractometerBase.restore` does *not*
+   re-create the underlying solver, so calling ``restore()`` on
+   an existing diffractometer cannot replay solver state.
+   :func:`~hklpy2.simulator_from_config` is the supported entry
+   point for full restoration.  ``hklpy2.Core`` also caches the
+   active mode; call ``diffractometer.forward(...)`` (or
+   ``diffractometer.core.update_solver()``) once after setting
+   ``core.mode`` before ``export()`` so the saved ``mode:`` field
+   reflects the current value.
+
+Compute motor positions (forward)
+---------------------------------
+
+.. code-block:: python
+
+   psic.forward(4, 0, 0)
+
+This returns a single chosen motor-position solution for the given
+``(h, k, l)`` (an ``Hklpy2DiffractometerRealPos``).  The underlying
+solver's ``forward()`` may return multiple solutions; the
+diffractometer picks one according to the policy assigned to
+``psic._forward_solution`` (defaults to
+:func:`hklpy2.utils.pick_first_solution`).  The complete list of
+solutions can be returned from ``psic.core.forward((4, 0, 0))``.
+See the upstream hklpy2 guide `How to Choose the Default forward()
+Solution
+<https://blueskyproject.io/hklpy2/guides/how_forward_solution.html>`_
+for details.
+
+.. tip::
+
+   The two call shapes differ: ``psic.forward(4, 0, 0)`` takes
+   ``h``, ``k``, ``l`` as separate positional arguments, while
+   ``psic.core.forward((4, 0, 0))`` takes a **single** sequence
+   (tuple / list / ndarray) or dict (e.g. ``{"h": 4, "k": 0, "l": 0}``).
+
+Compute (h, k, l) from motor positions (inverse)
+-------------------------------------------------
+
+.. code-block:: python
+
+   psic.inverse(psic.real_position)
+
+This returns the ``(h, k, l)`` values computed from the supplied
+motor positions.  ``psic.real_position`` is the current readout of
+all real axes; pass a different set of values to compute ``(h, k, l)``
+at a hypothetical position instead.
+
+Available geometries at a glance
+---------------------------------
+
+.. list-table::
+   :header-rows: 1
+   :widths: 20 40 10 30
+
+   * - Geometry
+     - Real axes
+     - Modes
+     - Default mode
+   * - :ref:`diffcalc_4S_2D <geometry.diffcalc_4S_2D>`
+     - mu, delta, nu, eta, chi, phi
+     - 23
+     - bisect fixed_mu fixed_nu
+
+.. seealso::
+
+   - :ref:`geometry.diffcalc_4S_2D` — full reference for axes and modes
+   - :ref:`howto_benchmark` — measure solver throughput
+   - `hklpy2 user guide <https://blueskyproject.io/hklpy2/>`_ — full
+     hklpy2 documentation

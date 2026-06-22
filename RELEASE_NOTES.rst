@@ -59,6 +59,7 @@ describe future plans.
 
     * Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.1``.  :issue:`114`
     * Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.2``.  :issue:`117`
+    * Upgrade ``ad_hoc_diffractometer`` from PyPI in cross-validation CI.  :issue:`117`
     * Unify copyright automation across hklpy2 family.  :issue:`112`
 
 0.3.3

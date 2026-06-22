@@ -753,11 +753,11 @@ def test_forward_inverse_roundtrip(parms, context):
         pytest.param(
             dict(
                 geometry="psic",
-                mode="fixed_alpha_i_vertical",
-                expected=["n_hat", "alpha_i", "beta_out"],
+                mode="fixed_incidence_vertical",
+                expected=["n_hat", "incidence", "emergence"],
             ),
             does_not_raise(),
-            id="psic fixed_alpha_i_vertical exposes alpha_i+beta_out",
+            id="psic fixed_incidence_vertical exposes incidence+emergence",
         ),
         pytest.param(
             dict(
@@ -780,20 +780,20 @@ def test_forward_inverse_roundtrip(parms, context):
         pytest.param(
             dict(
                 geometry="sixc",
-                mode="alpha_eq_beta_zaxis",
-                expected=["n_hat", "alpha_i", "beta_out"],
+                mode="specular_zaxis",
+                expected=["n_hat", "incidence", "emergence"],
             ),
             does_not_raise(),
-            id="sixc alpha_eq_beta_zaxis exposes alpha_i+beta_out",
+            id="sixc specular_zaxis exposes incidence+emergence",
         ),
         pytest.param(
             dict(
                 geometry="s2d2",
                 mode="reflectivity",
-                expected=["n_hat", "alpha_i", "beta_out"],
+                expected=["n_hat", "incidence", "emergence"],
             ),
             does_not_raise(),
-            id="s2d2 reflectivity exposes alpha_i+beta_out",
+            id="s2d2 reflectivity exposes incidence+emergence",
         ),
     ],
 )
@@ -822,12 +822,12 @@ def test_extra_axis_names(parms, context):
         pytest.param(
             dict(
                 geometry="psic",
-                mode="fixed_alpha_i_vertical",
-                values={"alpha_i": 1.5, "n_hat": [1, 0, 0]},
-                check={"alpha_i": 1.5, "n_hat": (1.0, 0.0, 0.0)},
+                mode="fixed_incidence_vertical",
+                values={"incidence": 1.5, "n_hat": [1, 0, 0]},
+                check={"incidence": 1.5, "n_hat": (1.0, 0.0, 0.0)},
             ),
             does_not_raise(),
-            id="set alpha_i and n_hat on psic fixed_alpha_i_vertical",
+            id="set incidence and n_hat on psic fixed_incidence_vertical",
         ),
         pytest.param(
             dict(
@@ -920,8 +920,8 @@ def test_forward_with_extras(parms, context):
     """Forward calculation honours extras for implemented modes.
 
     .. note::
-        ``ad_hoc_diffractometer`` 0.11.0 marks the surface (``alpha_i``,
-        ``beta_out``, ``alpha_eq_beta``) and ``fixed_psi_*`` modes as
+        ``ad_hoc_diffractometer`` 0.11.0 marks the surface (``incidence``,
+        ``emergence``, ``specular``) and ``fixed_psi_*`` modes as
         not yet implemented.  This test exercises the ``double_diffraction``
         family because it is implemented and uses extras (``h2``, ``k2``,
         ``l2``).  When upstream implements the surface modes, additional
@@ -1790,8 +1790,8 @@ def test_ub_setter_default_lattice(parms, context):
         pytest.param(
             dict(
                 geometry="psic",
-                mode="fixed_alpha_i_vertical",
-                values={"n_hat": 0, "alpha_i": 0, "beta_out": 0},
+                mode="fixed_incidence_vertical",
+                values={"n_hat": 0, "incidence": 0, "emergence": 0},
                 expected_normal=None,
             ),
             does_not_raise(),
@@ -1886,7 +1886,7 @@ def _ref_helper_solver(*, configure: bool = True) -> AdHocSolver:
     """Build a psic AdHocSolver wired for reference-helper tests.
 
     When ``configure`` is False the geometry is left without
-    ``azimuthal_reference`` / ``surface_normal`` so that failure
+    ``azimuth`` / ``surface_normal`` so that failure
     paths in the upstream helpers can be exercised.
     """
     import ad_hoc_diffractometer as ahd
@@ -1896,7 +1896,7 @@ def _ref_helper_solver(*, configure: bool = True) -> AdHocSolver:
     ahd.ub_identity(solver._geom.sample)
     solver.set_reals(REF_HELPER_ANGLES)
     if configure:
-        solver._geom.azimuthal_reference = (0, 0, 1)
+        solver._geom.azimuth = (0, 0, 1)
         solver._geom.surface_normal = (1, 1, 6)
     return solver
 
@@ -1933,12 +1933,12 @@ def _ref_helper_solver(*, configure: bool = True) -> AdHocSolver:
         ),
         pytest.param(
             dict(
-                method="exit_angle",
+                method="emergence_angle",
                 args=(REF_HELPER_ANGLES,),
                 expected=pytest.approx(19.456294998006513, abs=1e-9),
             ),
             does_not_raise(),
-            id="exit_angle with explicit angles dict",
+            id="emergence_angle with explicit angles dict",
         ),
         pytest.param(
             dict(
@@ -1974,7 +1974,7 @@ def _ref_helper_solver(*, configure: bool = True) -> AdHocSolver:
                 expected=None,
             ),
             does_not_raise(),
-            id="natural_psi returns None when reflection parallel to azimuthal reference",
+            id="natural_psi returns None when reflection parallel to azimuth reference",
         ),
         pytest.param(
             dict(
@@ -1999,7 +1999,7 @@ def _ref_helper_solver(*, configure: bool = True) -> AdHocSolver:
 def test_reference_helpers(parms, context):
     """Cover all six reference-helper methods plus their failure paths.
 
-    Verifies that ``AdHocSolver.{psi,incidence,exit,naz}_angle``,
+    Verifies that ``AdHocSolver.{psi,incidence,emergence,naz}_angle``,
     ``omega_pseudo`` and ``natural_psi`` forward to
     :mod:`ad_hoc_diffractometer.reference`, accept the documented
     inputs (dict-of-angles, default ``None``, or ``h, k, l``), and that
@@ -2022,8 +2022,8 @@ def test_reference_helpers(parms, context):
     [
         pytest.param(
             dict(method="psi_angle"),
-            pytest.raises(ValueError, match=re.escape("azimuthal_reference")),
-            id="psi_angle without azimuthal_reference raises upstream ValueError",
+            pytest.raises(ValueError, match=re.escape("azimuth")),
+            id="psi_angle without azimuth raises upstream ValueError",
         ),
         pytest.param(
             dict(method="incidence_angle"),
@@ -2031,9 +2031,9 @@ def test_reference_helpers(parms, context):
             id="incidence_angle without surface_normal raises upstream ValueError",
         ),
         pytest.param(
-            dict(method="exit_angle"),
+            dict(method="emergence_angle"),
             pytest.raises(ValueError, match=re.escape("surface_normal")),
-            id="exit_angle without surface_normal raises upstream ValueError",
+            id="emergence_angle without surface_normal raises upstream ValueError",
         ),
         pytest.param(
             dict(method="naz_angle"),
@@ -2045,7 +2045,7 @@ def test_reference_helpers(parms, context):
 def test_reference_helpers_missing_geometry_config(parms, context):
     """Preconditions documented on each wrapper are enforced by upstream.
 
-    Wrappers do **not** silently default ``azimuthal_reference`` or
+    Wrappers do **not** silently default ``azimuth`` or
     ``surface_normal``; with neither set, the upstream call raises a
     ``ValueError`` mentioning the missing attribute.  This test pins
     that behaviour so users get a useful diagnostic rather than a
@@ -2509,7 +2509,7 @@ def _exercise_psi_scalar_write(geometry: str, mode: str) -> None:
             id="creator bootstrap on psic",
         ),
         pytest.param(
-            dict(exercise=_exercise_direct_n_hat_write, args=("psic", "fixed_alpha_i_vertical")),
+            dict(exercise=_exercise_direct_n_hat_write, args=("psic", "fixed_incidence_vertical")),
             does_not_raise(),
             id="adapter extras setter routes n_hat to surface_normal",
         ),
@@ -2537,7 +2537,7 @@ def test_adapter_does_not_emit_n_hat_placeholder_warning(parms, context):
     :class:`UserWarning` whenever ``ConstraintSet.extras['n_hat']`` is
     overwritten with a real value, because the actual surface-normal
     vector lives on the geometry attribute (``surface_normal`` or
-    ``azimuthal_reference``), not in the per-mode extras dict.
+    ``azimuth``), not in the per-mode extras dict.
 
     The adapter must never trip this warning from its own code: it
     routes ``n_hat`` to ``geometry.surface_normal`` (see

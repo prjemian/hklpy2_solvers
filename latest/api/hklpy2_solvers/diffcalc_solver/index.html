@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../../_static/documentation_options.js?v=1e28cc32"></script>
+    <script src="../../../_static/documentation_options.js?v=843cafae"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/hklpy2_solvers/diffcalc_solver/index';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.5.dev1+g564d0f097';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -459,10 +459,13 @@ provides one geometry (You 1999, 4S+2D six-circle <code class="docutils literal 
 <tr class="row-even"><td><p><a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.GEOMETRY_NAME" title="hklpy2_solvers.diffcalc_solver.GEOMETRY_NAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GEOMETRY_NAME</span></code></a></p></td>
 <td><p>Geometry name exposed to hklpy2.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.PSEUDO_AXES" title="hklpy2_solvers.diffcalc_solver.PSEUDO_AXES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PSEUDO_AXES</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.INSTALL_HINT" title="hklpy2_solvers.diffcalc_solver.INSTALL_HINT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">INSTALL_HINT</span></code></a></p></td>
+<td><p>Actionable message shown when <code class="docutils literal notranslate"><span class="pre">diffcalc-core</span></code> is not installed.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.PSEUDO_AXES" title="hklpy2_solvers.diffcalc_solver.PSEUDO_AXES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PSEUDO_AXES</span></code></a></p></td>
 <td><p>Ordered pseudo axis names.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.REAL_AXES" title="hklpy2_solvers.diffcalc_solver.REAL_AXES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REAL_AXES</span></code></a></p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#hklpy2_solvers.diffcalc_solver.REAL_AXES" title="hklpy2_solvers.diffcalc_solver.REAL_AXES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">REAL_AXES</span></code></a></p></td>
 <td><p>Ordered real axis names (matching diffcalc Position.fields).</p></td>
 </tr>
 </tbody>
@@ -795,6 +798,18 @@ new values.  The mode’s display name is unchanged.</p>
 </dd></dl>
 
 <dl class="py data">
+<dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.INSTALL_HINT">
+<span class="sig-prename descclassname"><span class="pre">hklpy2_solvers.diffcalc_solver.</span></span><span class="sig-name descname"><span class="pre">INSTALL_HINT</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Multiline-String</span></span><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.INSTALL_HINT" title="Link to this definition">#</a></dt>
+<dd><details><summary>Show Value</summary><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;The &#39;diffcalc&#39; solver requires the optional &#39;diffcalc-core&#39; package, which is not installed.  Install it with one of:</span>
+<span class="sd">    pip install hklpy2-solvers[diffcalc]</span>
+<span class="sd">    pip install diffcalc-core</span>
+<span class="sd">    conda install -c paulscherrerinstitute diffcalc-core&quot;&quot;&quot;</span>
+</pre></div>
+</div>
+</details><p>Actionable message shown when <code class="docutils literal notranslate"><span class="pre">diffcalc-core</span></code> is not installed.</p>
+</dd></dl>
+
+<dl class="py data">
 <dt class="sig sig-object py" id="hklpy2_solvers.diffcalc_solver.PSEUDO_AXES">
 <span class="sig-prename descclassname"><span class="pre">hklpy2_solvers.diffcalc_solver.</span></span><span class="sig-name descname"><span class="pre">PSEUDO_AXES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['h',</span> <span class="pre">'k',</span> <span class="pre">'l']</span></span><a class="headerlink" href="#hklpy2_solvers.diffcalc_solver.PSEUDO_AXES" title="Link to this definition">#</a></dt>
 <dd><p>Ordered pseudo axis names.</p>
@@ -887,6 +902,7 @@ new values.  The mode’s display name is unchanged.</p>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.ENERGY_REST_KEV"><code class="docutils literal notranslate"><span class="pre">ENERGY_REST_KEV</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.GEOMETRY_NAME"><code class="docutils literal notranslate"><span class="pre">GEOMETRY_NAME</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.INSTALL_HINT"><code class="docutils literal notranslate"><span class="pre">INSTALL_HINT</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.PSEUDO_AXES"><code class="docutils literal notranslate"><span class="pre">PSEUDO_AXES</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hklpy2_solvers.diffcalc_solver.REAL_AXES"><code class="docutils literal notranslate"><span class="pre">REAL_AXES</span></code></a></li>
 </ul>

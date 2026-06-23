@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../_static/documentation_options.js?v=1e28cc32"></script>
+    <script src="../../_static/documentation_options.js?v=843cafae"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2_solvers/diffcalc_solver';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.4';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.5.dev1+g564d0f097';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -422,17 +422,39 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">importlib.metadata</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span> <span class="k">as</span> <span class="n">_pkg_version</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">diffcalc.hkl.calc</span><span class="w"> </span><span class="kn">import</span> <span class="n">HklCalculation</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">diffcalc.hkl.constraints</span><span class="w"> </span><span class="kn">import</span> <span class="n">Constraints</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">diffcalc.hkl.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Position</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">diffcalc.ub.calc</span><span class="w"> </span><span class="kn">import</span> <span class="n">UBCalculation</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">diffcalc.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffcalcException</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReflectionDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverError</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValueMap</span><span class="p">,</span> <span class="n">Matrix3x3</span><span class="p">,</span> <span class="n">NamedFloatDict</span>
 
+<span class="c1"># ``diffcalc-core`` is an optional dependency (:issue:`119`).  Import it</span>
+<span class="c1"># lazily so that this module can be imported (and the ``diffcalc`` solver</span>
+<span class="c1"># entry point can be advertised by hklpy2) even when the backend is not</span>
+<span class="c1"># installed.  The failure is deferred to :meth:`DiffcalcSolver.__init__`,</span>
+<span class="c1"># which raises a clear, actionable :class:`SolverError`.</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">diffcalc.hkl.calc</span><span class="w"> </span><span class="kn">import</span> <span class="n">HklCalculation</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">diffcalc.hkl.constraints</span><span class="w"> </span><span class="kn">import</span> <span class="n">Constraints</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">diffcalc.hkl.geometry</span><span class="w"> </span><span class="kn">import</span> <span class="n">Position</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">diffcalc.ub.calc</span><span class="w"> </span><span class="kn">import</span> <span class="n">UBCalculation</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">diffcalc.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">DiffcalcException</span>
+
+    <span class="n">_DIFFCALC_IMPORT_ERROR</span><span class="p">:</span> <span class="ne">ImportError</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="k">except</span> <span class="ne">ImportError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>  <span class="c1"># exercised by test_diffcalc_optional via import simulation</span>
+    <span class="n">HklCalculation</span> <span class="o">=</span> <span class="n">Constraints</span> <span class="o">=</span> <span class="n">Position</span> <span class="o">=</span> <span class="n">UBCalculation</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore[assignment]</span>
+    <span class="n">DiffcalcException</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># type: ignore[assignment]</span>
+    <span class="n">_DIFFCALC_IMPORT_ERROR</span> <span class="o">=</span> <span class="n">exc</span>
+
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">INSTALL_HINT</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;The &#39;diffcalc&#39; solver requires the optional &#39;diffcalc-core&#39; package, &quot;</span>
+    <span class="s2">&quot;which is not installed.  Install it with one of:</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="s2">&quot;    pip install hklpy2-solvers[diffcalc]</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="s2">&quot;    pip install diffcalc-core</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="s2">&quot;    conda install -c paulscherrerinstitute diffcalc-core&quot;</span>
+<span class="p">)</span>
+<span class="sd">&quot;&quot;&quot;Actionable message shown when ``diffcalc-core`` is not installed.&quot;&quot;&quot;</span>
 
 <span class="n">GEOMETRY_NAME</span> <span class="o">=</span> <span class="s2">&quot;diffcalc_4S_2D&quot;</span>
 <span class="sd">&quot;&quot;&quot;Geometry name exposed to hklpy2.&quot;&quot;&quot;</span>
@@ -541,6 +563,8 @@
     <span class="n">version</span> <span class="o">=</span> <span class="n">_BACKEND_VERSION</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">GEOMETRY_NAME</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">_DIFFCALC_IMPORT_ERROR</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span><span class="n">INSTALL_HINT</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="nn">_DIFFCALC_IMPORT_ERROR</span>
         <span class="k">if</span> <span class="n">geometry</span> <span class="o">!=</span> <span class="n">GEOMETRY_NAME</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;DiffcalcSolver supports only the </span><span class="si">{</span><span class="n">GEOMETRY_NAME</span><span class="si">!r}</span><span class="s2"> geometry, received </span><span class="si">{</span><span class="n">geometry</span><span class="si">!r}</span><span class="s2">.&quot;</span>

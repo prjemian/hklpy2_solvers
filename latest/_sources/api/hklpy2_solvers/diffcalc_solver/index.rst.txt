@@ -25,6 +25,7 @@ Attributes
 
    hklpy2_solvers.diffcalc_solver.ENERGY_REST_KEV
    hklpy2_solvers.diffcalc_solver.GEOMETRY_NAME
+   hklpy2_solvers.diffcalc_solver.INSTALL_HINT
    hklpy2_solvers.diffcalc_solver.PSEUDO_AXES
    hklpy2_solvers.diffcalc_solver.REAL_AXES
 
@@ -376,6 +377,28 @@ Module Contents
 
 
    Geometry name exposed to hklpy2.
+
+.. py:data:: INSTALL_HINT
+   :value: Multiline-String
+
+   .. raw:: html
+
+      <details><summary>Show Value</summary>
+
+   .. code-block:: python
+
+      """The 'diffcalc' solver requires the optional 'diffcalc-core' package, which is not installed.  Install it with one of:
+          pip install hklpy2-solvers[diffcalc]
+          pip install diffcalc-core
+          conda install -c paulscherrerinstitute diffcalc-core"""
+
+   .. raw:: html
+
+      </details>
+
+
+
+   Actionable message shown when ``diffcalc-core`` is not installed.
 
 .. py:data:: PSEUDO_AXES
    :value: ['h', 'k', 'l']

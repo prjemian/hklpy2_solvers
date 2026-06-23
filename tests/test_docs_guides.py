@@ -110,13 +110,30 @@ def _run_guide(rst_path):
 # ---------------------------------------------------------------------------
 
 
+def _diffcalc_backend_available():
+    """True when the optional ``diffcalc-core`` backend imports (:issue:`119`)."""
+    from hklpy2_solvers import diffcalc_solver
+
+    return diffcalc_solver._DIFFCALC_IMPORT_ERROR is None
+
+
 def _discover_guides():
-    """Yield ``pytest.param`` for each how-to guide on disk."""
+    """Yield ``pytest.param`` for each how-to guide on disk.
+
+    The ``guide_diffcalc`` guide executes code that needs the optional
+    ``diffcalc-core`` backend (:issue:`119`); mark it skipped when the
+    backend is not installed so the rest of the guide suite still runs.
+    """
+    marks = []
+    if not _diffcalc_backend_available():
+        marks = [pytest.mark.skip(reason="optional 'diffcalc-core' backend is not installed")]
     for rst_path in sorted(GUIDES_DIR.glob(GUIDE_GLOB)):
+        guide_marks = marks if rst_path.stem == "guide_diffcalc" else []
         yield pytest.param(
             dict(rst_path=rst_path),
             does_not_raise(),
             id=rst_path.stem,
+            marks=guide_marks,
         )
 
 

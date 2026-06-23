@@ -18,17 +18,39 @@ from importlib.metadata import PackageNotFoundError
 from importlib.metadata import version as _pkg_version
 from typing import Any
 
-from diffcalc.hkl.calc import HklCalculation
-from diffcalc.hkl.constraints import Constraints
-from diffcalc.hkl.geometry import Position
-from diffcalc.ub.calc import UBCalculation
-from diffcalc.util import DiffcalcException
 from hklpy2.backends.base import SolverBase
 from hklpy2.backends.typing import ReflectionDict
 from hklpy2.exceptions import SolverError
 from hklpy2.typing import KeyValueMap, Matrix3x3, NamedFloatDict
 
+# ``diffcalc-core`` is an optional dependency (:issue:`119`).  Import it
+# lazily so that this module can be imported (and the ``diffcalc`` solver
+# entry point can be advertised by hklpy2) even when the backend is not
+# installed.  The failure is deferred to :meth:`DiffcalcSolver.__init__`,
+# which raises a clear, actionable :class:`SolverError`.
+try:
+    from diffcalc.hkl.calc import HklCalculation
+    from diffcalc.hkl.constraints import Constraints
+    from diffcalc.hkl.geometry import Position
+    from diffcalc.ub.calc import UBCalculation
+    from diffcalc.util import DiffcalcException
+
+    _DIFFCALC_IMPORT_ERROR: ImportError | None = None
+except ImportError as exc:  # exercised by test_diffcalc_optional via import simulation
+    HklCalculation = Constraints = Position = UBCalculation = None  # type: ignore[assignment]
+    DiffcalcException = None  # type: ignore[assignment]
+    _DIFFCALC_IMPORT_ERROR = exc
+
 logger = logging.getLogger(__name__)
+
+INSTALL_HINT = (
+    "The 'diffcalc' solver requires the optional 'diffcalc-core' package, "
+    "which is not installed.  Install it with one of:\n"
+    "    pip install hklpy2-solvers[diffcalc]\n"
+    "    pip install diffcalc-core\n"
+    "    conda install -c paulscherrerinstitute diffcalc-core"
+)
+"""Actionable message shown when ``diffcalc-core`` is not installed."""
 
 GEOMETRY_NAME = "diffcalc_4S_2D"
 """Geometry name exposed to hklpy2."""
@@ -135,6 +157,8 @@ class DiffcalcSolver(SolverBase):
     version = _BACKEND_VERSION
 
     def __init__(self, geometry: str = GEOMETRY_NAME, **kwargs: Any) -> None:
+        if _DIFFCALC_IMPORT_ERROR is not None:
+            raise SolverError(INSTALL_HINT) from _DIFFCALC_IMPORT_ERROR
         if geometry != GEOMETRY_NAME:
             raise SolverError(
                 f"DiffcalcSolver supports only the {GEOMETRY_NAME!r} geometry, received {geometry!r}."

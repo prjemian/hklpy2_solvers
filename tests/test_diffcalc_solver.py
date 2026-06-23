@@ -9,7 +9,18 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 from hklpy2.exceptions import SolverError
 
+from hklpy2_solvers import diffcalc_solver
 from hklpy2_solvers.diffcalc_solver import _MODES, GEOMETRY_NAME, PSEUDO_AXES, REAL_AXES, DiffcalcSolver
+
+# The ``diffcalc`` solver depends on the optional ``diffcalc-core``
+# backend (:issue:`119`).  When that backend is not installed, the
+# backend-present tests in this module cannot run; skip the whole module.
+# The dedicated absent-backend behaviour is covered separately in
+# ``test_diffcalc_optional.py``.
+pytestmark = pytest.mark.skipif(
+    diffcalc_solver._DIFFCALC_IMPORT_ERROR is not None,
+    reason="optional 'diffcalc-core' backend is not installed",
+)
 
 # ---------------------------------------------------------------------------
 # Helpers

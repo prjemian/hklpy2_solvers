@@ -26,16 +26,16 @@ classifiers = [
 ]
 dependencies = [
   "ad_hoc_diffractometer>=0.11.2",
-  "diffcalc-core",
   "hklpy2>=0.7.1",
   "numpy",
 ]
 
 [project.optional-dependencies]
-all = ["hklpy2-solvers[dev,doc]"]
+all = ["hklpy2-solvers[dev,diffcalc,doc]"]
 dev = [
   "build",
   "coverage",
+  "diffcalc-core",
   "isort",
   "packaging",
   "pre-commit",
@@ -43,6 +43,7 @@ dev = [
   "pytest-cov",
   "ruff",
 ]
+diffcalc = ["diffcalc-core"]
 doc = [
   "myst-nb",
   "pydata-sphinx-theme",

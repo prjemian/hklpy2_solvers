@@ -15,6 +15,14 @@ six-circle geometry, :ref:`diffcalc_4S_2D <geometry.diffcalc_4S_2D>` (the
 ``psic`` geometry described by You 1999),
 with 23 operating modes.
 
+.. note::
+
+   ``diffcalc-core`` is an optional backend.  Install it with
+   ``pip install hklpy2-solvers[diffcalc]`` or
+   ``conda install -c paulscherrerinstitute diffcalc-core``.  See
+   :ref:`install` for details.  Requesting the ``diffcalc`` solver
+   without the backend raises an error explaining how to install it.
+
 Create a diffractometer
 -----------------------
 

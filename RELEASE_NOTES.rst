@@ -29,6 +29,11 @@ describe future plans.
 
     Expected release: tba
 
+    New Features
+    ~~~~~~~~~~~~
+
+    * Make ``diffcalc-core`` an optional dependency (group ``diffcalc``).  :issue:`119`
+
 0.3.4
 ######
 

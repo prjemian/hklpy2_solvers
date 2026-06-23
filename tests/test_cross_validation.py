@@ -88,6 +88,10 @@ import numpy as np
 import pytest
 
 pytest.importorskip("tests._hkl_library_probe")
+# The ``diffcalc`` groups below cross-validate against the optional
+# ``diffcalc-core`` backend (:issue:`119`); skip the whole module when
+# it is not installed, mirroring the libhkl probe above.
+pytest.importorskip("diffcalc")
 
 import hklpy2  # noqa: E402  (import after probe so skips fire first)
 from ad_hoc_diffractometer import Lattice as _AdHocLattice  # noqa: E402

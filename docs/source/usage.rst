@@ -31,7 +31,8 @@ Available solvers
    * - ``diffcalc``
      - :ref:`diffcalc_4S_2D <geometry.diffcalc_4S_2D>`
      - You (1999) six-circle geometry via
-       `diffcalc-core <https://github.com/DiamondLightSource/diffcalc-core>`_.
+       `diffcalc-core <https://github.com/DiamondLightSource/diffcalc-core>`_
+       (optional backend; see :ref:`install`).
        23 operating modes.
    * - ``ad_hoc``
      - :ref:`fourcv <geometry.fourcv>`, :ref:`fourch <geometry.fourch>`,

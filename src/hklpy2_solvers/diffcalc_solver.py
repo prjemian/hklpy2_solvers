@@ -21,7 +21,9 @@ from typing import Any
 from hklpy2.backends.base import SolverBase
 from hklpy2.backends.typing import ReflectionDict
 from hklpy2.exceptions import SolverError
-from hklpy2.typing import KeyValueMap, Matrix3x3, NamedFloatDict
+from hklpy2.typing import KeyValueMap
+from hklpy2.typing import Matrix3x3
+from hklpy2.typing import NamedFloatDict
 
 # ``diffcalc-core`` is an optional dependency (:issue:`119`).  Import it
 # lazily so that this module can be imported (and the ``diffcalc`` solver

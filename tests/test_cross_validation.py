@@ -95,7 +95,8 @@ pytest.importorskip("diffcalc")
 
 import hklpy2  # noqa: E402  (import after probe so skips fire first)
 from ad_hoc_diffractometer import Lattice as _AdHocLattice  # noqa: E402
-from hklpy2.exceptions import NoForwardSolutions, SolverError  # noqa: E402
+from hklpy2.exceptions import NoForwardSolutions  # noqa: E402
+from hklpy2.exceptions import SolverError  # noqa: E402
 
 pytestmark = pytest.mark.cross_validation
 

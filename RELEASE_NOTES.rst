@@ -34,6 +34,11 @@ describe future plans.
 
     * Make ``diffcalc-core`` an optional dependency (group ``diffcalc``).  :issue:`119`
 
+    Maintenance
+    ~~~~~~~~~~~
+
+    * Enforce single-line imports via ruff isort ``force-single-line``.  :issue:`120`
+
 0.3.4
 ######
 

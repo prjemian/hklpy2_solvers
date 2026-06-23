@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../_static/documentation_options.js?v=843cafae"></script>
+    <script src="../../_static/documentation_options.js?v=0a2ac8d3"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2_solvers/ad_hoc_solver';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.5.dev1+g564d0f097';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.5.dev2+g75337cc7d';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -424,12 +424,10 @@
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ahd</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.mode</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
-    <span class="n">OPTIONAL</span><span class="p">,</span>
-    <span class="n">REQUIRED</span><span class="p">,</span>
-    <span class="n">ConstraintViolation</span><span class="p">,</span>
-    <span class="n">EwaldSphereViolation</span><span class="p">,</span>
-<span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.mode</span><span class="w"> </span><span class="kn">import</span> <span class="n">OPTIONAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.mode</span><span class="w"> </span><span class="kn">import</span> <span class="n">REQUIRED</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.mode</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConstraintViolation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.mode</span><span class="w"> </span><span class="kn">import</span> <span class="n">EwaldSphereViolation</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.reference</span><span class="w"> </span><span class="kn">import</span> <span class="n">emergence_angle</span> <span class="k">as</span> <span class="n">_ref_emergence_angle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.reference</span><span class="w"> </span><span class="kn">import</span> <span class="n">incidence_angle</span> <span class="k">as</span> <span class="n">_ref_incidence_angle</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">ad_hoc_diffractometer.reference</span><span class="w"> </span><span class="kn">import</span> <span class="n">natural_psi</span> <span class="k">as</span> <span class="n">_ref_natural_psi</span>
@@ -440,7 +438,9 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverBase</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.backends.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">ReflectionDict</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolverError</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValueMap</span><span class="p">,</span> <span class="n">Matrix3x3</span><span class="p">,</span> <span class="n">NamedFloatDict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValueMap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Matrix3x3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hklpy2.typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">NamedFloatDict</span>
 
 <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
 

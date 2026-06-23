@@ -10,7 +10,9 @@ from contextlib import nullcontext as does_not_raise
 import pytest
 from hklpy2.exceptions import SolverError
 
-from hklpy2_solvers.ad_hoc_solver import DEFAULT_GEOMETRY, PSEUDO_AXES, AdHocSolver
+from hklpy2_solvers.ad_hoc_solver import DEFAULT_GEOMETRY
+from hklpy2_solvers.ad_hoc_solver import PSEUDO_AXES
+from hklpy2_solvers.ad_hoc_solver import AdHocSolver
 
 # ---------------------------------------------------------------------------
 # Constants
@@ -2070,7 +2072,8 @@ def _add_psic_user_mode(solver, name="my_psic_mode"):
     contract.
     """
     import ad_hoc_diffractometer as ahd  # noqa: F401
-    from ad_hoc_diffractometer.mode import ConstraintSet, SampleConstraint
+    from ad_hoc_diffractometer.mode import ConstraintSet
+    from ad_hoc_diffractometer.mode import SampleConstraint
 
     solver._geom.modes[name] = ConstraintSet(
         constraints=[
@@ -2198,7 +2201,8 @@ def test_simulator_from_config_round_trip(parms, context):
     Core's cached mode (a documented upstream caching pattern).
     """
     import hklpy2
-    from ad_hoc_diffractometer.mode import ConstraintSet, SampleConstraint
+    from ad_hoc_diffractometer.mode import ConstraintSet
+    from ad_hoc_diffractometer.mode import SampleConstraint
     from hklpy2.run_utils import simulator_from_config
 
     sim = hklpy2.creator(solver="ad_hoc", geometry=parms["geometry"], name="adhoc_persist")

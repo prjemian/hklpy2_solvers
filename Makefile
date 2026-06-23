@@ -20,14 +20,11 @@ docs ::
 
 doc :: docs
 
-isort:
-	isort --sl ./src
-
 pre:
 	pre-commit run --all-files
 	ruff check .
 
-style :: isort pre
+style :: pre
 
 realclean :: clean
 	/bin/rm -rf ./docs/build

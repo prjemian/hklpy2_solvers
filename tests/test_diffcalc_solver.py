@@ -10,7 +10,11 @@ import pytest
 from hklpy2.exceptions import SolverError
 
 from hklpy2_solvers import diffcalc_solver
-from hklpy2_solvers.diffcalc_solver import _MODES, GEOMETRY_NAME, PSEUDO_AXES, REAL_AXES, DiffcalcSolver
+from hklpy2_solvers.diffcalc_solver import _MODES
+from hklpy2_solvers.diffcalc_solver import GEOMETRY_NAME
+from hklpy2_solvers.diffcalc_solver import PSEUDO_AXES
+from hklpy2_solvers.diffcalc_solver import REAL_AXES
+from hklpy2_solvers.diffcalc_solver import DiffcalcSolver
 
 # The ``diffcalc`` solver depends on the optional ``diffcalc-core``
 # backend (:issue:`119`).  When that backend is not installed, the

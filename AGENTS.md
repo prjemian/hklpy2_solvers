@@ -219,16 +219,15 @@ dynamic expression would hide drift between them.
   - Format & Lint: `pre-commit run --all-files` (preferred; see note below)
   - Test: `pytest ./tests`
 
-### `make style` vs `pre-commit run --all-files`
+### Import style
 
-`make style` runs `isort --sl` before `pre-commit`.  `isort --sl` (single-line
-mode) and ruff's built-in isort (`I` rule) disagree on whether to split
-multi-symbol imports from the same module onto separate lines.  This causes
-`make style` to report a ruff failure even when the file is already correct.
+Ruff's isort (`I` rule) is the single authority for import sorting, and it is
+configured with `force-single-line = true` under `[tool.ruff.lint.isort]`, so
+each imported symbol appears on its own line.  `make style` and `pre-commit
+run --all-files` both enforce this via ruff; there is no separate standalone
+`isort` invocation.
 
-**Use `pre-commit run --all-files` directly** as the authoritative lint/format
-check.  Ruff's isort is the style enforced by CI; `isort --sl` in the
-`Makefile` is a legacy convenience that conflicts with it.
+**Use `pre-commit run --all-files`** as the authoritative lint/format check.
 
 ### pre-commit on NFS home directories
 

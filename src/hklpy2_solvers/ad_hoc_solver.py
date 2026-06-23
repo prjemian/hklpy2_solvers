@@ -20,12 +20,10 @@ from typing import Any
 
 import ad_hoc_diffractometer as ahd
 import numpy as np
-from ad_hoc_diffractometer.mode import (
-    OPTIONAL,
-    REQUIRED,
-    ConstraintViolation,
-    EwaldSphereViolation,
-)
+from ad_hoc_diffractometer.mode import OPTIONAL
+from ad_hoc_diffractometer.mode import REQUIRED
+from ad_hoc_diffractometer.mode import ConstraintViolation
+from ad_hoc_diffractometer.mode import EwaldSphereViolation
 from ad_hoc_diffractometer.reference import emergence_angle as _ref_emergence_angle
 from ad_hoc_diffractometer.reference import incidence_angle as _ref_incidence_angle
 from ad_hoc_diffractometer.reference import natural_psi as _ref_natural_psi
@@ -36,7 +34,9 @@ from ad_hoc_diffractometer.refinement import refine_lattice_bl1967
 from hklpy2.backends.base import SolverBase
 from hklpy2.backends.typing import ReflectionDict
 from hklpy2.exceptions import SolverError
-from hklpy2.typing import KeyValueMap, Matrix3x3, NamedFloatDict
+from hklpy2.typing import KeyValueMap
+from hklpy2.typing import Matrix3x3
+from hklpy2.typing import NamedFloatDict
 
 logger = logging.getLogger(__name__)
 

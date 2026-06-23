@@ -50,7 +50,8 @@ import subprocess
 import sys
 from pathlib import Path
 
-from packaging.version import InvalidVersion, Version
+from packaging.version import InvalidVersion
+from packaging.version import Version
 
 RELEASE_NOTES = Path(__file__).parent.parent / "RELEASE_NOTES.rst"
 

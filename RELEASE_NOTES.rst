@@ -29,15 +29,20 @@ describe future plans.
 
     Expected release: tba
 
-    New Features
-    ~~~~~~~~~~~~
+0.3.5
+######
 
-    * Make ``diffcalc-core`` an optional dependency (group ``diffcalc``).  :issue:`119`
+Released 2026-06-23.
 
-    Maintenance
-    ~~~~~~~~~~~
+New Features
+~~~~~~~~~~~~
 
-    * Enforce single-line imports via ruff isort ``force-single-line``.  :issue:`120`
+* Make ``diffcalc-core`` an optional dependency (group ``diffcalc``).  :issue:`119`
+
+Maintenance
+~~~~~~~~~~~
+
+* Enforce single-line imports via ruff isort ``force-single-line``.  :issue:`120`
 
 0.3.4
 ######

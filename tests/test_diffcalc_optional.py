@@ -56,11 +56,7 @@ def _load_module_without_diffcalc():
     )
     module = importlib.util.module_from_spec(spec)
 
-    saved = {
-        name: mod
-        for name, mod in sys.modules.items()
-        if name == "diffcalc" or name.startswith("diffcalc.")
-    }
+    saved = {name: mod for name, mod in sys.modules.items() if name == "diffcalc" or name.startswith("diffcalc.")}
     for name in saved:
         del sys.modules[name]
     builtins.__import__ = blocked_import

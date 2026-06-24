@@ -1,0 +1,21 @@
+hklpy2_solvers
+==============
+
+.. py:module:: hklpy2_solvers
+
+.. autoapi-nested-parse::
+
+   Solvers for the hklpy2 package.
+
+
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 1
+
+   /api/hklpy2_solvers/ad_hoc_solver/index
+   /api/hklpy2_solvers/diffcalc_solver/index
+
+

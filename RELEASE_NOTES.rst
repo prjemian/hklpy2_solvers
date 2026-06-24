@@ -29,6 +29,11 @@ describe future plans.
 
     Expected release: tba
 
+    Fixes
+    ~~~~~
+
+    * Fix broken RST indentation in ``psic``/``sixc`` mode tables.  :issue:`123`
+
 0.3.5
 ######
 

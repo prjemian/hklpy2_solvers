@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../_static/documentation_options.js?v=60b7c76f"></script>
+    <script src="../../_static/documentation_options.js?v=ddf4ad24"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2_solvers/ad_hoc_solver';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.6.dev1+g48ec62763';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.6.dev3+gf1446c452';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -773,7 +773,9 @@
             <span class="k">return</span> <span class="n">out</span>
         <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_axis_names</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;n_hat&quot;</span><span class="p">:</span>
-                <span class="n">out</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">surface_normal</span>
+                <span class="c1"># Mirror the setter&#39;s routing (:issue:`123`).</span>
+                <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">required_reference_vector</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
             <span class="k">elif</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_REFERENCE_EXTRA_NAMES</span><span class="p">:</span>
                 <span class="n">rc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mode_obj</span><span class="p">,</span> <span class="s2">&quot;reference_constraint&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">rc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">rc</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
@@ -813,20 +815,22 @@
         <span class="k">if</span> <span class="n">mode_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover - mode setter guarantees object</span>
             <span class="k">return</span>
 
-        <span class="c1"># Surface-normal vector.  ``hklpy2.Core`` defaults vector extras</span>
-        <span class="c1"># to the scalar ``0`` during ``update_solver()`` (see</span>
-        <span class="c1"># :issue:`81`); treat any non-iterable value as &quot;unset&quot; so the</span>
-        <span class="c1"># adapter can be constructed via ``hklpy2.creator`` for modes</span>
-        <span class="c1"># that expose ``n_hat`` (e.g. ``zaxis``).</span>
+        <span class="c1"># ``n_hat`` routes to the attribute the active mode reads, named</span>
+        <span class="c1"># by ``required_reference_vector`` (``surface_normal``, ``azimuth``,</span>
+        <span class="c1"># or ``None``); this flips ``is_implemented()`` for psi modes</span>
+        <span class="c1"># (:issue:`123`).  Non-iterable values (e.g. ``hklpy2.Core``&#39;s</span>
+        <span class="c1"># scalar-``0`` default, :issue:`81`) mean &quot;unset&quot;.</span>
         <span class="k">if</span> <span class="s2">&quot;n_hat&quot;</span> <span class="ow">in</span> <span class="n">values</span><span class="p">:</span>
-            <span class="n">v</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;n_hat&quot;</span><span class="p">]</span>
-            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">surface_normal</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">surface_normal</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">)</span>
-                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">surface_normal</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">required_reference_vector</span>
+            <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no branch - n_hat implies a target</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s2">&quot;n_hat&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">v</span><span class="p">))</span>
+                    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
 
         <span class="c1"># Reference-constraint scalar (psi / incidence / emergence).</span>
         <span class="c1"># ``ConstraintSet.with_constraint_values`` (upstream</span>

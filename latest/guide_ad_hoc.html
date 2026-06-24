@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="_static/documentation_options.js?v=60b7c76f"></script>
+    <script src="_static/documentation_options.js?v=ddf4ad24"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,7 +52,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = 'guide_ad_hoc';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.6.dev1+g48ec62763';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.6.dev3+gf1446c452';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -683,8 +683,10 @@ directly:</p>
 </div>
 <section id="two-ways-to-set-the-vector">
 <h3>Two ways to set the vector<a class="headerlink" href="#two-ways-to-set-the-vector" title="Link to this heading">#</a></h3>
-<p><strong>Through the</strong> <code class="docutils literal notranslate"><span class="pre">extras</span></code> <strong>dict</strong> — works only for <code class="docutils literal notranslate"><span class="pre">n_hat</span></code> and
-only for modes that consume <code class="docutils literal notranslate"><span class="pre">surface_normal</span></code>:</p>
+<p><strong>Through the</strong> <code class="docutils literal notranslate"><span class="pre">extras</span></code> <strong>dict</strong> — the <code class="docutils literal notranslate"><span class="pre">n_hat</span></code> extra routes to
+whichever attribute the active mode requires
+(<code class="docutils literal notranslate"><span class="pre">surface_normal</span></code> for surface modes, <code class="docutils literal notranslate"><span class="pre">azimuth</span></code> for psi / naz
+modes), so it works for every reference-constraint mode:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">psic2</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">extras</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;n_hat&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)}</span>
 </pre></div>
 </div>

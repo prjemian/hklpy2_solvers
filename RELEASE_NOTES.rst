@@ -29,16 +29,21 @@ describe future plans.
 
     Expected release: tba
 
-    Fixes
-    ~~~~~
+0.3.6
+######
 
-    * Fix broken RST indentation in ``psic``/``sixc`` mode tables.  :issue:`123`
-    * Route ``n_hat`` extra to the mode's required reference vector.  :issue:`123`
+Released 2026-06-24.
 
-    Maintenance
-    ~~~~~~~~~~~
+Fixes
+~~~~~
 
-    * Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.3``.  :issue:`123`
+* Fix broken RST indentation in ``psic``/``sixc`` mode tables.  :issue:`123`
+* Route ``n_hat`` extra to the mode's required reference vector.  :issue:`123`
+
+Maintenance
+~~~~~~~~~~~
+
+* Bump ``ad_hoc_diffractometer`` floor to ``>=0.11.3``.  :issue:`123`
 
 0.3.5
 ######

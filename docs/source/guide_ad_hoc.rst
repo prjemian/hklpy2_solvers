@@ -253,8 +253,10 @@ directly:
 Two ways to set the vector
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Through the** ``extras`` **dict** — works only for ``n_hat`` and
-only for modes that consume ``surface_normal``:
+**Through the** ``extras`` **dict** — the ``n_hat`` extra routes to
+whichever attribute the active mode requires
+(``surface_normal`` for surface modes, ``azimuth`` for psi / naz
+modes), so it works for every reference-constraint mode:
 
 .. code-block:: python
 

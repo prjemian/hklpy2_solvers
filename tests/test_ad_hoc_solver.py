@@ -1503,6 +1503,106 @@ def test_psic_forward_inverse(parms, context):
     [
         pytest.param(
             dict(
+                mode="fixed_psi_vertical",
+                n_hat=(0, 0, 1),
+                # ``psi`` is fixed by UB + (h, k, l); target the natural
+                # value so the validation filter admits the solutions.
+                psi="natural",
+                hkl={"h": 1, "k": 0, "l": 0},
+                min_solutions=1,
+            ),
+            does_not_raise(),
+            id="psic fixed_psi_vertical with natural psi yields solutions",
+        ),
+        pytest.param(
+            dict(
+                mode="fixed_psi_vertical",
+                n_hat=(0, 0, 1),
+                # Wrong psi target: filtered out, empty solution set.
+                psi=0.0,
+                hkl={"h": 1, "k": 0, "l": 0},
+                min_solutions=0,
+            ),
+            does_not_raise(),
+            id="psic fixed_psi_vertical with wrong psi yields no solutions",
+        ),
+        pytest.param(
+            dict(
+                mode="fixed_incidence_vertical",
+                n_hat=(0, 0, 1),
+                incidence=0.0,
+                hkl={"h": 1, "k": 0, "l": 0},
+                min_solutions=1,
+                # Surface modes return many constraint-satisfying
+                # branches; do not pin the inverse to the input hkl.
+                roundtrip=False,
+            ),
+            does_not_raise(),
+            id="psic fixed_incidence_vertical yields solutions",
+        ),
+        pytest.param(
+            dict(
+                # No reference vector set: the upstream solver is not
+                # implemented for the mode, surfaced as SolverError.
+                mode="fixed_psi_vertical",
+                n_hat=None,
+                hkl={"h": 1, "k": 0, "l": 0},
+                min_solutions=0,
+            ),
+            pytest.raises(
+                SolverError,
+                match=re.escape("forward(): mode 'fixed_psi_vertical' is not yet implemented"),
+            ),
+            id="psic fixed_psi_vertical without reference vector raises",
+        ),
+    ],
+)
+def test_psic_reference_constraint_modes_forward(parms, context):
+    """Reference-constraint modes solve once their reference vector is set.
+
+    Regression for :issue:`123` (upstream BCDA-APS#304): with
+    ``ad_hoc_diffractometer >= 0.11.3`` the ``ReferenceConstraint``
+    solvers are implemented, and the adapter routes ``n_hat`` to the
+    mode's required reference-vector attribute
+    (``azimuth`` for psi modes, ``surface_normal`` for surface modes),
+    flipping ``mode.is_implemented()`` to ``True`` so ``forward()``
+    returns real solutions.  When no reference vector is set the
+    upstream solver remains unimplemented and the adapter surfaces a
+    :class:`~hklpy2.exceptions.SolverError`.
+    """
+    with context:
+        solver = _make_solver_with_ub(geometry="psic", mode=parms["mode"])
+        if parms["n_hat"] is not None:
+            solver.extras = {"n_hat": parms["n_hat"]}
+        psi = parms.get("psi")
+        if psi == "natural":
+            psi = solver.natural_psi(**parms["hkl"])
+        if psi is not None:
+            solver.extras = {"psi": psi}
+        if "incidence" in parms:
+            solver.extras = {"incidence": parms["incidence"]}
+        # The mode must be reachable (reference vector routed) whenever a
+        # reference vector was supplied.
+        if parms["n_hat"] is not None:
+            assert solver._geom.mode.is_implemented(solver._geom)
+        with warnings.catch_warnings():
+            # A wrong psi target legitimately warns and returns []; that
+            # path is exercised by the ``min_solutions == 0`` case.
+            warnings.simplefilter("ignore", UserWarning)
+            solutions = solver.forward(parms["hkl"])
+        assert len(solutions) >= parms["min_solutions"]
+        if parms["min_solutions"] >= 1 and parms.get("roundtrip", True):
+            hkl = solver.inverse(solutions[0])
+            assert abs(hkl["h"] - parms["hkl"]["h"]) < 0.01
+            assert abs(hkl["k"] - parms["hkl"]["k"]) < 0.01
+            assert abs(hkl["l"] - parms["hkl"]["l"]) < 0.01
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
                 reflections=[],
             ),
             does_not_raise(),
@@ -1784,7 +1884,7 @@ def test_ub_setter_default_lattice(parms, context):
                 geometry="fourcv",
                 mode="fixed_psi",
                 values={"n_hat": 0},
-                expected_normal=None,
+                expected_vector=None,
             ),
             does_not_raise(),
             id="scalar 0 n_hat is normalised to None",
@@ -1794,30 +1894,40 @@ def test_ub_setter_default_lattice(parms, context):
                 geometry="psic",
                 mode="fixed_incidence_vertical",
                 values={"n_hat": 0, "incidence": 0, "emergence": 0},
-                expected_normal=None,
+                expected_vector=None,
             ),
             does_not_raise(),
             id="full scalar-default extras dict (Core push) accepted",
         ),
         pytest.param(
             dict(
+                geometry="psic",
+                mode="fixed_incidence_vertical",
+                values={"n_hat": (1, 0, 0)},
+                expected_vector=(1.0, 0.0, 0.0),
+            ),
+            does_not_raise(),
+            id="3-iterable n_hat routes to surface_normal (surface mode)",
+        ),
+        pytest.param(
+            dict(
                 geometry="fourcv",
                 mode="fixed_psi",
                 values={"n_hat": (1, 0, 0)},
-                expected_normal=(1.0, 0.0, 0.0),
+                expected_vector=(1.0, 0.0, 0.0),
             ),
             does_not_raise(),
-            id="3-iterable n_hat still works after fix",
+            id="3-iterable n_hat routes to azimuth (psi mode)",
         ),
         pytest.param(
             dict(
                 geometry="fourcv",
                 mode="fixed_psi",
                 values={"n_hat": None},
-                expected_normal=None,
+                expected_vector=None,
             ),
             does_not_raise(),
-            id="None n_hat still clears surface_normal after fix",
+            id="None n_hat clears the reference vector",
         ),
     ],
 )
@@ -1831,12 +1941,19 @@ def test_extras_n_hat_scalar_default(parms, context):
     non-iterable input, breaking ``hklpy2.creator(solver='ad_hoc',
     geometry='zaxis')``.  The fix normalises any non-iterable
     ``n_hat`` value to ``None`` (treated as "no surface normal set").
+
+    Extended for :issue:`123`: ``n_hat`` routes to whichever
+    reference-vector attribute the active mode requires
+    (``surface_normal`` for surface modes, ``azimuth`` for psi modes),
+    so the assertion reads back through
+    ``required_reference_vector``.
     """
     with context:
         solver = AdHocSolver(parms["geometry"])
         solver.mode = parms["mode"]
         solver.extras = parms["values"]
-        assert solver._geom.surface_normal == parms["expected_normal"]
+        target = solver._geom.required_reference_vector
+        assert getattr(solver._geom, target) == parms["expected_vector"]
 
 
 @pytest.mark.parametrize(

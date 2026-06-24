@@ -361,7 +361,9 @@ class AdHocSolver(SolverBase):
             return out
         for name in self.extra_axis_names:
             if name == "n_hat":
-                out[name] = self._geom.surface_normal
+                # Mirror the setter's routing (:issue:`123`).
+                target = self._geom.required_reference_vector
+                out[name] = None if target is None else getattr(self._geom, target)
             elif name in _REFERENCE_EXTRA_NAMES:
                 rc = getattr(mode_obj, "reference_constraint", None)
                 if rc is not None and rc.name == name:
@@ -401,20 +403,22 @@ class AdHocSolver(SolverBase):
         if mode_obj is None:  # pragma: no cover - mode setter guarantees object
             return
 
-        # Surface-normal vector.  ``hklpy2.Core`` defaults vector extras
-        # to the scalar ``0`` during ``update_solver()`` (see
-        # :issue:`81`); treat any non-iterable value as "unset" so the
-        # adapter can be constructed via ``hklpy2.creator`` for modes
-        # that expose ``n_hat`` (e.g. ``zaxis``).
+        # ``n_hat`` routes to the attribute the active mode reads, named
+        # by ``required_reference_vector`` (``surface_normal``, ``azimuth``,
+        # or ``None``); this flips ``is_implemented()`` for psi modes
+        # (:issue:`123`).  Non-iterable values (e.g. ``hklpy2.Core``'s
+        # scalar-``0`` default, :issue:`81`) mean "unset".
         if "n_hat" in values:
-            v = values["n_hat"]
-            if v is None:
-                self._geom.surface_normal = None
-            else:
-                try:
-                    self._geom.surface_normal = tuple(float(x) for x in v)
-                except TypeError:
-                    self._geom.surface_normal = None
+            target = self._geom.required_reference_vector
+            if target is not None:  # pragma: no branch - n_hat implies a target
+                v = values["n_hat"]
+                if v is None:
+                    setattr(self._geom, target, None)
+                else:
+                    try:
+                        setattr(self._geom, target, tuple(float(x) for x in v))
+                    except TypeError:
+                        setattr(self._geom, target, None)
 
         # Reference-constraint scalar (psi / incidence / emergence).
         # ``ConstraintSet.with_constraint_values`` (upstream

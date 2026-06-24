@@ -37,6 +37,15 @@ followed by any per-call scalar extras (``psi``, ``incidence``,
 ``emergence``).  See :ref:`guide_ad_hoc.reference_vector` for the
 recipes.
 
+.. note::
+
+   Reference-constraint modes (those listing ``psi``, ``incidence``,
+   ``emergence``, or ``surface_normal``/``azimuth``) require
+   ``ad_hoc_diffractometer >= 0.11.3`` and the corresponding reference
+   vector to be set (via the ``n_hat`` extra); otherwise
+   :meth:`~hklpy2_solvers.ad_hoc_solver.AdHocSolver.forward` raises
+   :class:`~hklpy2.exceptions.SolverError`.
+
 .. _geometry.fourcv:
 
 fourcv

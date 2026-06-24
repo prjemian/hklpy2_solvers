@@ -81,16 +81,16 @@ jobs:
 
       - name: Install pip-only dependencies
         # ``diffcalc-core`` is the only runtime dep not on conda-forge.
-        # If a conda-forge feedstock later falls behind the
-        # ``pyproject.toml`` floor, add ``pip install --upgrade`` lines
-        # for the affected packages here.
         #
-        # ``ad-hoc-diffractometer`` is upgraded from PyPI because the
-        # conda-forge feedstock trails the ``pyproject.toml`` floor
-        # (>=0.11.2); remove once conda-forge catches up (:issue:`117`).
+        # ``ad_hoc_diffractometer`` is force-upgraded from PyPI on every
+        # run: conda-forge publishes hours-to-days after PyPI, so the
+        # feedstock routinely trails the ``pyproject.toml`` floor.  This
+        # is a standing policy, not a per-release workaround; ``--upgrade``
+        # always pulls the newest PyPI release (which satisfies the floor),
+        # so no version literal needs bumping here.
         run: |
           pip install diffcalc-core
-          pip install --upgrade "ad_hoc_diffractometer>=0.11.2"
+          pip install --upgrade ad_hoc_diffractometer
 
       - name: Install hklpy2_solvers (editable, no deps)
         # Use --no-deps because all runtime deps are already provided

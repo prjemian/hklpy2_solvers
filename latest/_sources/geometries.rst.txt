@@ -202,25 +202,25 @@ See `ad_hoc_diffractometer psic
      - eta, phi, delta
      -
    * - ``fixed_incidence_vertical``
-      - mu, nu
-      - eta, chi, phi, delta
-      - surface_normal, incidence, emergence
+     - mu, nu
+     - eta, chi, phi, delta
+     - surface_normal, incidence, emergence
    * - ``fixed_emergence_vertical``
-      - mu, nu
-      - eta, chi, phi, delta
-      - surface_normal, incidence, emergence
+     - mu, nu
+     - eta, chi, phi, delta
+     - surface_normal, incidence, emergence
    * - ``specular_vertical``
-      - mu, nu
-      - eta, chi, phi, delta
-      - surface_normal, incidence, emergence
+     - mu, nu
+     - eta, chi, phi, delta
+     - surface_normal, incidence, emergence
    * - ``fixed_psi_vertical``
      - mu, nu
      - eta, chi, phi, delta
      - azimuth, psi
    * - ``fixed_incidence_fixed_chi_fixed_phi``
-      - chi, phi
-      - mu, eta, nu, delta
-      - surface_normal, incidence, emergence
+     - chi, phi
+     - mu, eta, nu, delta
+     - surface_normal, incidence, emergence
    * - ``fixed_omega_vertical``
      - mu, nu
      - eta, chi, phi, delta
@@ -242,17 +242,17 @@ See `ad_hoc_diffractometer psic
      - mu, phi, nu
      -
    * - ``fixed_incidence_horizontal``
-      - delta, eta
-      - mu, chi, phi, nu
-      - surface_normal, incidence, emergence
+     - delta, eta
+     - mu, chi, phi, nu
+     - surface_normal, incidence, emergence
    * - ``fixed_emergence_horizontal``
-      - delta, eta
-      - mu, chi, phi, nu
-      - surface_normal, incidence, emergence
+     - delta, eta
+     - mu, chi, phi, nu
+     - surface_normal, incidence, emergence
    * - ``specular_horizontal``
-      - delta, eta
-      - mu, chi, phi, nu
-      - surface_normal, incidence, emergence
+     - delta, eta
+     - mu, chi, phi, nu
+     - surface_normal, incidence, emergence
    * - ``fixed_psi_horizontal``
      - delta, eta
      - mu, chi, phi, nu
@@ -332,17 +332,17 @@ See `ad_hoc_diffractometer sixc
      - chi, phi, delta
      -
    * - ``fixed_incidence_zaxis``
-      - alpha, chi
-      - omega, phi, delta, gamma
-      - surface_normal, incidence, emergence
+     - alpha, chi
+     - omega, phi, delta, gamma
+     - surface_normal, incidence, emergence
    * - ``fixed_emergence_zaxis``
-      - chi, gamma
-      - alpha, omega, phi, delta
-      - surface_normal, incidence, emergence
+     - chi, gamma
+     - alpha, omega, phi, delta
+     - surface_normal, incidence, emergence
    * - ``specular_zaxis``
-      - chi, phi
-      - alpha, omega, delta, gamma
-      - surface_normal, incidence, emergence
+     - chi, phi
+     - alpha, omega, delta, gamma
+     - surface_normal, incidence, emergence
 
 .. _geometry.fivec:
 

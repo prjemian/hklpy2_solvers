@@ -550,12 +550,52 @@ class AdHocSolver(SolverBase):
         k = float(pseudos["k"])
         l = float(pseudos["l"])  # noqa: E741
 
+        self._raise_if_reference_vector_unset()
+
         try:
             results = self._geom.forward(h, k, l)
         except (EwaldSphereViolation, ConstraintViolation, ValueError, NotImplementedError) as exc:
             raise SolverError(str(exc)) from exc
 
         return results
+
+    def _raise_if_reference_vector_unset(self) -> None:
+        """Raise a clear :class:`SolverError` for an unset reference vector.
+
+        Reference-constraint modes (``psi`` / ``incidence`` / ``emergence``
+        / ``specular``) *are* implemented, but they are not **ready** to
+        solve until their reference vector — ``azimuth`` for ``psi``,
+        ``surface_normal`` for the others — is set on the geometry: that
+        vector is part of the mode's definition.  While it is unset the
+        underlying library reports ``mode.is_implemented(geometry)`` as
+        ``False`` and raises a misleading *"mode ... is not yet
+        implemented"* ``NotImplementedError`` (:issue:`125`).
+
+        Detect that specific situation here and raise a ``SolverError``
+        that tells the user to set the ``n_hat`` extra, distinguishing
+        "implemented but not ready" from a mode that is genuinely
+        unimplemented upstream.
+        """
+        mode_obj = self._geom.mode
+        if mode_obj is None:  # pragma: no cover - mode setter guarantees object
+            return
+        rc = getattr(mode_obj, "reference_constraint", None)
+        if rc is None:
+            return
+        target = self._geom.required_reference_vector
+        # A reference constraint with no required vector (e.g. ``naz``) or a
+        # vector that is already set is left to the library; only the
+        # actionable "vector unset" case is intercepted here.
+        if target is None or getattr(self._geom, target) is not None:
+            return
+        raise SolverError(
+            f"forward(): mode {self._mode!r} for geometry "
+            f"{self._geom.name!r} requires the reference vector to be set "
+            f"first.  Set the {rc.name!r} reference direction via the "
+            f"'n_hat' extra, e.g. diffractometer.core.extras = "
+            f"{{'n_hat': (0, 0, 1)}} (routed to geometry.{target}), "
+            "then call forward() again."
+        )
 
     @classmethod
     def geometries(cls) -> list[str]:

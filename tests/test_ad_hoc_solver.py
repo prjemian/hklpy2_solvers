@@ -922,12 +922,13 @@ def test_forward_with_extras(parms, context):
     """Forward calculation honours extras for implemented modes.
 
     .. note::
-        ``ad_hoc_diffractometer`` 0.11.0 marks the surface (``incidence``,
-        ``emergence``, ``specular``) and ``fixed_psi_*`` modes as
-        not yet implemented.  This test exercises the ``double_diffraction``
-        family because it is implemented and uses extras (``h2``, ``k2``,
-        ``l2``).  When upstream implements the surface modes, additional
-        cases should be added here.
+        This test exercises the ``double_diffraction`` family because it
+        uses extras (``h2``, ``k2``, ``l2``) that route directly into the
+        mode without a reference vector.  The reference-constraint surface
+        and ``fixed_psi_*`` modes (implemented upstream in
+        ``ad_hoc_diffractometer >= 0.11.3``) are covered separately by
+        :func:`test_psic_reference_constraint_modes_forward` and
+        :func:`test_forward_reference_vector_required`.
 
         The ``hkl = (1, 1, 1)`` primary with ``(h2, k2, l2) = (0, 1, 1)``
         secondary is chosen because it lies inside the Ewald sphere for
@@ -947,6 +948,54 @@ def test_forward_with_extras(parms, context):
                 assert stored == tuple(float(x) for x in value)
             else:
                 assert stored == value
+
+
+@pytest.mark.parametrize(
+    "parms, context",
+    [
+        pytest.param(
+            dict(
+                geometry="fourcv",
+                mode="fixed_psi",
+                pseudos={"h": 1.0, "k": 1.0, "l": 0.0},
+            ),
+            pytest.raises(
+                SolverError,
+                match=re.escape(
+                    "forward(): mode 'fixed_psi' for geometry 'fourcv' "
+                    "requires the reference vector to be set first.  Set the "
+                    "'psi' reference direction via the 'n_hat' extra"
+                ),
+            ),
+            id="fourcv fixed_psi without n_hat raises clear SolverError",
+        ),
+        pytest.param(
+            dict(
+                geometry="psic",
+                mode="bisecting_vertical",
+                pseudos={"h": 0.0, "k": 1.0, "l": 1.0},
+            ),
+            does_not_raise(),
+            id="non-reference mode solves without n_hat",
+        ),
+    ],
+)
+def test_forward_reference_vector_required(parms, context):
+    """Reference modes need ``n_hat`` set or raise a clear error (:issue:`125`).
+
+    ``ad_hoc_diffractometer >= 0.11.3`` implements the
+    ``ReferenceConstraint`` solvers, but ``mode.is_implemented(geometry)``
+    only returns ``True`` once the reference vector (``azimuth`` for
+    ``psi`` modes) is set.  Without it the library raises a misleading
+    *"mode ... is not yet implemented"*; :class:`AdHocSolver` intercepts
+    that case and raises an actionable :class:`SolverError`.  Modes with
+    no reference constraint are unaffected.
+    """
+    with context:
+        solver = _make_solver_with_ub(parms["geometry"])
+        solver.mode = parms["mode"]
+        solutions = solver.forward(parms["pseudos"])
+        assert len(solutions) >= 1
 
 
 @pytest.mark.parametrize(
@@ -1543,7 +1592,9 @@ def test_psic_forward_inverse(parms, context):
         pytest.param(
             dict(
                 # No reference vector set: the upstream solver is not
-                # implemented for the mode, surfaced as SolverError.
+                # implemented for the mode; the adapter intercepts the
+                # misleading "not yet implemented" error and raises a
+                # clear, actionable SolverError instead (:issue:`125`).
                 mode="fixed_psi_vertical",
                 n_hat=None,
                 hkl={"h": 1, "k": 0, "l": 0},
@@ -1551,7 +1602,11 @@ def test_psic_forward_inverse(parms, context):
             ),
             pytest.raises(
                 SolverError,
-                match=re.escape("forward(): mode 'fixed_psi_vertical' is not yet implemented"),
+                match=re.escape(
+                    "forward(): mode 'fixed_psi_vertical' for geometry 'psic' "
+                    "requires the reference vector to be set first.  Set the "
+                    "'psi' reference direction via the 'n_hat' extra"
+                ),
             ),
             id="psic fixed_psi_vertical without reference vector raises",
         ),

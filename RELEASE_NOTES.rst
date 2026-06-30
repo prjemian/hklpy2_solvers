@@ -29,10 +29,15 @@ describe future plans.
 
     Expected release: tba
 
-    Fixes
-    ~~~~~
+0.3.7
+######
 
-    * Raise a clear error naming ``n_hat`` when a reference mode lacks its reference vector.  :issue:`125`
+Released 2026-06-30.
+
+Fixes
+~~~~~
+
+* Raise a clear error naming ``n_hat`` when a reference mode lacks its reference vector.  :issue:`125`
 
 0.3.6
 ######

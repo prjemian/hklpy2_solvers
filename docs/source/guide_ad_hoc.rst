@@ -274,6 +274,22 @@ The argument is a length-3 sequence of Miller indices.  ``(0, 0, 0)``
 is rejected with ``ValueError``; the default is ``None`` (not set).
 Clear an attribute by assigning ``None``.
 
+.. important::
+
+   You **must** set the reference vector *before* calling
+   :meth:`~hklpy2_solvers.ad_hoc_solver.AdHocSolver.forward`.  A
+   reference-constraint mode *is* implemented, but it is not **ready**
+   to solve until its reference vector (``n̂``) is supplied — that extra
+   information is part of the mode's definition.  A premature
+   ``forward()`` therefore raises::
+
+      SolverError: forward(): mode 'fixed_psi_vertical' for geometry
+      'psic' requires the reference vector to be set first.  Set the
+      'psi' reference direction via the 'n_hat' extra, ...
+
+   Set ``n_hat`` (or the geometry attribute directly) using either
+   recipe above, then call ``forward()`` again.  See :issue:`125`.
+
 .. caution::
 
    ``ad_hoc_diffractometer >= 0.11.1`` emits a ``UserWarning`` when

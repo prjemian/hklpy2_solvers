@@ -42,7 +42,7 @@
   <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=a95f357e85573c9b56d5" />
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=a95f357e85573c9b56d5" />
 
-    <script src="../../_static/documentation_options.js?v=8da8c241"></script>
+    <script src="../../_static/documentation_options.js?v=fac2bb39"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,7 +51,7 @@
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/hklpy2_solvers/ad_hoc_solver';</script>
     <script>
         DOCUMENTATION_OPTIONS.theme_version = '0.19.0';
-        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.6';
+        DOCUMENTATION_OPTIONS.theme_switcher_json_url = 'https://prjemian.github.io/hklpy2_solvers/latest/_static/switcher.json?v=0.3.7.dev2+g3027767fc';
         DOCUMENTATION_OPTIONS.theme_switcher_version_match = 'latest';
         DOCUMENTATION_OPTIONS.show_version_warning_banner =
             true;
@@ -967,6 +967,8 @@
         <span class="n">k</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pseudos</span><span class="p">[</span><span class="s2">&quot;k&quot;</span><span class="p">])</span>
         <span class="n">l</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">pseudos</span><span class="p">[</span><span class="s2">&quot;l&quot;</span><span class="p">])</span>  <span class="c1"># noqa: E741</span>
 
+        <span class="bp">self</span><span class="o">.</span><span class="n">_raise_if_reference_vector_unset</span><span class="p">()</span>
+
         <span class="k">try</span><span class="p">:</span>
             <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">forward</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">l</span><span class="p">)</span>
         <span class="k">except</span> <span class="p">(</span><span class="n">EwaldSphereViolation</span><span class="p">,</span> <span class="n">ConstraintViolation</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">,</span> <span class="ne">NotImplementedError</span><span class="p">)</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
@@ -974,6 +976,44 @@
 
         <span class="k">return</span> <span class="n">results</span></div>
 
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_raise_if_reference_vector_unset</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise a clear :class:`SolverError` for an unset reference vector.</span>
+
+<span class="sd">        Reference-constraint modes (``psi`` / ``incidence`` / ``emergence``</span>
+<span class="sd">        / ``specular``) *are* implemented, but they are not **ready** to</span>
+<span class="sd">        solve until their reference vector — ``azimuth`` for ``psi``,</span>
+<span class="sd">        ``surface_normal`` for the others — is set on the geometry: that</span>
+<span class="sd">        vector is part of the mode&#39;s definition.  While it is unset the</span>
+<span class="sd">        underlying library reports ``mode.is_implemented(geometry)`` as</span>
+<span class="sd">        ``False`` and raises a misleading *&quot;mode ... is not yet</span>
+<span class="sd">        implemented&quot;* ``NotImplementedError`` (:issue:`125`).</span>
+
+<span class="sd">        Detect that specific situation here and raise a ``SolverError``</span>
+<span class="sd">        that tells the user to set the ``n_hat`` extra, distinguishing</span>
+<span class="sd">        &quot;implemented but not ready&quot; from a mode that is genuinely</span>
+<span class="sd">        unimplemented upstream.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mode_obj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">mode</span>
+        <span class="k">if</span> <span class="n">mode_obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover - mode setter guarantees object</span>
+            <span class="k">return</span>
+        <span class="n">rc</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">mode_obj</span><span class="p">,</span> <span class="s2">&quot;reference_constraint&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">rc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">required_reference_vector</span>
+        <span class="c1"># A reference constraint with no required vector (e.g. ``naz``) or a</span>
+        <span class="c1"># vector that is already set is left to the library; only the</span>
+        <span class="c1"># actionable &quot;vector unset&quot; case is intercepted here.</span>
+        <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">raise</span> <span class="n">SolverError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;forward(): mode </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="si">!r}</span><span class="s2"> for geometry &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_geom</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> requires the reference vector to be set &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;first.  Set the </span><span class="si">{</span><span class="n">rc</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> reference direction via the &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;&#39;n_hat&#39; extra, e.g. diffractometer.core.extras = &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{</span><span class="s2">&#39;n_hat&#39;: (0, 0, 1)</span><span class="se">}}</span><span class="s2"> (routed to geometry.</span><span class="si">{</span><span class="n">target</span><span class="si">}</span><span class="s2">), &quot;</span>
+            <span class="s2">&quot;then call forward() again.&quot;</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="AdHocSolver.geometries">
 <a class="viewcode-back" href="../../api/hklpy2_solvers/ad_hoc_solver/index.html#hklpy2_solvers.ad_hoc_solver.AdHocSolver.geometries">[docs]</a>
